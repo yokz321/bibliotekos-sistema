@@ -8,7 +8,7 @@
       "command": "npm run dev"
     },
     {
-      "name": "Next.js: client",
+      "name": "Next.js: Client",
       "type": "node-terminal",
       "request": "launch",
       "command": "npm run dev",
