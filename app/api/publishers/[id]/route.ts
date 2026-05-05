@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic"
 import { Publisher } from "@/models/Publisher"
 import { mongooseConnect } from "@/lib/mongoose"
 import { NextResponse } from "next/server"

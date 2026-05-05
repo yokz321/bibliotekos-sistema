@@ -2,17 +2,21 @@ import { mongooseConnect } from "@/lib/mongoose"
 import { Book } from "@/models/Book"
 import { NextResponse } from "next/server"
 
-// REDAGUOTI KNYGĄ
+// Next.js 15 reikalauja, kad params būtų Promise
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongooseConnect()
+    const { id } = await params // Išpakuojame ID
     const body = await req.json()
-    const updatedBook = await Book.findByIdAndUpdate(params.id, body, {
-      new: true,
+
+    // Naudojame returnDocument: 'after', kad gautume jau pakeistus duomenis
+    const updatedBook = await Book.findByIdAndUpdate(id, body, {
+      returnDocument: "after",
     })
+
     return NextResponse.json(updatedBook)
   } catch (error) {
     return NextResponse.json(
@@ -22,14 +26,14 @@ export async function PUT(
   }
 }
 
-// ŠALINTI KNYGĄ
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongooseConnect()
-    await Book.findByIdAndDelete(params.id)
+    const { id } = await params // Išpakuojame ID
+    await Book.findByIdAndDelete(id)
     return NextResponse.json({ message: "Knyga pašalinta" })
   } catch (error) {
     return NextResponse.json(

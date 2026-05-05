@@ -1,30 +1,31 @@
-export const dynamic = "force-dynamic"
 import { Author } from "@/models/Author"
 import { mongooseConnect } from "@/lib/mongoose"
 import { NextResponse } from "next/server"
 
-// Svarbu: params dabar yra Promise, todėl nurodome tipą teisingai
+// Svarbu: params tipas turi būti Promise
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongooseConnect()
-    const { id } = await params // BŪTINA: išpakuojame ID su await
+
+    // 1. Next.js 15 reikalauja šios eilutės:
+    const resolvedParams = await params
+    const id = resolvedParams.id
+
     const { name, biography } = await req.json()
 
-    const updatedAuthor = await Author.findByIdAndUpdate(
-      id,
+    const updated = await Author.findByIdAndUpdate(
+      id, // Naudojame išpakuotą ID
       { name, biography },
-      { returnDocument: "after" } // Naujas Mongoose standartas
+      { returnDocument: "after" } // Pataisyta pagal Mongoose rekomendaciją
     )
 
-    return NextResponse.json(updatedAuthor)
+    return NextResponse.json(updated)
   } catch (error) {
-    return NextResponse.json(
-      { error: "Klaida atnaujinant autorių" },
-      { status: 500 }
-    )
+    console.error("PUT klaida:", error)
+    return NextResponse.json({ error: "Klaida atnaujinant" }, { status: 500 })
   }
 }
 
@@ -34,13 +35,15 @@ export async function DELETE(
 ) {
   try {
     await mongooseConnect()
-    const { id } = await params // BŪTINA: išpakuojame ID
+
+    // 1. Ta pati išpakavimo taisyklė ir čia:
+    const resolvedParams = await params
+    const id = resolvedParams.id
+
     await Author.findByIdAndDelete(id)
-    return NextResponse.json({ message: "Autorius pašalintas" })
+
+    return NextResponse.json({ message: "Pašalinta" })
   } catch (error) {
-    return NextResponse.json(
-      { error: "Klaida šalinant autorių" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Klaida šalinant" }, { status: 500 })
   }
 }
