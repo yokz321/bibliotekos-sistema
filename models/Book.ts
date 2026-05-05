@@ -7,13 +7,11 @@ const BookSchema = new Schema(
       required: [true, "Knygos pavadinimas privalomas"],
       trim: true,
     },
-    // Ryšys su Autoriaus modeliu
     author: {
       type: Schema.Types.ObjectId,
       ref: "Author", // Turi sutapti su pavadinimu models/Author.ts faile
       required: [true, "Autorius yra privalomas"],
     },
-    // Ryšys su Leidyklos modeliu
     publisher: {
       type: Schema.Types.ObjectId,
       ref: "Publisher", // Turi sutapti su pavadinimu models/Publisher.ts faile
@@ -40,7 +38,7 @@ const BookSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Automatiškai pridės createdAt ir updatedAt laukus
+    timestamps: true,
   }
 )
 
