@@ -2,7 +2,8 @@ import { Author } from "@/models/Author"
 import { mongooseConnect } from "@/lib/mongoose"
 import { NextResponse } from "next/server"
 
-// Svarbu: params tipas turi būti Promise
+export const dynamic = "force-dynamic"
+
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -10,22 +11,28 @@ export async function PUT(
   try {
     await mongooseConnect()
 
-    // 1. Next.js 15 reikalauja šios eilutės:
+    // Išpakuojame params (Next.js 15 reikalavimas)
     const resolvedParams = await params
     const id = resolvedParams.id
+
+    console.log("--- Bandoma atnaujinti autorių, ID:", id) // Patikrai terminale
 
     const { name, biography } = await req.json()
 
     const updated = await Author.findByIdAndUpdate(
-      id, // Naudojame išpakuotą ID
+      id,
       { name, biography },
-      { returnDocument: "after" } // Pataisyta pagal Mongoose rekomendaciją
+      { returnDocument: "after" }
     )
 
+    if (!updated) {
+      return NextResponse.json({ error: "Autorius nerastas" }, { status: 404 })
+    }
+
     return NextResponse.json(updated)
-  } catch (error) {
-    console.error("PUT klaida:", error)
-    return NextResponse.json({ error: "Klaida atnaujinant" }, { status: 500 })
+  } catch (error: any) {
+    console.error("API PUT KLAIDA:", error.message)
+    return NextResponse.json({ error: "Serverio klaida" }, { status: 500 })
   }
 }
 
@@ -35,15 +42,14 @@ export async function DELETE(
 ) {
   try {
     await mongooseConnect()
+    const { id } = await params
 
-    // 1. Ta pati išpakavimo taisyklė ir čia:
-    const resolvedParams = await params
-    const id = resolvedParams.id
+    console.log("--- Bandoma trinti autorių, ID:", id) // Patikrai terminale
 
     await Author.findByIdAndDelete(id)
-
-    return NextResponse.json({ message: "Pašalinta" })
-  } catch (error) {
-    return NextResponse.json({ error: "Klaida šalinant" }, { status: 500 })
+    return NextResponse.json({ message: "Sėkmingai pašalinta" })
+  } catch (error: any) {
+    console.error("API DELETE KLAIDA:", error.message)
+    return NextResponse.json({ error: "Nepavyko pašalinti" }, { status: 500 })
   }
 }
