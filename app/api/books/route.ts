@@ -1,6 +1,5 @@
 import { mongooseConnect } from "@/lib/mongoose"
 import { Book } from "@/models/Book"
-// Svarbu importuoti šiuos modelius, kad Mongoose žinotų, kaip "populate" duomenis
 import { Author } from "@/models/Author"
 import { Publisher } from "@/models/Publisher"
 import { NextResponse } from "next/server"
@@ -9,8 +8,6 @@ import { NextResponse } from "next/server"
 export async function GET() {
   try {
     await mongooseConnect()
-
-    // Naudojame .populate(), kad gautume pilnus autoriaus ir leidyklos objektus
     const books = await Book.find()
       .populate("author")
       .populate("publisher")
@@ -35,7 +32,6 @@ export async function POST(req: Request) {
     const { title, author, publisher, year, isbn, summary, pages, quantity } =
       body
 
-    // Minimali validacija
     if (!title || !author || !publisher || !year) {
       return NextResponse.json(
         {

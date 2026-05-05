@@ -15,7 +15,7 @@ export async function PUT(
     const resolvedParams = await params
     const id = resolvedParams.id
 
-    console.log("--- Bandoma atnaujinti autorių, ID:", id) // Patikrai terminale
+    console.log("--- Bandoma atnaujinti autorių, ID:", id)
 
     const { name, biography } = await req.json()
 
@@ -44,7 +44,7 @@ export async function DELETE(
     await mongooseConnect()
     const { id } = await params
 
-    console.log("--- Bandoma trinti autorių, ID:", id) // Patikrai terminale
+    console.log("--- Bandoma trinti autorių, ID:", id)
 
     await Author.findByIdAndDelete(id)
     return NextResponse.json({ message: "Sėkmingai pašalinta" })

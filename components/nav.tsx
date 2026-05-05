@@ -47,11 +47,11 @@ export function Nav() {
 
   return (
     <div className="flex items-center">
-      {/* --- DESKTOP NAVIGACIJA --- */}
+      {}
       <nav className="hidden md:block">
         <NavigationMenu>
           <NavigationMenuList className="gap-1">
-            {/* 1. Klasifikatoriai Dropdown */}
+            {}
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={cn(
@@ -102,7 +102,7 @@ export function Nav() {
               </NavigationMenuContent>
             </NavigationMenuItem>
 
-            {/* 2. Knygos - PATAISYTA (pašalintas legacyBehavior) */}
+            {}
             <NavigationMenuItem>
               <NavigationMenuLink
                 asChild
@@ -115,7 +115,7 @@ export function Nav() {
               </NavigationMenuLink>
             </NavigationMenuItem>
 
-            {/* 3. Abonentai - PATAISYTA */}
+            {}
             <NavigationMenuItem>
               <NavigationMenuLink
                 asChild
@@ -128,7 +128,7 @@ export function Nav() {
               </NavigationMenuLink>
             </NavigationMenuItem>
 
-            {/* 4. Rezervacijos - PATAISYTA */}
+            {}
             <NavigationMenuItem>
               <NavigationMenuLink
                 asChild
@@ -144,7 +144,7 @@ export function Nav() {
         </NavigationMenu>
       </nav>
 
-      {/* --- MOBILI NAVIGACIJA (Sheet) --- */}
+      {}
       <div className="md:hidden">
         <Sheet>
           <SheetTrigger asChild>

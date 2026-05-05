@@ -2,7 +2,7 @@ import { Author } from "@/models/Author"
 import { mongooseConnect } from "@/lib/mongoose"
 import { NextResponse } from "next/server"
 
-// 1. Next.js 15 reikalauja, kad params būtų Promise
+// Next.js 15 reikalauja, kad params būtų Promise
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -10,15 +10,15 @@ export async function PUT(
   try {
     await mongooseConnect()
 
-    // 2. BŪTINA išpakuoti params su await
+    // BŪTINA išpakuoti params su await
     const { id } = await params
 
     const { name, biography } = await req.json()
 
     const updated = await Author.findByIdAndUpdate(
-      id, // Naudojame išpakuotą id
+      id,
       { name, biography },
-      { returnDocument: "after" } // Naujas standartas vietoj { new: true }
+      { returnDocument: "after" }
     )
 
     return NextResponse.json(updated)
@@ -34,7 +34,7 @@ export async function DELETE(
   try {
     await mongooseConnect()
 
-    // 3. Ta pati taisyklė: išpakuojame params
+    // Ta pati taisyklė: išpakuojame params
     const { id } = await params
 
     await Author.findByIdAndDelete(id)

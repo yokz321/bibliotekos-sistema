@@ -6,7 +6,7 @@ export async function mongooseConnect() {
     return mongoose.connection.asPromise()
   } else {
     const uri = process.env.MONGO_URI
-    const dbName = process.env.MONGO_DB // biblioteka
+    const dbName = process.env.MONGO_DB
 
     if (!uri) {
       throw new Error("KLAIDA: MONGO_URI nerasta .env faile!")

@@ -8,7 +8,7 @@ const PublisherSchema = new Schema(
       unique: true,
       trim: true,
     },
-    location: { type: String }, // Miestas arba adresas
+    location: { type: String },
   },
   { timestamps: true }
 )

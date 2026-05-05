@@ -39,7 +39,6 @@ export default function AuthorsPage() {
   const [name, setName] = useState("")
   const [biography, setBiography] = useState("")
 
-  // ATNAUJINTA: pridėtas cache: "no-store", kad kaskart gautume šviežius duomenis
   const fetchAuthors = async () => {
     try {
       setLoading(true)
@@ -82,7 +81,6 @@ export default function AuthorsPage() {
         toast.success(editingAuthor ? "Atnaujinta!" : "Pridėta!")
         setIsOpen(false)
         resetForm()
-        // ATNAUJINTA: laukiame, kol duomenys bus parsiųsti iš naujo
         await fetchAuthors()
       } else {
         const data = await res.json()

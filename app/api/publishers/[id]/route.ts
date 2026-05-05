@@ -8,7 +8,7 @@ export async function PUT(
 ) {
   try {
     await mongooseConnect()
-    const { id } = await params // Išpakuojame ID
+    const { id } = await params
     const { name, location } = await req.json()
 
     const updatedPublisher = await Publisher.findByIdAndUpdate(
@@ -32,7 +32,7 @@ export async function DELETE(
 ) {
   try {
     await mongooseConnect()
-    const { id } = await params // Išpakuojame ID
+    const { id } = await params
     await Publisher.findByIdAndDelete(id)
     return NextResponse.json({ message: "Leidykla pašalinta" })
   } catch (error) {

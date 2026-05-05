@@ -9,7 +9,7 @@ export async function PUT(
 ) {
   try {
     await mongooseConnect()
-    const { id } = await params // Išpakuojame ID
+    const { id } = await params
     const body = await req.json()
 
     // Naudojame returnDocument: 'after', kad gautume jau pakeistus duomenis
@@ -32,7 +32,7 @@ export async function DELETE(
 ) {
   try {
     await mongooseConnect()
-    const { id } = await params // Išpakuojame ID
+    const { id } = await params
     await Book.findByIdAndDelete(id)
     return NextResponse.json({ message: "Knyga pašalinta" })
   } catch (error) {
