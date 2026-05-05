@@ -21,16 +21,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { createBook, updateBook } from "@/actions/book"
 import type { Book, Author, Publisher } from "@/types/book-t"
-
-interface Props {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  editingBook: Book | null
-  authors: Author[]
-  publishers: Publisher[]
-  onSuccess: () => void
-}
 
 export function BookFormDialog({
   isOpen,
@@ -39,61 +31,36 @@ export function BookFormDialog({
   authors,
   publishers,
   onSuccess,
-}: Props) {
-  const [title, setTitle] = useState("")
-  const [authorId, setAuthorId] = useState("")
-  const [publisherId, setPublisherId] = useState("")
-  const [year, setYear] = useState("")
-  const [isbn, setIsbn] = useState("")
+}: {
+  isOpen: boolean
+  onOpenChange: (v: boolean) => void
+  editingBook: Book | null
+  authors: Author[]
+  publishers: Publisher[]
+  onSuccess: () => void
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Sinchronizuoja formą su redaguojamu įrašu
   useEffect(() => {
-    if (editingBook) {
-      setTitle(editingBook.title)
-      setAuthorId(editingBook.author?._id || "")
-      setPublisherId(editingBook.publisher?._id || "")
-      setYear(editingBook.year.toString())
-      setIsbn(editingBook.isbn || "")
-    } else {
-      setTitle("")
-      setAuthorId("")
-      setPublisherId("")
-      setYear("")
-      setIsbn("")
-    }
-  }, [editingBook, isOpen])
+    if (!isOpen) setIsSubmitting(false)
+  }, [isOpen])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-    const method = editingBook ? "PUT" : "POST"
-    const url = editingBook ? `/api/books/${editingBook._id}` : "/api/books"
+    const formData = new FormData(e.currentTarget)
+    const res = editingBook
+      ? await updateBook(editingBook._id, formData)
+      : await createBook(formData)
 
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          author: authorId,
-          publisher: publisherId,
-          year: Number(year),
-          isbn,
-        }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        toast.success(editingBook ? "Knyga atnaujinta!" : "Knyga pridėta!")
-        onSuccess()
-      } else {
-        toast.error(data.error || "Klaida išsaugant")
-      }
-    } catch {
-      toast.error("Tinklo klaida")
-    } finally {
-      setIsSubmitting(false)
-    }
+    if (res.success) {
+      toast.success(editingBook ? "Knyga atnaujinta!" : "Knyga pridėta!")
+      onSuccess()
+    } else
+      toast.error(
+        typeof res.error === "string" ? res.error : "Patikrinkite laukus"
+      )
+    setIsSubmitting(false)
   }
 
   return (
@@ -117,8 +84,8 @@ export function BookFormDialog({
             <Label htmlFor="title">Pavadinimas</Label>
             <Input
               id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              name="title"
+              defaultValue={editingBook?.title}
               required
               disabled={isSubmitting}
             />
@@ -127,8 +94,8 @@ export function BookFormDialog({
             <div className="grid gap-2">
               <Label>Autorius</Label>
               <Select
-                onValueChange={setAuthorId}
-                value={authorId}
+                name="author"
+                defaultValue={editingBook?.author?._id}
                 disabled={isSubmitting}
               >
                 <SelectTrigger>
@@ -146,8 +113,8 @@ export function BookFormDialog({
             <div className="grid gap-2">
               <Label>Leidykla</Label>
               <Select
-                onValueChange={setPublisherId}
-                value={publisherId}
+                name="publisher"
+                defaultValue={editingBook?.publisher?._id}
                 disabled={isSubmitting}
               >
                 <SelectTrigger>
@@ -165,22 +132,22 @@ export function BookFormDialog({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="year">Leidimo metai</Label>
+              <Label htmlFor="year">Metai</Label>
               <Input
                 id="year"
+                name="year"
                 type="number"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
+                defaultValue={editingBook?.year}
                 required
                 disabled={isSubmitting}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="isbn">ISBN kodas</Label>
+              <Label htmlFor="isbn">ISBN</Label>
               <Input
                 id="isbn"
-                value={isbn}
-                onChange={(e) => setIsbn(e.target.value)}
+                name="isbn"
+                defaultValue={editingBook?.isbn || ""}
                 disabled={isSubmitting}
               />
             </div>

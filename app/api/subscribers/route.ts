@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic"
 import { mongooseConnect } from "@/lib/mongoose"
-import { Subscriber } from "@/models/Subscriber"
+import { Subscriber } from "@/models/subscriber"
 import { NextResponse } from "next/server"
 
 export async function GET() {

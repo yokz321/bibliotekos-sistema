@@ -2,54 +2,38 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
-import { BooksTable } from "./BooksTable"
-import { BookFormDialog } from "./BookFormDialog"
+import { BooksTable } from "./booksTable"
+import { BookFormDialog } from "./bookFormDialog"
+import { deleteBook } from "@/actions/book"
 import type { Book, Author, Publisher } from "@/types/book-t"
-
-interface Props {
-  initialBooks: Book[]
-  initialAuthors: Author[]
-  initialPublishers: Publisher[]
-}
 
 export function BooksClient({
   initialBooks,
   initialAuthors,
   initialPublishers,
-}: Props) {
+}: {
+  initialBooks: Book[]
+  initialAuthors: Author[]
+  initialPublishers: Publisher[]
+}) {
   const [books, setBooks] = useState<Book[]>(initialBooks)
-  const [loading, setLoading] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingBook, setEditingBook] = useState<Book | null>(null)
 
-  const refreshBooks = async () => {
-    setLoading(true)
-    try {
-      const res = await fetch("/api/books")
-      if (res.ok) setBooks(await res.json())
-    } catch {
-      toast.error("Nepavyko atnaujinti knygų sąrašo")
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handleDelete = async (id: string) => {
     if (!confirm("Ar tikrai norite pašalinti šią knygą?")) return
-    try {
-      const res = await fetch(`/api/books/${id}`, { method: "DELETE" })
-      if (res.ok) {
-        toast.success("Knyga pašalinta")
-        refreshBooks()
-      }
-    } catch {
-      toast.error("Klaida šalinant")
-    }
+    const res = await deleteBook(id)
+    if (res.success) {
+      toast.success("Knyga pašalinta")
+      setBooks((prev) => prev.filter((b) => b._id !== id))
+    } else toast.error(res.error as string)
   }
 
-  const openEdit = (book: Book) => {
-    setEditingBook(book)
-    setIsDialogOpen(true)
+  const handleSuccess = () => {
+    setIsDialogOpen(false)
+    setEditingBook(null)
+    // revalidatePath automatiškai atnaujins page.tsx, bet lokaliam UI sync:
+    window.location.reload() // Arba galite naudoti router.refresh() iš next/navigation
   }
 
   return (
@@ -61,17 +45,15 @@ export function BooksClient({
           editingBook={editingBook}
           authors={initialAuthors}
           publishers={initialPublishers}
-          onSuccess={() => {
-            setIsDialogOpen(false)
-            setEditingBook(null)
-            refreshBooks()
-          }}
+          onSuccess={handleSuccess}
         />
       </div>
       <BooksTable
         books={books}
-        loading={loading}
-        onEdit={openEdit}
+        onEdit={(b) => {
+          setEditingBook(b)
+          setIsDialogOpen(true)
+        }}
         onDelete={handleDelete}
       />
     </>

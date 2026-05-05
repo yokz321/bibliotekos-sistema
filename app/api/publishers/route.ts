@@ -1,4 +1,4 @@
-import { Publisher } from "@/models/Publisher"
+import { Publisher } from "@/models/publisher"
 import { mongooseConnect } from "@/lib/mongoose"
 import { NextResponse } from "next/server"
 

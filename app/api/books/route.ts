@@ -1,7 +1,7 @@
 import { mongooseConnect } from "@/lib/mongoose"
-import { Book } from "@/models/Book"
-import { Author } from "@/models/Author"
-import { Publisher } from "@/models/Publisher"
+import { Book } from "@/models/book"
+import { Author } from "@/models/author"
+import { Publisher } from "@/models/publisher"
 import { NextResponse } from "next/server"
 
 // 1. GAUTI VISAS KNYGAS

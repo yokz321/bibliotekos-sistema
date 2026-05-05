@@ -1,4 +1,4 @@
-import { Author } from "@/models/Author"
+import { Author } from "@/models/author"
 import { mongooseConnect } from "@/lib/mongoose"
 import { NextResponse } from "next/server"
 

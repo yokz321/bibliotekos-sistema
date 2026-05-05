@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Loader2, Pencil, Trash2 } from "lucide-react"
+import { BookOpen, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -15,20 +15,11 @@ import type { Book } from "@/types/book-t"
 
 interface Props {
   books: Book[]
-  loading: boolean
   onEdit: (book: Book) => void
   onDelete: (id: string) => void
 }
 
-export function BooksTable({ books, loading, onEdit, onDelete }: Props) {
-  if (loading) {
-    return (
-      <Card className="flex justify-center py-10">
-        <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
-      </Card>
-    )
-  }
-
+export function BooksTable({ books, onEdit, onDelete }: Props) {
   return (
     <Card className="overflow-hidden border shadow-sm">
       <Table>
