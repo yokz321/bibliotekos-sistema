@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
+import { Plus, Pencil, Trash2, UserCircle2, Loader2 } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
@@ -15,32 +18,52 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+interface Author {
+  _id: string
+  name: string
+  biography?: string
+}
 
 export default function AuthorsPage() {
-  const [authors, setAuthors] = useState([])
+  const [authors, setAuthors] = useState<Author[]>([])
+  const [loading, setLoading] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
-  const [editingAuthor, setEditingAuthor] = useState<any>(null)
+  const [editingAuthor, setEditingAuthor] = useState<Author | null>(null)
+
   const [name, setName] = useState("")
   const [biography, setBiography] = useState("")
 
-  // Funkcija duomenų užkrovimui
+  // ATNAUJINTA: pridėtas cache: "no-store", kad kaskart gautume šviežius duomenis
   const fetchAuthors = async () => {
-    const res = await fetch("/api/authors")
-    const data = await res.json()
-    setAuthors(data)
+    try {
+      setLoading(true)
+      const res = await fetch("/api/authors", { cache: "no-store" })
+      const data = await res.json()
+
+      if (res.ok && Array.isArray(data)) {
+        setAuthors(data)
+      } else {
+        setAuthors([])
+        toast.error(data.error || "Nepavyko gauti autorių sąrašo")
+      }
+    } catch (error) {
+      setAuthors([])
+      toast.error("Tinklo klaida: nepavyko pasiekti serverio")
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
     fetchAuthors()
   }, [])
 
-  // Išsaugojimas (Naujas arba Redagavimas)
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     const method = editingAuthor ? "PUT" : "POST"
@@ -48,141 +71,176 @@ export default function AuthorsPage() {
       ? `/api/authors/${editingAuthor._id}`
       : "/api/authors"
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, biography }),
-    })
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, biography }),
+      })
 
-    const data = await res.json()
-
-    if (res.ok) {
-      toast.success(
-        editingAuthor ? "Sėkmingai atnaujinta!" : "Autorius pridėtas!"
-      )
-      setIsOpen(false)
-      setName("")
-      setBiography("")
-      setEditingAuthor(null)
-      fetchAuthors()
-    } else {
-      toast.error(data.error || "Klaida išsaugant")
+      if (res.ok) {
+        toast.success(editingAuthor ? "Atnaujinta!" : "Pridėta!")
+        setIsOpen(false)
+        resetForm()
+        // ATNAUJINTA: laukiame, kol duomenys bus parsiųsti iš naujo
+        await fetchAuthors()
+      } else {
+        const data = await res.json()
+        toast.error(data.error || "Klaida išsaugant")
+      }
+    } catch (error) {
+      toast.error("Nepavyko išsaugoti duomenų")
     }
   }
 
-  // Šalinimas
+  const resetForm = () => {
+    setName("")
+    setBiography("")
+    setEditingAuthor(null)
+  }
+
   const deleteAuthor = async (id: string) => {
-    if (!confirm("Ar tikrai norite pašalinti šį autorių?")) return
-    const res = await fetch(`/api/authors/${id}`, { method: "DELETE" })
-    if (res.ok) {
-      toast.success("Autorius pašalintas")
-      fetchAuthors()
+    if (!confirm("Ar tikrai norite pašalinti?")) return
+    try {
+      const res = await fetch(`/api/authors/${id}`, { method: "DELETE" })
+      if (res.ok) {
+        toast.success("Pašalinta")
+        await fetchAuthors() // Užtikriname atnaujinimą po trynimo
+      } else {
+        toast.error("Nepavyko pašalinti")
+      }
+    } catch (error) {
+      toast.error("Klaida šalinant autorių")
     }
   }
 
   return (
-    <div className="container mx-auto py-10 px-4">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
-          <CardTitle className="text-2xl font-bold">
-            Autorių klasifikatorius
-          </CardTitle>
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Autoriai</h1>
+          <p className="text-muted-foreground text-sm">
+            Klasifikatoriaus valdymas
+          </p>
+        </div>
+
+        <Dialog
+          open={isOpen}
+          onOpenChange={(v) => {
+            setIsOpen(v)
+            if (!v) resetForm()
+          }}
+        >
+          <DialogTrigger asChild>
+            <Button className="bg-orange-600 hover:bg-orange-700">
+              <Plus className="mr-2 h-4 w-4" /> Naujas autorius
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>
+                {editingAuthor ? "Redaguoti autorių" : "Pridėti autorių"}
+              </DialogTitle>
+              <DialogDescription>
+                Įveskite autoriaus duomenis. Sistema neleis pridėti dublikatų.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSave} className="space-y-4 pt-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name">Vardas Pavardė</Label>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  placeholder="pvz. Jonas Biliūnas"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="bio">Biografija</Label>
+                <Input
+                  id="bio"
+                  value={biography}
+                  onChange={(e) => setBiography(e.target.value)}
+                  placeholder="Trumpas aprašymas"
+                />
+              </div>
               <Button
-                onClick={() => {
-                  setEditingAuthor(null)
-                  setName("")
-                  setBiography("")
-                }}
+                type="submit"
+                className="w-full bg-orange-600 hover:bg-orange-700"
               >
-                + Pridėti autorių
+                Išsaugoti
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {editingAuthor ? "Redaguoti autorių" : "Naujas autorius"}
-                </DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSave} className="space-y-4 pt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Vardas Pavardė</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    placeholder="pvz. Kristijonas Donelaitis"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="bio">Aprašymas</Label>
-                  <Input
-                    id="bio"
-                    value={biography}
-                    onChange={(e) => setBiography(e.target.value)}
-                    placeholder="Trumpa informacija"
-                  />
-                </div>
-                <Button type="submit" className="w-full">
-                  Išsaugoti
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="rounded-md border bg-card text-card-foreground shadow-sm">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/50">
+              <TableHead>Autorius</TableHead>
+              <TableHead>Biografija</TableHead>
+              <TableHead className="text-right">Veiksmai</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
               <TableRow>
-                <TableHead>Vardas</TableHead>
-                <TableHead>Aprašymas</TableHead>
-                <TableHead className="text-right">Veiksmai</TableHead>
+                <TableCell colSpan={3} className="text-center py-10">
+                  <Loader2 className="h-6 w-6 animate-spin mx-auto text-orange-600" />
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {authors.length === 0 && (
-                <TableRow>
-                  <TableCell
-                    colSpan={3}
-                    className="text-center py-10 text-gray-500"
-                  >
-                    Autorių nerasta.
-                  </TableCell>
-                </TableRow>
-              )}
-              {authors.map((author: any) => (
+            ) : Array.isArray(authors) && authors.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="text-center py-10 text-muted-foreground"
+                >
+                  Autorių sąrašas tuščias
+                </TableCell>
+              </TableRow>
+            ) : (
+              Array.isArray(authors) &&
+              authors.map((author) => (
                 <TableRow key={author._id}>
-                  <TableCell className="font-medium">{author.name}</TableCell>
+                  <TableCell className="font-medium flex items-center gap-2">
+                    <UserCircle2 className="h-4 w-4 text-muted-foreground" />
+                    {author.name}
+                  </TableCell>
                   <TableCell>{author.biography || "-"}</TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEditingAuthor(author)
-                        setName(author.name)
-                        setBiography(author.biography || "")
-                        setIsOpen(true)
-                      }}
-                    >
-                      Redaguoti
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => deleteAuthor(author._id)}
-                    >
-                      Šalinti
-                    </Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-blue-600 hover:bg-blue-50"
+                        onClick={() => {
+                          setEditingAuthor(author)
+                          setName(author.name)
+                          setBiography(author.biography || "")
+                          setIsOpen(true)
+                        }}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:bg-red-50"
+                        onClick={() => deleteAuthor(author._id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }

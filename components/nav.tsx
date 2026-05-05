@@ -1,49 +1,212 @@
 "use client"
-import { INav } from "@/types/nav-t"
-import { BookOpenIcon, Bars4Icon } from "@heroicons/react/24/outline"
+
+import * as React from "react"
 import Link from "next/link"
-import { useState } from "react"
+import { usePathname } from "next/navigation"
+import {
+  Menu,
+  ChevronDown,
+  LayoutGrid,
+  Users,
+  Building2,
+  Book,
+  UserCog,
+  CalendarCheck,
+} from "lucide-react"
 
-type IProps = { menu: INav[] }
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-const HOST = "http://localhost:3000"
+export function Nav() {
+  const pathname = usePathname()
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
 
-export function Nav(props: IProps) {
-  const [isVisible, setIsVisible] = useState<boolean>(false)
-  const { menu } = props
+  // Apsauga nuo mirgėjimo: naudojame paprastą funkciją stiliams
+  const linkStyles = (path: string) =>
+    cn(
+      "flex items-center gap-1 transition-colors outline-none select-none py-1 text-sm font-medium",
+      pathname === path
+        ? "text-orange-600 font-bold"
+        : "text-muted-foreground hover:text-orange-600"
+    )
 
   return (
-    <nav className="bg-white border-gray-200">
-      <div className="max-w-screen-xl flex flex-wrap items-center gap-x-4 justify-between mx-auto p-4">
-        <Link href={HOST} className="flex items-center space-x-3">
-          <BookOpenIcon className="h-8 w-8 stroke-orange-700" />
-          <div className="text-2xl text-orange-700 font-bold">BIBLIO</div>
-        </Link>
-        <button
-          onClick={() => setIsVisible(!isVisible)}
-          type="button"
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
-        >
-          <span className="sr-only">Open menu</span>
-          <Bars4Icon className="h-7 w-7 stroke-gray-800" />
-        </button>
+    <div className="flex items-center">
+      {/* --- DESKTOP NAVIGACIJA --- */}
+      <nav className="hidden md:flex items-center gap-6">
+        {/* KLASIFIKATORIAI: Apgaubiame div'u, kuris valdo HOVER būseną be mirgėjimo */}
         <div
-          className={`w-full md:block md:w-auto ${isVisible ? "" : " hidden"}`}
+          onMouseEnter={() => setIsDropdownOpen(true)}
+          onMouseLeave={() => setIsDropdownOpen(false)}
+          className="relative inline-block"
         >
-          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white">
-            {menu.map((item) => (
-              <li key={item.slug}>
+          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+            {/* onPointerDown apsaugo nuo "double pop" efekto gavus fokusą */}
+            <DropdownMenuTrigger
+              onPointerDown={(e) => e.preventDefault()}
+              onClick={(e) => e.preventDefault()}
+              className={cn(
+                "flex items-center gap-1 transition-colors outline-none select-none py-2 text-sm font-medium",
+                pathname === "/authors" ||
+                  pathname === "/leidyklos" ||
+                  isDropdownOpen
+                  ? "text-orange-600"
+                  : "text-muted-foreground hover:text-orange-600"
+              )}
+            >
+              <LayoutGrid className="h-4 w-4 mr-1" />
+              Klasifikatoriai
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 opacity-50 transition-transform duration-200",
+                  isDropdownOpen && "rotate-180"
+                )}
+              />
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              align="start"
+              className="w-[200px] p-2 mt-[-5px]" // mt-[-5px] panaikina tarpą tarp triggerio ir meniu, kad pelė "nepasimestų"
+              onMouseEnter={() => setIsDropdownOpen(true)}
+            >
+              <DropdownMenuItem asChild>
                 <Link
-                  href={item.slug}
-                  className="block py-2 px-3 text-gray-800 hover:no-underline hover:text-gray-900 visited:text-gray-800 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+                  href="/authors"
+                  className="flex items-center gap-2 cursor-pointer w-full text-muted-foreground hover:text-orange-600 hover:bg-orange-50 focus:bg-orange-50 focus:text-orange-600 outline-none p-2 rounded-sm"
                 >
-                  {item.title}
+                  <Users className="h-4 w-4 text-orange-600" />
+                  <span className="font-medium">Autoriai</span>
                 </Link>
-              </li>
-            ))}
-          </ul>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/leidyklos"
+                  className="flex items-center gap-2 cursor-pointer w-full text-muted-foreground hover:text-orange-600 hover:bg-orange-50 focus:bg-orange-50 focus:text-orange-600 outline-none p-2 rounded-sm"
+                >
+                  <Building2 className="h-4 w-4 text-orange-600" />
+                  <span className="font-medium">Leidyklos</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
+        {/* KNYGOS */}
+        <Link href="/knygos" className={linkStyles("/knygos")}>
+          <Book className="h-4 w-4 mr-1" />
+          Knygos
+        </Link>
+
+        {/* ABONENTAI */}
+        <Link href="/abonentai" className={linkStyles("/abonentai")}>
+          <UserCog className="h-4 w-4 mr-1" />
+          Abonentai
+        </Link>
+
+        {/* REZERVACIJOS */}
+        <Link href="/rezervacijos" className={linkStyles("/rezervacijos")}>
+          <CalendarCheck className="h-4 w-4 mr-1" />
+          Rezervacijos
+        </Link>
+      </nav>
+
+      {/* --- MOBILI NAVIGACIJA --- */}
+      <div className="md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-6 w-6 text-black" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <SheetHeader>
+              <SheetTitle className="text-left text-orange-600 font-bold uppercase tracking-tight">
+                BIBLIO MENIU
+              </SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col gap-6 mt-10">
+              <div className="space-y-3">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase px-2 tracking-widest">
+                  Klasifikatoriai
+                </p>
+                <div className="flex flex-col gap-1">
+                  <Link
+                    href="/authors"
+                    className={cn(
+                      "flex items-center gap-3 p-2 rounded-md transition-colors",
+                      pathname === "/authors"
+                        ? "bg-orange-50 text-orange-600 font-bold"
+                        : "text-black hover:bg-accent"
+                    )}
+                  >
+                    <Users className="h-5 w-5 text-orange-600" /> Autoriai
+                  </Link>
+                  <Link
+                    href="/leidyklos"
+                    className={cn(
+                      "flex items-center gap-3 p-2 rounded-md transition-colors",
+                      pathname === "/leidyklos"
+                        ? "bg-orange-50 text-orange-600 font-bold"
+                        : "text-black hover:bg-accent"
+                    )}
+                  >
+                    <Building2 className="h-5 w-5 text-orange-600" /> Leidyklos
+                  </Link>
+                </div>
+              </div>
+              <div className="space-y-1 border-t pt-6">
+                <Link
+                  href="/knygos"
+                  className={cn(
+                    "flex items-center gap-3 p-2 rounded-md transition-colors",
+                    pathname === "/knygos"
+                      ? "bg-orange-50 text-orange-600 font-bold"
+                      : "text-black hover:bg-accent"
+                  )}
+                >
+                  <Book className="h-5 w-5 text-orange-600" /> Knygos
+                </Link>
+                <Link
+                  href="/abonentai"
+                  className={cn(
+                    "flex items-center gap-3 p-2 rounded-md transition-colors",
+                    pathname === "/abonentai"
+                      ? "bg-orange-50 text-orange-600 font-bold"
+                      : "text-black hover:bg-accent"
+                  )}
+                >
+                  <UserCog className="h-5 w-5 text-orange-600" /> Abonentai
+                </Link>
+                <Link
+                  href="/rezervacijos"
+                  className={cn(
+                    "flex items-center gap-3 p-2 rounded-md transition-colors",
+                    pathname === "/rezervacijos"
+                      ? "bg-orange-50 text-orange-600 font-bold"
+                      : "text-black hover:bg-accent"
+                  )}
+                >
+                  <CalendarCheck className="h-5 w-5 text-orange-600" />{" "}
+                  Rezervacijos
+                </Link>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
-    </nav>
+    </div>
   )
 }

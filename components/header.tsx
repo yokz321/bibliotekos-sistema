@@ -1,18 +1,29 @@
 import { AuthNav } from "./auth-nav"
 import { Nav } from "./nav"
-import { INav } from "@/types/nav-t"
+import Link from "next/link"
+import { Library } from "lucide-react"
 
-const menu: INav[] = [
-  { title: "Knygos", slug: "knygos" },
-  { title: "Abonentai", slug: "abonentai" },
-  { title: "Rezervacijos", slug: "rezervacijos" },
-]
-
-export async function Header() {
+export function Header() {
   return (
-    <header className="border-b border-gray-400 p-1 mb-5 grid grid-flow-col gap-x-4 justify-between items-center">
-      <Nav menu={menu} />
-      <AuthNav />
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto max-w-screen-xl flex h-16 items-center justify-between px-4">
+        <div className="flex items-center gap-8">
+          {/* Logotipas */}
+          <Link href="/" className="flex items-center space-x-2 group">
+            <Library className="h-6 w-6 text-orange-600 transition-transform group-hover:scale-110" />
+            <span className="font-bold text-xl tracking-tight text-orange-600 uppercase">
+              Biblio
+            </span>
+          </Link>
+
+          {}
+          <Nav />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <AuthNav />
+        </div>
+      </div>
     </header>
   )
 }
