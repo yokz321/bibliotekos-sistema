@@ -8,7 +8,7 @@ if (!URI) throw new Error("MONGO_URI nerasta .env faile!")
 let cached = (global as any).mongoose
 if (!cached) cached = (global as any).mongoose = { conn: null, promise: null }
 
-export async function mongooseConnect() {
+export async function connectMongoose() {
   if (cached.conn) return cached.conn
   if (!cached.promise) {
     cached.promise = mongoose.connect(URI, { dbName: DB_NAME }).then((m) => m)

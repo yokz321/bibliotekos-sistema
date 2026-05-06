@@ -1,16 +1,36 @@
-import mongoose, { Schema, model, models } from "mongoose"
+import { Model, model, models, Schema, Types } from "mongoose"
+import { WithStringId } from "./model-t"
 
-const PublisherSchema = new Schema(
+export interface IPublisher {
+  id?: string
+  name: string
+  location?: string
+}
+
+type IReturnType = WithStringId<IPublisher>
+
+const PublisherSchema = new Schema<IPublisher>(
   {
-    name: {
-      type: String,
-      required: [true, "Pavadinimas privalomas"],
-      unique: true,
-      trim: true,
-    },
+    name: { type: String, required: true },
     location: { type: String },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    collection: "publishers",
+    strict: true,
+    toJSON: {
+      versionKey: false,
+      virtuals: true,
+      transform: (
+        _doc: unknown,
+        ret: IPublisher & { _id: Types.ObjectId }
+      ): IReturnType => {
+        const { _id, ...rest } = ret
+        return { ...rest, id: _id.toString() }
+      },
+    },
+  }
 )
 
-export const Publisher = models.Publisher || model("Publisher", PublisherSchema)
+export const Publisher: Model<IPublisher> =
+  models.Publisher || model("Publisher", PublisherSchema)

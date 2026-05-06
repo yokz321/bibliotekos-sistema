@@ -1,46 +1,51 @@
-import mongoose, { Schema, model, models } from "mongoose"
+import mongoose, { Schema, model, models, Types, Model } from "mongoose"
+import { WithStringId } from "./model-t"
 
-const BookSchema = new Schema(
+export interface IBook {
+  id?: string
+  title: string
+  author: any
+  publisher: any
+  year: number
+  isbn?: string
+  summary?: string
+  pages?: number
+  quantity?: number
+}
+
+type IReturnType = WithStringId<IBook>
+
+const BookSchema = new Schema<IBook>(
   {
-    title: {
-      type: String,
-      required: [true, "Knygos pavadinimas privalomas"],
-      trim: true,
-    },
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: "Author", // Turi sutapti su pavadinimu models/Author.ts faile
-      required: [true, "Autorius yra privalomas"],
-    },
+    title: { type: String, required: true },
+    author: { type: Schema.Types.ObjectId, ref: "Author", required: true },
     publisher: {
       type: Schema.Types.ObjectId,
-      ref: "Publisher", // Turi sutapti su pavadinimu models/Publisher.ts faile
-      required: [true, "Leidykla yra privaloma"],
+      ref: "Publisher",
+      required: true,
     },
-    year: {
-      type: Number,
-      required: [true, "Leidybos metai privalomi"],
-    },
-    isbn: {
-      type: String,
-      unique: true,
-      sparse: true, // Leidžia turėti tuščius ISBN, bet jei įvestas - turi būti unikalus
-    },
-    summary: {
-      type: String,
-    },
-    pages: {
-      type: Number,
-    },
-    quantity: {
-      type: Number,
-      default: 1,
-    },
+    year: { type: Number, required: true },
+    isbn: { type: String, unique: true, sparse: true },
+    summary: { type: String },
+    pages: { type: Number },
+    quantity: { type: Number, default: 1 },
   },
   {
     timestamps: true,
+    collection: "books",
+    strict: true,
+    toJSON: {
+      versionKey: false,
+      virtuals: true,
+      transform: (
+        _doc: unknown,
+        ret: IBook & { _id: Types.ObjectId }
+      ): IReturnType => {
+        const { _id, ...rest } = ret
+        return { ...rest, id: _id.toString() }
+      },
+    },
   }
 )
 
-// Eksportuojame modelį. Jei jis jau egzistuoja (models.Book), naudojame esamą.
-export const Book = models.Book || model("Book", BookSchema)
+export const Book: Model<IBook> = models.Book || model("Book", BookSchema)
