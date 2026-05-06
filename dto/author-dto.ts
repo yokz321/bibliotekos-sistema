@@ -3,11 +3,13 @@ import { z } from "zod"
 export const authorSchema = z.object({
   name: z
     .string()
-    .min(3, "Vardas turi būti bent 3 simbolių.")
-    .max(50, "Vardas per ilgas."),
+    .trim()
+    .min(3, "Vardas per trumpas, min 3 simboliai")
+    .max(50, "Vardas per ilgas, max 50 simbolių"),
   biography: z
     .string()
-    .max(500, "Biografija negali viršyti 500 simbolių.")
+    .trim()
+    .max(1000, "Biografija negali viršyti 1000 simbolių")
     .optional()
     .or(z.literal("")),
 })
