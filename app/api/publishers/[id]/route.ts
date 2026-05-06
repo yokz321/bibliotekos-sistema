@@ -1,44 +1,25 @@
-import { Publisher } from "@/models/publisher-model"
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { NextResponse } from "next/server"
+import { PublisherService } from "@/services/publisher-service"
+import { type NextRequest } from "next/server"
 
 export async function PUT(
-  req: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await mongooseConnect()
-    const { id } = await params
-    const { name, location } = await req.json()
+  const { id } = await params
+  const res = await request.json()
+  res.id = id
 
-    const updatedPublisher = await Publisher.findByIdAndUpdate(
-      id,
-      { name, location },
-      { returnDocument: "after" }
-    )
-
-    return NextResponse.json(updatedPublisher)
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Klaida atnaujinant leidyklą" },
-      { status: 500 }
-    )
-  }
+  const service = new PublisherService()
+  await service.update(res)
+  return Response.json({ message: "Update successful" })
 }
 
 export async function DELETE(
-  req: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await mongooseConnect()
-    const { id } = await params
-    await Publisher.findByIdAndDelete(id)
-    return NextResponse.json({ message: "Leidykla pašalinta" })
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Klaida šalinant leidyklą" },
-      { status: 500 }
-    )
-  }
+  const { id } = await params
+  const service = new PublisherService()
+  await service.delete(id)
+  return Response.json({ message: "Delete successful" })
 }

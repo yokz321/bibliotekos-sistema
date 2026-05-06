@@ -1,15 +1,10 @@
+import { PublisherService } from "@/services/publisher-service"
 import { PublishersClient } from "@/components/publishers/publishers-client"
 
-// Serverinis duomenų gavimas (veikia be "use client")
-async function getPublishers() {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-  const res = await fetch(`${baseUrl}/api/publishers`, { cache: "no-store" })
-  if (!res.ok) return []
-  return res.json()
-}
-
-export default async function LeidyklosPage() {
-  const initialPublishers = await getPublishers()
+export default async function PublishersPage() {
+  const service = new PublisherService()
+  const publishers = await service.getAll()
+  const safePublishers = JSON.parse(JSON.stringify(publishers))
 
   return (
     <div className="space-y-6">
@@ -21,8 +16,7 @@ export default async function LeidyklosPage() {
           </p>
         </div>
       </div>
-      {/* Visa interakcija perduodama klientiniam komponentui */}
-      <PublishersClient initialData={initialPublishers} />
+      <PublishersClient initialData={safePublishers} />
     </div>
   )
 }

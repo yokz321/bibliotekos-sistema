@@ -1,56 +1,37 @@
 "use server"
 
-import { authorSchema, AuthorDTO } from "@/dto/author-dto"
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { Author } from "@/models/author-model"
+import { AuthorService } from "@/services/author-service"
+import { authorSchema } from "@/dto/author-dto"
 import { revalidatePath } from "next/cache"
 
-// ✅ Sukūrimas / Atnaujinimas
-export async function saveAuthor(
-  data: AuthorDTO,
-  id?: string
-): Promise<{ success: boolean; error?: string }> {
-  const parsed = authorSchema.safeParse(data)
-  if (!parsed.success) {
-    return { success: false, error: "Validacijos klaida" }
+export async function saveAuthorAction(data: any, id?: string) {
+  // Validacija su Zod
+  const parse = authorSchema.safeParse(data)
+  if (!parse.success) {
+    return { success: false, error: "Blogai užpildyti laukeliai!" }
   }
 
+  const authorService = new AuthorService()
   try {
-    await mongooseConnect()
     if (id) {
-      await Author.findByIdAndUpdate(id, parsed.data)
+      await authorService.update({ ...parse.data, id })
     } else {
-      await Author.create(parsed.data)
+      await authorService.save(parse.data)
     }
-    revalidatePath("/authors") // ⚠️ Pakeisk į savo maršrutą, pvz. "/autoriai"
+    revalidatePath("/authors")
     return { success: true }
-  } catch (e: any) {
-    return { success: false, error: e.message || "Serverio klaida" }
+  } catch (error: any) {
+    return { success: false, error: error.message || "Serverio klaida" }
   }
 }
 
-// ✅ Šalinimas
-export async function deleteAuthor(
-  id: string
-): Promise<{ success: boolean; error?: string }> {
+export async function deleteAuthorAction(id: string) {
+  const authorService = new AuthorService()
   try {
-    await mongooseConnect()
-    await Author.findByIdAndDelete(id)
-    revalidatePath("/authors") // ⚠️ Pakeisk į savo maršrutą
+    await authorService.delete(id)
+    revalidatePath("/authors")
     return { success: true }
-  } catch (e: any) {
-    return { success: false, error: e.message || "Klaida šalinant autorių" }
+  } catch (error: any) {
+    return { success: false, error: "Nepavyko pašalinti autoriaus" }
   }
-}
-
-// ✅ Duomenų gavimas Server Component'ui
-export async function getAuthors() {
-  await mongooseConnect()
-  const authors = await Author.find().sort({ createdAt: -1 }).lean()
-  // Serializacija būtina, kad Server Component galėtų perduoti duomenis klientui
-  return JSON.parse(JSON.stringify(authors)) as Array<{
-    _id: string
-    name: string
-    biography?: string
-  }>
 }

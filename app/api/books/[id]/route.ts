@@ -1,44 +1,25 @@
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { Book } from "@/models/book-model"
-import { NextResponse } from "next/server"
+import { BookService } from "@/services/book-service"
+import { type NextRequest } from "next/server"
 
-// Next.js 15 reikalauja, kad params būtų Promise
 export async function PUT(
-  req: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await mongooseConnect()
-    const { id } = await params
-    const body = await req.json()
+  const { id } = await params
+  const res = await request.json()
+  res.id = id // Svarbu: priskiriame ID objektui
 
-    // Naudojame returnDocument: 'after', kad gautume jau pakeistus duomenis
-    const updatedBook = await Book.findByIdAndUpdate(id, body, {
-      returnDocument: "after",
-    })
-
-    return NextResponse.json(updatedBook)
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Klaida atnaujinant knygą" },
-      { status: 500 }
-    )
-  }
+  const service = new BookService()
+  await service.update(res)
+  return Response.json({ message: "Knyga sėkmingai atnaujinta" })
 }
 
 export async function DELETE(
-  req: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await mongooseConnect()
-    const { id } = await params
-    await Book.findByIdAndDelete(id)
-    return NextResponse.json({ message: "Knyga pašalinta" })
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Klaida šalinant knygą" },
-      { status: 500 }
-    )
-  }
+  const { id } = await params
+  const service = new BookService()
+  await service.delete(id)
+  return Response.json({ message: "Knyga sėkmingai pašalinta" })
 }

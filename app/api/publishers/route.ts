@@ -1,33 +1,15 @@
-import { Publisher } from "@/models/publisher-model"
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { NextResponse } from "next/server"
+import { PublisherService } from "@/services/publisher-service"
+import { type NextRequest } from "next/server"
 
 export async function GET() {
-  await mongooseConnect()
-  const publishers = await Publisher.find().sort({ createdAt: -1 })
-  return NextResponse.json(publishers)
+  const service = new PublisherService()
+  const data = await service.getAll()
+  return Response.json(data)
 }
 
-export async function POST(req: Request) {
-  try {
-    await mongooseConnect()
-    const { name, location } = await req.json()
-
-    // Dubliavimo patikra
-    const existing = await Publisher.findOne({
-      name: { $regex: new RegExp(`^${name}$`, "i") },
-    })
-
-    if (existing) {
-      return NextResponse.json(
-        { error: "Tokia leidykla jau egzistuoja!" },
-        { status: 400 }
-      )
-    }
-
-    const newPublisher = await Publisher.create({ name, location })
-    return NextResponse.json(newPublisher)
-  } catch (error) {
-    return NextResponse.json({ error: "Serverio klaida" }, { status: 500 })
-  }
+export async function POST(request: NextRequest) {
+  const res = await request.json()
+  const service = new PublisherService()
+  await service.save(res)
+  return Response.json({ message: "Data saved" })
 }

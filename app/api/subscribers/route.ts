@@ -1,37 +1,15 @@
-export const dynamic = "force-dynamic"
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { Subscriber } from "@/models/subscriber-model"
-import { NextResponse } from "next/server"
+import { SubscriberService } from "@/services/subscriber-service"
+import { type NextRequest } from "next/server"
 
 export async function GET() {
-  try {
-    await mongooseConnect()
-    const data = await Subscriber.find().sort({ createdAt: -1 })
-    return NextResponse.json(data)
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Klaida gaunant abonentus" },
-      { status: 500 }
-    )
-  }
+  const service = new SubscriberService()
+  const data = await service.getAll()
+  return Response.json(data)
 }
 
-export async function POST(req: Request) {
-  try {
-    await mongooseConnect()
-    const body = await req.json()
-    const existing = await Subscriber.findOne({
-      $or: [{ email: body.email }, { ticketNumber: body.ticketNumber }],
-    })
-    if (existing)
-      return NextResponse.json(
-        { error: "Abonentas su tokiais duomenimis jau yra!" },
-        { status: 400 }
-      )
-
-    const newItem = await Subscriber.create(body)
-    return NextResponse.json(newItem)
-  } catch (error) {
-    return NextResponse.json({ error: "Serverio klaida" }, { status: 500 })
-  }
+export async function POST(request: NextRequest) {
+  const res = await request.json()
+  const service = new SubscriberService()
+  await service.save(res)
+  return Response.json({ message: "Data saved" })
 }

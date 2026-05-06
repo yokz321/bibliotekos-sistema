@@ -1,46 +1,25 @@
-import { Author } from "@/models/author-model"
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { NextResponse } from "next/server"
+import { AuthorService } from "@/services/author-service"
+import { type NextRequest } from "next/server"
 
-// Next.js 15 reikalauja, kad params būtų Promise
 export async function PUT(
-  req: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await mongooseConnect()
+  const { id } = await params
+  const res = await request.json()
+  res.id = id
 
-    // BŪTINA išpakuoti params su await
-    const { id } = await params
-
-    const { name, biography } = await req.json()
-
-    const updated = await Author.findByIdAndUpdate(
-      id,
-      { name, biography },
-      { returnDocument: "after" }
-    )
-
-    return NextResponse.json(updated)
-  } catch (error) {
-    return NextResponse.json({ error: "Klaida atnaujinant" }, { status: 500 })
-  }
+  const service = new AuthorService()
+  await service.update(res)
+  return Response.json({ message: "Update successful" })
 }
 
 export async function DELETE(
-  req: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await mongooseConnect()
-
-    // Ta pati taisyklė: išpakuojame params
-    const { id } = await params
-
-    await Author.findByIdAndDelete(id)
-
-    return NextResponse.json({ message: "Pašalinta" })
-  } catch (error) {
-    return NextResponse.json({ error: "Klaida šalinant" }, { status: 500 })
-  }
+  const { id } = await params
+  const service = new AuthorService()
+  await service.delete(id)
+  return Response.json({ message: "Delete successful" })
 }

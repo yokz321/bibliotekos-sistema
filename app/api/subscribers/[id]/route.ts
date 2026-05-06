@@ -1,34 +1,25 @@
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { Subscriber } from "@/models/subscriber-model"
-import { NextResponse } from "next/server"
+import { SubscriberService } from "@/services/subscriber-service"
+import { type NextRequest } from "next/server"
 
 export async function PUT(
-  req: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await mongooseConnect()
-    const { id } = await params
-    const body = await req.json()
-    const updated = await Subscriber.findByIdAndUpdate(id, body, {
-      returnDocument: "after",
-    })
-    return NextResponse.json(updated)
-  } catch (error) {
-    return NextResponse.json({ error: "Klaida atnaujinant" }, { status: 500 })
-  }
+  const { id } = await params
+  const res = await request.json()
+  res.id = id
+
+  const service = new SubscriberService()
+  await service.update(res)
+  return Response.json({ message: "Update successful" })
 }
 
 export async function DELETE(
-  req: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await mongooseConnect()
-    const { id } = await params
-    await Subscriber.findByIdAndDelete(id)
-    return NextResponse.json({ message: "Pašalinta" })
-  } catch (error) {
-    return NextResponse.json({ error: "Klaida šalinant" }, { status: 500 })
-  }
+  const { id } = await params
+  const service = new SubscriberService()
+  await service.delete(id)
+  return Response.json({ message: "Delete successful" })
 }

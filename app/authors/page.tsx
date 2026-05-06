@@ -1,8 +1,10 @@
-import { getAuthors } from "@/actions/author-actions"
+import { AuthorService } from "@/services/author-service"
 import { AuthorListWrapper } from "@/components/authors/author-list-wrapper"
 
 export default async function AuthorsPage() {
-  const authors = await getAuthors()
+  const service = new AuthorService()
+  const authors = await service.getAll()
+  const safeAuthors = JSON.parse(JSON.stringify(authors))
 
   return (
     <div className="space-y-6">
@@ -10,7 +12,7 @@ export default async function AuthorsPage() {
         <h1 className="text-3xl font-bold tracking-tight">Autoriai</h1>
       </div>
       <div className="rounded-md border bg-card shadow-sm overflow-hidden">
-        <AuthorListWrapper initialData={authors} />
+        <AuthorListWrapper initialData={safeAuthors} />
       </div>
     </div>
   )

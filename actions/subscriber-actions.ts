@@ -1,49 +1,30 @@
 "use server"
 
+import { SubscriberService } from "@/services/subscriber-service"
 import { revalidatePath } from "next/cache"
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { Subscriber } from "@/models/subscriber-model"
-import { z } from "zod"
-import type { Subscriber as SubscriberType } from "@/types/subscriber-t"
 
-const subscriberSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email(),
-  ticketNumber: z.string().min(1),
-  phone: z.string().optional(),
-})
-
-export async function getSubscribers(): Promise<SubscriberType[]> {
-  await mongooseConnect()
-  const data = await Subscriber.find().sort({ createdAt: -1 }).lean()
-  return JSON.parse(JSON.stringify(data))
-}
-
-export async function saveSubscriber(
-  data: z.infer<typeof subscriberSchema>,
-  id?: string
-) {
-  const parsed = subscriberSchema.safeParse(data)
-  if (!parsed.success) return { success: false, error: "Validacijos klaida" }
+export async function saveSubscriberAction(data: any, id?: string) {
+  const service = new SubscriberService()
   try {
-    await mongooseConnect()
-    if (id) await Subscriber.findByIdAndUpdate(id, parsed.data)
-    else await Subscriber.create(parsed.data)
-    revalidatePath("/abonentai")
+    if (id) {
+      await service.update({ ...data, id })
+    } else {
+      await service.save(data)
+    }
+    revalidatePath("/subscribers")
     return { success: true }
-  } catch (e: any) {
-    return { success: false, error: e.message || "Serverio klaida" }
+  } catch (error: any) {
+    return { success: false, error: "Klaida išsaugant abonentą" }
   }
 }
 
-export async function deleteSubscriber(id: string) {
+export async function deleteSubscriberAction(id: string) {
+  const service = new SubscriberService()
   try {
-    await mongooseConnect()
-    await Subscriber.findByIdAndDelete(id)
-    revalidatePath("/abonentai")
+    await service.delete(id)
+    revalidatePath("/subscribers")
     return { success: true }
-  } catch (e: any) {
-    return { success: false, error: e.message || "Klaida šalinant" }
+  } catch (error: any) {
+    return { success: false, error: "Klaida šalinant abonentą" }
   }
 }

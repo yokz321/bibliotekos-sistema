@@ -1,21 +1,21 @@
-import { mongooseConnect } from "@/utils/mongoose-client"
-import { Book } from "@/models/book-model"
-import { Author } from "@/models/author-model"
-import { Publisher } from "@/models/publisher-model"
+import { BookService } from "@/services/book-service"
+import { AuthorService } from "@/services/author-service"
+import { PublisherService } from "@/services/publisher-service"
 import { BooksClient } from "@/components/books/books-client"
 
 async function getInitialData() {
-  await mongooseConnect()
+  const bookService = new BookService()
+  const authorService = new AuthorService()
+  const publisherService = new PublisherService()
+
+  // Gauname duomenis per servisus
   const [books, authors, publishers] = await Promise.all([
-    Book.find()
-      .populate("author", "name")
-      .populate("publisher", "name")
-      .sort({ createdAt: -1 })
-      .lean(),
-    Author.find().lean(),
-    Publisher.find().lean(),
+    bookService.getAll(),
+    authorService.getAll(),
+    publisherService.getAll(),
   ])
-  // Serializacija būtina Server Components
+
+  // Serializacija (JSON.parse/stringify) reikalinga, kad išvengtume Mongoose objektų klaidų
   return {
     books: JSON.parse(JSON.stringify(books)),
     authors: JSON.parse(JSON.stringify(authors)),
@@ -23,8 +23,9 @@ async function getInitialData() {
   }
 }
 
-export default async function KnygosPage() {
+export default async function BooksPage() {
   const { books, authors, publishers } = await getInitialData()
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
