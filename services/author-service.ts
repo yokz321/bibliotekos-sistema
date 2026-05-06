@@ -11,6 +11,15 @@ export class AuthorService {
 
   async save(author: IAuthor): Promise<void> {
     await connectMongoose()
+
+    const existing = await Author.findOne({
+      name: { $regex: new RegExp(`^${author.name}$`, "i") },
+    })
+
+    if (existing) {
+      throw new Error("Toks autorius jau egzistuoja!")
+    }
+
     await Author.create(author)
   }
 
