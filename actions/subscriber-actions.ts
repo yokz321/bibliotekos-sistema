@@ -1,8 +1,8 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { mongooseConnect } from "@/lib/mongoose"
-import { Subscriber } from "@/models/subscriber"
+import { mongooseConnect } from "@/utils/mongoose-client"
+import { Subscriber } from "@/models/subscriber-model"
 import { z } from "zod"
 import type { Subscriber as SubscriberType } from "@/types/subscriber-t"
 

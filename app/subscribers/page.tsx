@@ -1,5 +1,5 @@
 import { getSubscribers } from "@/actions/subscriber-actions"
-import { SubscribersClient } from "@/components/subscribers/subscribersClient"
+import { SubscribersClient } from "@/components/subscribers/subscribers-client"
 
 export default async function AbonentaiPage() {
   const initialData = await getSubscribers()

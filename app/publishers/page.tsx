@@ -1,4 +1,4 @@
-import { PublishersClient } from "@/components/publishers/publishersClient"
+import { PublishersClient } from "@/components/publishers/publishers-client"
 
 // Serverinis duomenų gavimas (veikia be "use client")
 async function getPublishers() {

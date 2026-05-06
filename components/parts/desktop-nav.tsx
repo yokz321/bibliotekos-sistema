@@ -3,7 +3,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutGrid } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { CLASSIFIER_ITEMS, MAIN_NAV_ITEMS } from "@/lib/constants"
+import { CLASSIFIER_ITEMS, MAIN_NAV_ITEMS } from "@/constants/app-constants"
 import {
   NavigationMenu,
   NavigationMenuContent,

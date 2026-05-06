@@ -21,7 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { createBook, updateBook } from "@/actions/book"
+import { createBook, updateBook } from "@/actions/book-actions"
 import type { Book, Author, Publisher } from "@/types/book-t"
 
 export function BookFormDialog({

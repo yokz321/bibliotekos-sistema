@@ -1,8 +1,8 @@
 "use server"
 
 import { authorSchema, AuthorDTO } from "@/dto/author-dto"
-import { mongooseConnect } from "@/lib/mongoose"
-import { Author } from "@/models/author"
+import { mongooseConnect } from "@/utils/mongoose-client"
+import { Author } from "@/models/author-model"
 import { revalidatePath } from "next/cache"
 
 // ✅ Sukūrimas / Atnaujinimas

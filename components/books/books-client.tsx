@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
-import { BooksTable } from "./booksTable"
-import { BookFormDialog } from "./bookFormDialog"
-import { deleteBook } from "@/actions/book"
+import { BooksTable } from "./books-table"
+import { BookFormDialog } from "./book-form-dialog"
+import { deleteBook } from "@/actions/book-actions"
 import type { Book, Author, Publisher } from "@/types/book-t"
 
 export function BooksClient({

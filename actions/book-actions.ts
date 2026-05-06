@@ -1,8 +1,8 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { mongooseConnect } from "@/lib/mongoose"
-import { Book } from "@/models/book"
+import { mongooseConnect } from "@/utils/mongoose-client"
+import { Book } from "@/models/book-model"
 import { z } from "zod"
 
 const BookSchema = z.object({

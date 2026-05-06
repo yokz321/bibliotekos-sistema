@@ -1,5 +1,5 @@
-import { Author } from "@/models/author"
-import { mongooseConnect } from "@/lib/mongoose"
+import { Author } from "@/models/author-model"
+import { mongooseConnect } from "@/utils/mongoose-client"
 import { NextResponse } from "next/server"
 
 export async function GET() {

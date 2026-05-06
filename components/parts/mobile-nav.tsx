@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { CLASSIFIER_ITEMS, MAIN_NAV_ITEMS } from "@/lib/constants"
+import { CLASSIFIER_ITEMS, MAIN_NAV_ITEMS } from "@/constants/app-constants"
 import {
   Sheet,
   SheetContent,

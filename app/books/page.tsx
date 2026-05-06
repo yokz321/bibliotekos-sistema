@@ -1,8 +1,8 @@
-import { mongooseConnect } from "@/lib/mongoose"
-import { Book } from "@/models/book"
-import { Author } from "@/models/author"
-import { Publisher } from "@/models/publisher"
-import { BooksClient } from "@/components/books/booksClient"
+import { mongooseConnect } from "@/utils/mongoose-client"
+import { Book } from "@/models/book-model"
+import { Author } from "@/models/author-model"
+import { Publisher } from "@/models/publisher-model"
+import { BooksClient } from "@/components/books/books-client"
 
 async function getInitialData() {
   await mongooseConnect()

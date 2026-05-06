@@ -1,5 +1,5 @@
-import { mongooseConnect } from "@/lib/mongoose"
-import { Book } from "@/models/book"
+import { mongooseConnect } from "@/utils/mongoose-client"
+import { Book } from "@/models/book-model"
 import { NextResponse } from "next/server"
 
 // Next.js 15 reikalauja, kad params būtų Promise

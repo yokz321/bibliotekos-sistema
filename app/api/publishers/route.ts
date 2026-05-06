@@ -1,5 +1,5 @@
-import { Publisher } from "@/models/publisher"
-import { mongooseConnect } from "@/lib/mongoose"
+import { Publisher } from "@/models/publisher-model"
+import { mongooseConnect } from "@/utils/mongoose-client"
 import { NextResponse } from "next/server"
 
 export async function GET() {

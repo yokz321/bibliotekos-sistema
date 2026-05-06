@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
-import { PublishersTable } from "./publishersTable"
-import { PublisherFormDialog } from "./publisherFormDialog"
+import { PublishersTable } from "./publishers-table"
+import { PublisherFormDialog } from "./publisher-form-dialog"
 import type { Publisher } from "@/types/publisher-t"
 
 export function PublishersClient({
