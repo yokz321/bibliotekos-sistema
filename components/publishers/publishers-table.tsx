@@ -10,12 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { Publisher } from "@/types/publisher-t"
+import type { IPublisher } from "@/types/publisher-t"
 
 interface Props {
-  publishers: Publisher[]
+  publishers: IPublisher[]
   loading: boolean
-  onEdit: (pub: Publisher) => void
+  onEdit: (pub: IPublisher) => void
   onDelete: (id: string) => void
 }
 
@@ -55,7 +55,7 @@ export function PublishersTable({
             </TableRow>
           ) : (
             publishers.map((pub) => (
-              <TableRow key={pub._id}>
+              <TableRow key={pub.id}>
                 <TableCell className="font-medium flex items-center gap-2">
                   <Building2 className="h-4 w-4 text-muted-foreground" />
                   {pub.name}
@@ -74,7 +74,7 @@ export function PublishersTable({
                     variant="ghost"
                     size="icon"
                     className="text-destructive hover:bg-red-50"
-                    onClick={() => onDelete(pub._id)}
+                    onClick={() => onDelete(pub.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

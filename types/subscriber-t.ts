@@ -1,5 +1,5 @@
-export interface Subscriber {
-  _id: string
+export interface ISubscriber {
+  id: string
   firstName: string
   lastName: string
   email: string

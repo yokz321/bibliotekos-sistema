@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2, UserCircle2 } from "lucide-react"
-import { deleteAuthor } from "@/actions/author-actions"
+import { deleteAuthorAction } from "@/actions/author-actions"
 
 interface Author {
   _id: string
@@ -33,7 +33,7 @@ export function AuthorList({ items, onEdit }: Props) {
   const handleDelete = async (id: string) => {
     if (!confirm("Ar tikrai norite pašalinti šį autorių?")) return
     setDeletingId(id)
-    const res = await deleteAuthor(id)
+    const res = await deleteAuthorAction(id)
     if (res.success) {
       toast.success("Autorius pašalintas")
       router.refresh() // Sinchronizuoja UI su serveriu po revalidatePath

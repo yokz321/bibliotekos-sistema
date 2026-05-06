@@ -14,12 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import type { Publisher } from "@/types/publisher-t"
+import type { IPublisher } from "@/types/publisher-t"
 
 interface Props {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  editingPublisher: Publisher | null
+  editingPublisher: IPublisher | null
   onSuccess: () => void
 }
 
@@ -49,7 +49,7 @@ export function PublisherFormDialog({
     setIsSubmitting(true)
     const method = editingPublisher ? "PUT" : "POST"
     const url = editingPublisher
-      ? `/api/publishers/${editingPublisher._id}`
+      ? `/api/publishers/${editingPublisher.id}`
       : "/api/publishers"
 
     try {

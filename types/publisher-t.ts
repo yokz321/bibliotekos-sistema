@@ -1,5 +1,5 @@
-export interface Publisher {
-  _id: string
+export interface IPublisher {
+  id: string
   name: string
   location?: string
 }

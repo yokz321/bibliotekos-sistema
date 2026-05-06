@@ -4,28 +4,28 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { BooksTable } from "./books-table"
 import { BookFormDialog } from "./book-form-dialog"
-import { deleteBook } from "@/actions/book-actions"
-import type { Book, Author, Publisher } from "@/types/book-t"
+import { deleteBookAction } from "@/actions/book-actions"
+import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
 
 export function BooksClient({
   initialBooks,
   initialAuthors,
   initialPublishers,
 }: {
-  initialBooks: Book[]
-  initialAuthors: Author[]
-  initialPublishers: Publisher[]
+  initialBooks: IBook[]
+  initialAuthors: IAuthor[]
+  initialPublishers: IPublisher[]
 }) {
-  const [books, setBooks] = useState<Book[]>(initialBooks)
+  const [books, setBooks] = useState<IBook[]>(initialBooks)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingBook, setEditingBook] = useState<Book | null>(null)
+  const [editingBook, setEditingBook] = useState<IBook | null>(null)
 
   const handleDelete = async (id: string) => {
     if (!confirm("Ar tikrai norite pašalinti šią knygą?")) return
-    const res = await deleteBook(id)
+    const res = await deleteBookAction(id)
     if (res.success) {
       toast.success("Knyga pašalinta")
-      setBooks((prev) => prev.filter((b) => b._id !== id))
+      setBooks((prev) => prev.filter((b) => b.id !== id))
     } else toast.error(res.error as string)
   }
 

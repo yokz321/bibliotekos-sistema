@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { saveAuthor } from "@/actions/author-actions"
+import { saveAuthorAction } from "@/actions/author-actions"
 import { toast } from "sonner"
 
 interface AuthorFormProps {
@@ -29,7 +29,7 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
   })
 
   async function onSubmit(values: AuthorDTO) {
-    const res = await saveAuthor(values, id)
+    const res = await saveAuthorAction(values, id)
     if (res.success) {
       toast.success("Autorius išsaugotas!")
       onComplete()

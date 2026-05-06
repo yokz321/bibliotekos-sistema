@@ -4,17 +4,17 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { PublishersTable } from "./publishers-table"
 import { PublisherFormDialog } from "./publisher-form-dialog"
-import type { Publisher } from "@/types/publisher-t"
+import type { IPublisher } from "@/types/publisher-t"
 
 export function PublishersClient({
   initialData,
 }: {
-  initialData: Publisher[]
+  initialData: IPublisher[]
 }) {
-  const [publishers, setPublishers] = useState<Publisher[]>(initialData)
+  const [publishers, setPublishers] = useState<IPublisher[]>(initialData)
   const [loading, setLoading] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingPublisher, setEditingPublisher] = useState<Publisher | null>(
+  const [editingPublisher, setEditingPublisher] = useState<IPublisher | null>(
     null
   )
 
@@ -43,7 +43,7 @@ export function PublishersClient({
     }
   }
 
-  const openEdit = (pub: Publisher) => {
+  const openEdit = (pub: IPublisher) => {
     setEditingPublisher(pub)
     setIsDialogOpen(true)
   }

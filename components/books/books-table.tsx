@@ -11,11 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { Book } from "@/types/book-t"
+import type { IBook } from "@/types/book-t"
 
 interface Props {
-  books: Book[]
-  onEdit: (book: Book) => void
+  books: IBook[]
+  onEdit: (book: IBook) => void
   onDelete: (id: string) => void
 }
 
@@ -45,7 +45,7 @@ export function BooksTable({ books, onEdit, onDelete }: Props) {
           ) : (
             books.map((book) => (
               <TableRow
-                key={book._id}
+                key={book.id}
                 className="hover:bg-muted/50 transition-colors"
               >
                 <TableCell className="font-semibold flex items-center gap-2">
@@ -69,7 +69,7 @@ export function BooksTable({ books, onEdit, onDelete }: Props) {
                       variant="ghost"
                       size="icon"
                       className="text-destructive h-8 w-8"
-                      onClick={() => onDelete(book._id)}
+                      onClick={() => onDelete(book.id)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

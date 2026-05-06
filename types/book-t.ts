@@ -1,18 +1,20 @@
-export interface Author {
-  _id: string
+export interface IAuthor {
+  id: string
   name: string
+  biography?: string
 }
 
-export interface Publisher {
-  _id: string
+export interface IPublisher {
+  id: string
   name: string
+  location?: string
 }
 
-export interface Book {
-  _id: string
+export interface IBook {
+  id: string
   title: string
-  author: Author
-  publisher: Publisher
+  author: IAuthor
+  publisher: IPublisher
   year: number
   isbn?: string
 }

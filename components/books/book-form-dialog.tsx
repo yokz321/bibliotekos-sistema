@@ -21,8 +21,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { createBook, updateBook } from "@/actions/book-actions"
-import type { Book, Author, Publisher } from "@/types/book-t"
+import { saveBookAction } from "@/actions/book-actions"
+import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
 
 export function BookFormDialog({
   isOpen,
@@ -34,9 +34,9 @@ export function BookFormDialog({
 }: {
   isOpen: boolean
   onOpenChange: (v: boolean) => void
-  editingBook: Book | null
-  authors: Author[]
-  publishers: Publisher[]
+  editingBook: IBook | null
+  authors: IAuthor[]
+  publishers: IPublisher[]
   onSuccess: () => void
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -49,17 +49,18 @@ export function BookFormDialog({
     e.preventDefault()
     setIsSubmitting(true)
     const formData = new FormData(e.currentTarget)
-    const res = editingBook
-      ? await updateBook(editingBook._id, formData)
-      : await createBook(formData)
+    const data = Object.fromEntries(formData.entries())
+    const res = await saveBookAction(data, editingBook?.id)
 
     if (res.success) {
       toast.success(editingBook ? "Knyga atnaujinta!" : "Knyga pridėta!")
       onSuccess()
-    } else
+    } else {
       toast.error(
-        typeof res.error === "string" ? res.error : "Patikrinkite laukus"
+        typeof res.error === "string" ? res.error : "Klaida išsaugant"
       )
+    }
+
     setIsSubmitting(false)
   }
 
@@ -95,7 +96,7 @@ export function BookFormDialog({
               <Label>Autorius</Label>
               <Select
                 name="author"
-                defaultValue={editingBook?.author?._id}
+                defaultValue={editingBook?.author?.id}
                 disabled={isSubmitting}
               >
                 <SelectTrigger>
@@ -103,7 +104,7 @@ export function BookFormDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {authors.map((a) => (
-                    <SelectItem key={a._id} value={a._id}>
+                    <SelectItem key={a.id} value={a.id}>
                       {a.name}
                     </SelectItem>
                   ))}
@@ -114,7 +115,7 @@ export function BookFormDialog({
               <Label>Leidykla</Label>
               <Select
                 name="publisher"
-                defaultValue={editingBook?.publisher?._id}
+                defaultValue={editingBook?.publisher?.id}
                 disabled={isSubmitting}
               >
                 <SelectTrigger>
@@ -122,7 +123,7 @@ export function BookFormDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {publishers.map((p) => (
-                    <SelectItem key={p._id} value={p._id}>
+                    <SelectItem key={p.id} value={p.id}>
                       {p.name}
                     </SelectItem>
                   ))}
