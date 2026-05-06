@@ -105,7 +105,7 @@ export function BookFormDialog({
                 <SelectContent>
                   {authors.map((a) => (
                     <SelectItem key={a.id} value={a.id}>
-                      {a.name}
+                      {a.firstName} {a.lastName} {}
                     </SelectItem>
                   ))}
                 </SelectContent>

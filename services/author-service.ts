@@ -5,21 +5,16 @@ import { Types } from "mongoose"
 export class AuthorService {
   async getAll(): Promise<IAuthor[]> {
     await connectMongoose()
-    const authors = await Author.find().sort({ createdAt: -1 })
-    return authors
+    return await Author.find().sort({ lastName: 1 })
   }
 
   async save(author: IAuthor): Promise<void> {
     await connectMongoose()
-
     const existing = await Author.findOne({
-      name: { $regex: new RegExp(`^${author.name}$`, "i") },
+      firstName: author.firstName,
+      lastName: author.lastName,
     })
-
-    if (existing) {
-      throw new Error("Toks autorius jau egzistuoja!")
-    }
-
+    if (existing) throw new Error("Toks autorius jau yra!")
     await Author.create(author)
   }
 

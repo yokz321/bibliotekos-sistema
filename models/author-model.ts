@@ -3,7 +3,8 @@ import { WithStringId } from "./model-t"
 
 export interface IAuthor {
   id?: string
-  name: string
+  firstName: string
+  lastName: string
   biography?: string
 }
 
@@ -11,18 +12,16 @@ type IReturnType = WithStringId<IAuthor>
 
 const AuthorSchema = new Schema<IAuthor>(
   {
-    name: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     biography: { type: String },
   },
   {
     timestamps: true,
     collection: "authors",
-    strict: true,
     toJSON: {
-      versionKey: false,
-      virtuals: true,
       transform: (
-        _doc: unknown,
+        _doc,
         ret: IAuthor & { _id: Types.ObjectId }
       ): IReturnType => {
         const { _id, ...rest } = ret

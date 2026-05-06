@@ -17,7 +17,8 @@ import { AuthorForm } from "./author-form"
 
 interface Author {
   id?: string
-  name: string
+  firstName: string
+  lastName: string
   biography?: string
 }
 
