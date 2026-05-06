@@ -8,18 +8,19 @@ export class BookService {
     return await Book.find()
       .populate("author")
       .populate("publisher")
-      .sort({ createdAt: -1 })
+      .sort({ title: 1 })
   }
 
-  async save(data: IBook): Promise<void> {
+  async save(book: IBook): Promise<void> {
     await connectMongoose()
-    await Book.create(data)
+    await Book.create(book)
   }
 
-  async update(id: string, data: IBook): Promise<void> {
+  async update(book: IBook): Promise<void> {
     await connectMongoose()
-    const objectId = new Types.ObjectId(id)
-    await Book.updateOne({ _id: objectId }, data)
+    const id = book.id ?? ""
+    delete book.id
+    await Book.updateOne({ _id: new Types.ObjectId(id) }, book)
   }
 
   async delete(id: string): Promise<void> {

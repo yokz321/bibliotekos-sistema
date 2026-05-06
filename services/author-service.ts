@@ -1,24 +1,28 @@
-import { Author } from "@/models/author-model"
-import { mongooseConnect } from "@/utils/mongoose-client"
+import { Author, IAuthor } from "@/models/author-model"
+import { connectMongoose } from "@/utils/mongoose-client"
+import { Types } from "mongoose"
 
-export const authorService = {
-  getAll: async () => {
-    await mongooseConnect()
-    return await Author.find().sort({ createdAt: -1 })
-  },
+export class AuthorService {
+  async getAll(): Promise<IAuthor[]> {
+    await connectMongoose()
+    const authors = await Author.find().sort({ createdAt: -1 })
+    return authors
+  }
 
-  create: async (data: any) => {
-    await mongooseConnect()
-    return await Author.create(data)
-  },
+  async save(author: IAuthor): Promise<void> {
+    await connectMongoose()
+    await Author.create(author)
+  }
 
-  update: async (id: string, data: any) => {
-    await mongooseConnect()
-    return await Author.findByIdAndUpdate(id, data, { returnDocument: "after" })
-  },
+  async update(author: IAuthor): Promise<void> {
+    await connectMongoose()
+    const id = author.id ?? ""
+    delete author.id
+    await Author.updateOne({ _id: new Types.ObjectId(id) }, author)
+  }
 
-  delete: async (id: string) => {
-    await mongooseConnect()
-    return await Author.findByIdAndDelete(id)
-  },
+  async delete(id: string): Promise<void> {
+    await connectMongoose()
+    await Author.deleteOne({ _id: new Types.ObjectId(id) })
+  }
 }
