@@ -1,11 +1,23 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { publisherSchema, PublisherDTO } from "@/dto/publisher-dto"
+import { savePublisherAction } from "@/actions/publisher-actions"
 import { toast } from "sonner"
 import { Plus } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import {
   Dialog,
   DialogContent,
@@ -14,7 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import type { IPublisher } from "@/types/publisher-t"
+import { IPublisher } from "@/types/publisher-t"
 
 interface Props {
   isOpen: boolean
@@ -29,49 +41,39 @@ export function PublisherFormDialog({
   editingPublisher,
   onSuccess,
 }: Props) {
-  const [name, setName] = useState("")
-  const [location, setLocation] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Sinchronizuojam formą su redaguojamu įrašu
+  const form = useForm<PublisherDTO>({
+    resolver: zodResolver(publisherSchema),
+    defaultValues: { name: "", location: "" },
+  })
+
   useEffect(() => {
-    if (editingPublisher) {
-      setName(editingPublisher.name)
-      setLocation(editingPublisher.location || "")
-    } else {
-      setName("")
-      setLocation("")
-    }
-  }, [editingPublisher, isOpen])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    const method = editingPublisher ? "PUT" : "POST"
-    const url = editingPublisher
-      ? `/api/publishers/${editingPublisher.id}`
-      : "/api/publishers"
-
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, location }),
+    if (editingPublisher && isOpen) {
+      form.reset({
+        name: editingPublisher.name,
+        location: editingPublisher.location || "",
       })
-      const data = await res.json()
-      if (res.ok) {
-        toast.success(
-          editingPublisher ? "Leidykla atnaujinta!" : "Leidykla pridėta!"
-        )
-        onSuccess()
-      } else {
-        toast.error(data.error || "Klaida išsaugant")
-      }
-    } catch {
-      toast.error("Tinklo klaida")
-    } finally {
-      setIsSubmitting(false)
+    } else if (isOpen) {
+      form.reset({ name: "", location: "" })
     }
+  }, [editingPublisher, isOpen, form])
+
+  const onSubmit = async (values: PublisherDTO) => {
+    setIsSubmitting(true)
+
+    const res = await savePublisherAction(values, editingPublisher?.id)
+
+    if (res.success) {
+      toast.success(
+        editingPublisher ? "Leidykla atnaujinta!" : "Leidykla pridėta!"
+      )
+      onSuccess()
+    } else {
+      toast.error(res.error)
+    }
+
+    setIsSubmitting(false)
   }
 
   return (
@@ -88,34 +90,57 @@ export function PublisherFormDialog({
           </DialogTitle>
           <DialogDescription>Įveskite leidyklos duomenis.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          <div className="grid gap-2">
-            <Label htmlFor="pub-name">Pavadinimas</Label>
-            <Input
-              id="pub-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="pub-loc">Miestas / Adresas</Label>
-            <Input
-              id="pub-loc"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
-          <Button
-            type="submit"
-            className="w-full bg-orange-600 hover:bg-orange-700"
-            disabled={isSubmitting}
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 pt-4"
           >
-            {isSubmitting ? "Saugoma..." : "Išsaugoti"}
-          </Button>
-        </form>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Pavadinimas</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Leidyklos pavadinimas"
+                      {...field}
+                      disabled={isSubmitting}
+                    />
+                  </FormControl>
+                  <FormMessage /> {}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Miestas / Adresas</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Miestas (nebūtina)"
+                      {...field}
+                      disabled={isSubmitting}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              className="w-full bg-orange-600 hover:bg-orange-700"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saugoma..." : "Išsaugoti"}
+            </Button>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )

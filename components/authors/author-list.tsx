@@ -16,7 +16,7 @@ import { Pencil, Trash2, UserCircle2 } from "lucide-react"
 import { deleteAuthorAction } from "@/actions/author-actions"
 
 interface Author {
-  _id: string
+  id?: string
   name: string
   biography?: string
 }
@@ -30,13 +30,16 @@ export function AuthorList({ items, onEdit }: Props) {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) return
     if (!confirm("Ar tikrai norite pašalinti šį autorių?")) return
+
     setDeletingId(id)
     const res = await deleteAuthorAction(id)
+
     if (res.success) {
       toast.success("Autorius pašalintas")
-      router.refresh() // Sinchronizuoja UI su serveriu po revalidatePath
+      router.refresh()
     } else {
       toast.error(res.error || "Klaida šalinant")
     }
@@ -54,7 +57,7 @@ export function AuthorList({ items, onEdit }: Props) {
       </TableHeader>
       <TableBody>
         {items.map((author) => (
-          <TableRow key={author._id}>
+          <TableRow key={author.id}>
             <TableCell className="font-medium flex items-center gap-2">
               <UserCircle2 className="h-4 w-4 text-orange-600" />
               {author.name}
@@ -71,8 +74,8 @@ export function AuthorList({ items, onEdit }: Props) {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => handleDelete(author._id)}
-                disabled={deletingId === author._id}
+                onClick={() => handleDelete(author.id)}
+                disabled={deletingId === author.id}
               >
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>

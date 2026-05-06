@@ -5,7 +5,6 @@ import { authorSchema } from "@/dto/author-dto"
 import { revalidatePath } from "next/cache"
 
 export async function saveAuthorAction(data: any, id?: string) {
-  // Validacija su Zod
   const parse = authorSchema.safeParse(data)
   if (!parse.success) {
     return { success: false, error: "Blogai užpildyti laukeliai!" }

@@ -8,14 +8,12 @@ async function getInitialData() {
   const authorService = new AuthorService()
   const publisherService = new PublisherService()
 
-  // Gauname duomenis per servisus
   const [books, authors, publishers] = await Promise.all([
     bookService.getAll(),
     authorService.getAll(),
     publisherService.getAll(),
   ])
 
-  // Serializacija (JSON.parse/stringify) reikalinga, kad išvengtume Mongoose objektų klaidų
   return {
     books: JSON.parse(JSON.stringify(books)),
     authors: JSON.parse(JSON.stringify(authors)),

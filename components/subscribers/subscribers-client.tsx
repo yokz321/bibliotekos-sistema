@@ -7,18 +7,18 @@ import { Card } from "@/components/ui/card"
 import { Plus } from "lucide-react"
 import { SubscriberTable } from "./subscriber-table"
 import { SubscriberDialog } from "./subscriber-dialog"
-import type { Subscriber } from "@/types/subscriber-t"
+import type { ISubscriber } from "@/types/subscriber-t"
 
 export function SubscribersClient({
   initialData,
 }: {
-  initialData: Subscriber[]
+  initialData: ISubscriber[]
 }) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const [editing, setEditing] = useState<Subscriber | null>(null)
+  const [editing, setEditing] = useState<ISubscriber | null>(null)
 
-  const handleEdit = (item: Subscriber) => {
+  const handleEdit = (item: ISubscriber) => {
     setEditing(item)
     setIsOpen(true)
   }

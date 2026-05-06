@@ -4,7 +4,6 @@ import { BookService } from "@/services/book-service"
 import { revalidatePath } from "next/cache"
 
 export async function saveBookAction(data: any, id?: string) {
-  // Čia gali pridėti BookSchema validaciją, jei ją turi
   const bookService = new BookService()
 
   try {

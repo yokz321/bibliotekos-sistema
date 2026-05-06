@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog"
 import {
   Form,
@@ -20,8 +21,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { saveSubscriber } from "@/actions/subscriber-actions"
-import type { Subscriber } from "@/types/subscriber-t"
+import { saveSubscriberAction } from "@/actions/subscriber-actions"
+import { ISubscriber } from "@/types/subscriber-t"
 
 const subscriberSchema = z.object({
   firstName: z.string().min(1, "Vardas privalomas"),
@@ -35,7 +36,7 @@ type SubscriberDTO = z.infer<typeof subscriberSchema>
 interface Props {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  editingItem: Subscriber | null
+  editingItem: ISubscriber | null
   onSuccess: () => void
 }
 
@@ -57,7 +58,7 @@ export function SubscriberDialog({
   })
 
   const onSubmit = async (values: SubscriberDTO) => {
-    const res = await saveSubscriber(values, editingItem?._id)
+    const res = await saveSubscriberAction(values, editingItem?.id)
     if (res.success) {
       toast.success(editingItem ? "Atnaujinta!" : "Pridėta!")
       onSuccess()
@@ -69,13 +70,17 @@ export function SubscriberDialog({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent
-        key={editingItem?._id || "new"}
+        key={editingItem?.id || "new"}
         className="sm:max-w-[500px]"
       >
         <DialogHeader>
           <DialogTitle>
             {editingItem ? "Redaguoti abonentą" : "Naujas abonentas"}
           </DialogTitle>
+          {}
+          <DialogDescription className="hidden">
+            Abonento forma
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form

@@ -32,8 +32,7 @@ export function BooksClient({
   const handleSuccess = () => {
     setIsDialogOpen(false)
     setEditingBook(null)
-    // revalidatePath automatiškai atnaujins page.tsx, bet lokaliam UI sync:
-    window.location.reload() // Arba galite naudoti router.refresh() iš next/navigation
+    window.location.reload()
   }
 
   return (

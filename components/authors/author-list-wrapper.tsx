@@ -10,12 +10,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog"
 import { AuthorList } from "./author-list"
 import { AuthorForm } from "./author-form"
 
 interface Author {
-  _id: string
+  id?: string
   name: string
   biography?: string
 }
@@ -37,7 +38,7 @@ export function AuthorListWrapper({ initialData }: Props) {
   const handleComplete = () => {
     setIsOpen(false)
     setEditingAuthor(null)
-    router.refresh() // Atnaujina serverio duomenis be pilno reload
+    router.refresh()
   }
 
   return (
@@ -60,10 +61,13 @@ export function AuthorListWrapper({ initialData }: Props) {
               <DialogTitle>
                 {editingAuthor ? "Redaguoti autorių" : "Pridėti autorių"}
               </DialogTitle>
+              <DialogDescription className="hidden">
+                Autoriaus forma
+              </DialogDescription>
             </DialogHeader>
             <AuthorForm
               defaultValues={editingAuthor || undefined}
-              id={editingAuthor?._id}
+              id={editingAuthor?.id}
               onComplete={handleComplete}
             />
           </DialogContent>

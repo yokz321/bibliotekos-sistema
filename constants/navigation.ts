@@ -8,4 +8,5 @@ export const CLASSIFIER_ITEMS = [
 export const MAIN_NAV_ITEMS = [
   { title: "Knygos", href: "/books", icon: Book },
   { title: "Abonentai", href: "/subscribers", icon: UserCog },
+  { title: "Rezervacijos", href: "/reservations", icon: CalendarCheck },
 ]

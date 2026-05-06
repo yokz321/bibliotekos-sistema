@@ -19,7 +19,6 @@ export function MobileNav() {
   const pathname = usePathname()
   const [open, setOpen] = React.useState(false)
 
-  // Pagalbinė funkcija stiliui, kad nereikėtų kartoti !text-orange...
   const getStyle = (path: string) =>
     cn(
       "flex items-center gap-3 p-2 rounded-md transition-colors",
@@ -43,7 +42,7 @@ export function MobileNav() {
             </SheetTitle>
           </SheetHeader>
           <div className="flex flex-col gap-6 mt-10">
-            {/* Klasifikatoriai */}
+            {}
             <div className="space-y-3">
               <p className="text-[10px] font-bold !text-slate-400 uppercase px-2 tracking-widest">
                 Klasifikatoriai
@@ -53,7 +52,7 @@ export function MobileNav() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setOpen(false)} // Uždarom meniu paspaudus
+                    onClick={() => setOpen(false)}
                     className={getStyle(item.href)}
                   >
                     <item.icon className="h-5 w-5 !text-orange-600" />
@@ -63,7 +62,7 @@ export function MobileNav() {
               </div>
             </div>
 
-            {/* Pagrindiniai puslapiai */}
+            {}
             <div className="space-y-1 border-t pt-6">
               {MAIN_NAV_ITEMS.map((item) => (
                 <Link

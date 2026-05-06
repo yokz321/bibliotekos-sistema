@@ -13,22 +13,23 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Pencil, Trash2, Loader2 } from "lucide-react"
-import { deleteSubscriber } from "@/actions/subscriber-actions"
-import type { Subscriber } from "@/types/subscriber-t"
+import { deleteSubscriberAction } from "@/actions/subscriber-actions"
+import { ISubscriber } from "@/types/subscriber-t"
 
 interface Props {
-  items: Subscriber[]
-  onEdit: (item: Subscriber) => void
+  items: ISubscriber[]
+  onEdit: (item: ISubscriber) => void
 }
 
 export function SubscriberTable({ items, onEdit }: Props) {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) return
     if (!confirm("Ar tikrai norite pašalinti šį abonentą?")) return
     setDeletingId(id)
-    const res = await deleteSubscriber(id)
+    const res = await deleteSubscriberAction(id)
     if (res.success) {
       toast.success("Abonentas pašalintas")
       router.refresh()
@@ -61,7 +62,7 @@ export function SubscriberTable({ items, onEdit }: Props) {
           </TableRow>
         ) : (
           items.map((sub) => (
-            <TableRow key={sub._id}>
+            <TableRow key={sub.id}>
               <TableCell>{sub.firstName}</TableCell>
               <TableCell>{sub.lastName}</TableCell>
               <TableCell>{sub.email}</TableCell>
@@ -73,10 +74,10 @@ export function SubscriberTable({ items, onEdit }: Props) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleDelete(sub._id)}
-                  disabled={deletingId === sub._id}
+                  onClick={() => handleDelete(sub.id)}
+                  disabled={deletingId === sub.id}
                 >
-                  {deletingId === sub._id ? (
+                  {deletingId === sub.id ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <Trash2 className="h-4 w-4 text-destructive" />
