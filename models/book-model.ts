@@ -8,9 +8,9 @@ export interface IBook {
   publisher: any
   year: number
   isbn?: string
-  summary?: string
-  pages?: number
-  quantity?: number
+  inventoryNumber: string
+  price: number
+  annotation?: string
 }
 
 type IReturnType = WithStringId<IBook>
@@ -25,10 +25,11 @@ const BookSchema = new Schema<IBook>(
       required: true,
     },
     year: { type: Number, required: true },
-    isbn: { type: String, unique: true, sparse: true },
-    summary: { type: String },
-    pages: { type: Number },
-    quantity: { type: Number, default: 1 },
+    isbn: { type: String },
+
+    inventoryNumber: { type: String, required: true },
+    price: { type: Number, required: true, default: 0 },
+    annotation: { type: String },
   },
   {
     timestamps: true,

@@ -31,7 +31,7 @@ import { ISubscriber } from "@/types/subscriber-t"
 interface Props {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  editingItem: ISubscriber | null
+  editingItem: ISubscriber | undefined
   onSuccess: () => void
 }
 

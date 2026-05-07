@@ -31,7 +31,7 @@ import { IPublisher } from "@/types/publisher-t"
 interface Props {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  editingPublisher: IPublisher | null
+  editingPublisher: IPublisher | undefined
   onSuccess: () => void
 }
 

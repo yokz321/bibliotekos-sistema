@@ -6,7 +6,8 @@ const DB_NAME = process.env.MONGO_DB
 if (!URI) throw new Error("MONGO_URI nerasta .env faile!")
 
 let cached = (global as any).mongoose
-if (!cached) cached = (global as any).mongoose = { conn: null, promise: null }
+if (!cached)
+  cached = (global as any).mongoose = { conn: undefined, promise: undefined }
 
 export async function connectMongoose() {
   if (cached.conn) return cached.conn

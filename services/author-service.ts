@@ -11,8 +11,6 @@ export class AuthorService {
   async save(author: IAuthor): Promise<void> {
     await connectMongoose()
 
-    await Author.syncIndexes()
-
     const existing = await Author.findOne({
       firstName: { $regex: new RegExp(`^${author.firstName}$`, "i") },
       lastName: { $regex: new RegExp(`^${author.lastName}$`, "i") },

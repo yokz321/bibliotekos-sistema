@@ -18,7 +18,7 @@ export function BooksClient({
   initialPublishers: IPublisher[]
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingBook, setEditingBook] = useState<IBook | null>(null)
+  const [editingBook, setEditingBook] = useState<IBook | undefined>(undefined)
   const router = useRouter()
 
   const handleDelete = async (id: string) => {
@@ -43,14 +43,14 @@ export function BooksClient({
           isOpen={isDialogOpen}
           onOpenChange={(open) => {
             setIsDialogOpen(open)
-            if (!open) setEditingBook(null)
+            if (!open) setEditingBook(undefined)
           }}
           editingBook={editingBook}
           authors={initialAuthors}
           publishers={initialPublishers}
           onSuccess={() => {
             setIsDialogOpen(false)
-            setEditingBook(null)
+            setEditingBook(undefined)
             router.refresh()
           }}
         />

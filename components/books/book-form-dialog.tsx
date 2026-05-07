@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog"
 import { saveBookAction } from "@/actions/book-actions"
 import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
+import { BookDTO } from "@/dto/book-dto"
 
 export function BookFormDialog({
   isOpen,
@@ -34,7 +35,7 @@ export function BookFormDialog({
 }: {
   isOpen: boolean
   onOpenChange: (v: boolean) => void
-  editingBook: IBook | null
+  editingBook: IBook | undefined
   authors: IAuthor[]
   publishers: IPublisher[]
   onSuccess: () => void
@@ -48,17 +49,18 @@ export function BookFormDialog({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
+
     const formData = new FormData(e.currentTarget)
-    const data = Object.fromEntries(formData.entries())
+
+    const data = Object.fromEntries(formData.entries()) as unknown as BookDTO
+
     const res = await saveBookAction(data, editingBook?.id)
 
     if (res.success) {
       toast.success(editingBook ? "Knyga atnaujinta!" : "Knyga pridėta!")
       onSuccess()
     } else {
-      toast.error(
-        typeof res.error === "string" ? res.error : "Klaida išsaugant"
-      )
+      toast.error(res.error)
     }
 
     setIsSubmitting(false)
@@ -76,10 +78,9 @@ export function BookFormDialog({
           <DialogTitle>
             {editingBook ? "Redaguoti knygą" : "Pridėti naują knygą"}
           </DialogTitle>
-          <DialogDescription>
-            Užpildykite knygos duomenis pasirinkdami klasifikatorius.
-          </DialogDescription>
+          <DialogDescription>Užpildykite duomenis.</DialogDescription>
         </DialogHeader>
+
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="grid gap-2">
             <Label htmlFor="title">Pavadinimas</Label>
@@ -91,13 +92,15 @@ export function BookFormDialog({
               disabled={isSubmitting}
             />
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label>Autorius</Label>
               <Select
-                name="author"
+                name="authorId"
                 defaultValue={editingBook?.author?.id}
                 disabled={isSubmitting}
+                required
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Pasirinkite..." />
@@ -114,9 +117,10 @@ export function BookFormDialog({
             <div className="grid gap-2">
               <Label>Leidykla</Label>
               <Select
-                name="publisher"
+                name="publisherId"
                 defaultValue={editingBook?.publisher?.id}
                 disabled={isSubmitting}
+                required
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Pasirinkite..." />
@@ -131,6 +135,33 @@ export function BookFormDialog({
               </Select>
             </div>
           </div>
+
+          {}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="inventoryNumber">Inv. Nr.</Label>
+              <Input
+                id="inventoryNumber"
+                name="inventoryNumber"
+                defaultValue={editingBook?.inventoryNumber}
+                required
+                disabled={isSubmitting}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="price">Kaina</Label>
+              <Input
+                id="price"
+                name="price"
+                type="number"
+                step="0.01"
+                defaultValue={editingBook?.price}
+                required
+                disabled={isSubmitting}
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="year">Metai</Label>
@@ -148,11 +179,22 @@ export function BookFormDialog({
               <Input
                 id="isbn"
                 name="isbn"
-                defaultValue={editingBook?.isbn || ""}
+                defaultValue={editingBook?.isbn}
                 disabled={isSubmitting}
               />
             </div>
           </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="annotation">Anotacija</Label>
+            <Input
+              id="annotation"
+              name="annotation"
+              defaultValue={editingBook?.annotation}
+              disabled={isSubmitting}
+            />
+          </div>
+
           <Button
             type="submit"
             className="w-full bg-orange-600 hover:bg-orange-700"

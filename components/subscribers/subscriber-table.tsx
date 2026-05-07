@@ -23,7 +23,7 @@ interface Props {
 
 export function SubscriberTable({ items, onEdit }: Props) {
   const router = useRouter()
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
 
   const handleDelete = async (id?: string) => {
     if (!id) return
@@ -36,7 +36,7 @@ export function SubscriberTable({ items, onEdit }: Props) {
     } else {
       toast.error(res.error || "Klaida šalinant")
     }
-    setDeletingId(null)
+    setDeletingId(undefined)
   }
 
   return (

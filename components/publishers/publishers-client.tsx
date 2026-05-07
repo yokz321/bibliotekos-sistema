@@ -14,9 +14,9 @@ export function PublishersClient({
   initialData: IPublisher[]
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingPublisher, setEditingPublisher] = useState<IPublisher | null>(
-    null
-  )
+  const [editingPublisher, setEditingPublisher] = useState<
+    IPublisher | undefined
+  >(undefined)
   const router = useRouter()
 
   const handleDelete = async (id: string) => {
@@ -43,7 +43,7 @@ export function PublishersClient({
           editingPublisher={editingPublisher}
           onSuccess={() => {
             setIsDialogOpen(false)
-            setEditingPublisher(null)
+            setEditingPublisher(undefined)
             router.refresh()
           }}
         />

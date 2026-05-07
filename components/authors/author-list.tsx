@@ -35,7 +35,7 @@ interface Props {
 
 export function AuthorList({ items, onEdit }: Props) {
   const router = useRouter()
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
 
   const executeDelete = async (id: string) => {
     setDeletingId(id)
@@ -46,7 +46,7 @@ export function AuthorList({ items, onEdit }: Props) {
     } else {
       toast.error(res.error || "Klaida šalinant")
     }
-    setDeletingId(null)
+    setDeletingId(undefined)
   }
 
   return (

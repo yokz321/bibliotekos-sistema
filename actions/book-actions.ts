@@ -1,34 +1,39 @@
 "use server"
 
 import { BookService } from "@/services/book-service"
-import { bookSchema } from "@/dto/book-dto"
+import { bookSchema, type BookDTO } from "@/dto/book-dto"
 import { revalidatePath } from "next/cache"
 
-export async function saveBookAction(formData: any, id?: string) {
+export async function saveBookAction(data: BookDTO, id?: string) {
+  const parse = bookSchema.safeParse(data)
+
+  if (!parse.success) {
+    const firstError = parse.error.issues[0]?.message || "Neteisingi duomenys"
+    return { success: false, error: firstError }
+  }
+
+  const validatedData = parse.data
   const bookService = new BookService()
 
-  const data = {
-    title: formData.title,
-    author: formData.authorId || formData.author,
-    publisher: formData.publisherId || formData.publisher,
-    year: Number(formData.year),
-    isbn: formData.isbn,
-    inventoryNumber: formData.inventoryNumber || "",
-    price: Number(formData.price) || 0,
-    annotation: formData.annotation || "",
+  const dbData = {
+    ...validatedData,
+    author: validatedData.authorId,
+    publisher: validatedData.publisherId,
   }
 
   try {
     if (id) {
-      await bookService.update({ ...data, id })
+      await bookService.update({ ...dbData, id })
     } else {
-      await bookService.save(data)
+      await bookService.save(dbData)
     }
     revalidatePath("/books")
     return { success: true }
-  } catch (error: any) {
-    console.error("KLAIDA SAUGANT:", error.message)
-    return { success: false, error: "Nepavyko išsaugoti knygos" }
+  } catch (error: unknown) {
+    console.error("KLAIDA SAUGANT KNYGĄ:", error)
+    let errorMessage = "Serverio klaida"
+    if (error instanceof Error) errorMessage = error.message
+    return { success: false, error: errorMessage }
   }
 }
 
@@ -38,8 +43,8 @@ export async function deleteBookAction(id: string) {
     await bookService.delete(id)
     revalidatePath("/books")
     return { success: true }
-  } catch (error: any) {
-    console.error("KLAIDA TRINANT:", error.message)
+  } catch (error: unknown) {
+    console.error("KLAIDA TRINANT KNYGĄ:", error)
     return { success: false, error: "Nepavyko ištrinti knygos" }
   }
 }

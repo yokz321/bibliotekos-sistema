@@ -22,7 +22,9 @@ interface Props {
 export function AuthorListWrapper({ initialData }: Props) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const [editingAuthor, setEditingAuthor] = useState<IAuthor | null>(null)
+  const [editingAuthor, setEditingAuthor] = useState<IAuthor | undefined>(
+    undefined
+  )
 
   const handleEdit = (author: IAuthor) => {
     setEditingAuthor(author)
@@ -31,7 +33,7 @@ export function AuthorListWrapper({ initialData }: Props) {
 
   const handleComplete = () => {
     setIsOpen(false)
-    setEditingAuthor(null)
+    setEditingAuthor(undefined)
     router.refresh()
   }
 
@@ -42,7 +44,7 @@ export function AuthorListWrapper({ initialData }: Props) {
           open={isOpen}
           onOpenChange={(v) => {
             setIsOpen(v)
-            if (!v) setEditingAuthor(null)
+            if (!v) setEditingAuthor(undefined)
           }}
         >
           <DialogTrigger asChild>

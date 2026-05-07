@@ -16,7 +16,7 @@ export function SubscribersClient({
 }) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const [editing, setEditing] = useState<ISubscriber | null>(null)
+  const [editing, setEditing] = useState<ISubscriber | undefined>(undefined)
 
   const handleEdit = (item: ISubscriber) => {
     setEditing(item)
@@ -25,7 +25,7 @@ export function SubscribersClient({
 
   const handleSuccess = () => {
     setIsOpen(false)
-    setEditing(null)
+    setEditing(undefined)
     router.refresh()
   }
 
@@ -35,7 +35,7 @@ export function SubscribersClient({
         <Button
           className="bg-orange-600 hover:bg-orange-700"
           onClick={() => {
-            setEditing(null)
+            setEditing(undefined)
             setIsOpen(true)
           }}
         >
