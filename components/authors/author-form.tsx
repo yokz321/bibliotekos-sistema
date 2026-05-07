@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { saveAuthorAction } from "@/actions/author-actions"
-import { toast } from "sonner"
+import { useState } from "react"
 
 interface AuthorFormProps {
   defaultValues?: AuthorDTO
@@ -34,18 +34,20 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
 
   async function onSubmit(values: AuthorDTO) {
     const res = await saveAuthorAction(values, id)
+
     if (res.success) {
-      toast.success("Autorius išsaugotas!")
       onComplete()
     } else {
-      toast.error(res.error || "Klaida išsaugant")
+      form.setError("root", {
+        type: "manual",
+        message: res.error,
+      })
     }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
-        {}
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -54,7 +56,7 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
               <FormItem>
                 <FormLabel>Vardas</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Įveskite vardą" />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -67,7 +69,7 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
               <FormItem>
                 <FormLabel>Pavardė</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Įveskite pavardę" />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -82,20 +84,19 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
             <FormItem>
               <FormLabel>Biografija</FormLabel>
               <FormControl>
-                {}
-                <textarea
-                  {...field}
-                  value={field.value ?? ""}
-                  rows={5}
-                  placeholder="Trumpa biografija (nebūtina)"
-                  disabled={form.formState.isSubmitting}
-                  className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
-                />
+                <Input {...field} value={field.value ?? ""} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {}
+        {form.formState.errors.root && (
+          <div className="p-2 text-sm font-medium text-red-500 bg-red-50 border border-red-200 rounded-md">
+            {form.formState.errors.root.message}
+          </div>
+        )}
 
         <Button
           type="submit"
