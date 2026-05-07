@@ -23,3 +23,15 @@ export async function saveAuthorAction(data: any, id?: string) {
     return { success: false, error: error.message || "Serverio klaida" }
   }
 }
+
+export async function deleteAuthorAction(id: string) {
+  const authorService = new AuthorService()
+  try {
+    await authorService.delete(id)
+    revalidatePath("/authors")
+    return { success: true }
+  } catch (error: any) {
+    console.error("KLAIDA TRINANT AUTORIŲ:", error.message)
+    return { success: false, error: "Nepavyko pašalinti autoriaus" }
+  }
+}
