@@ -1,10 +1,11 @@
 "use server"
 
 import { AuthorService } from "@/services/author-service"
-import { authorSchema } from "@/dto/author-dto"
+import { authorSchema, AuthorDTO } from "@/dto/author-dto"
 import { revalidatePath } from "next/cache"
+import { IAuthor } from "@/types/book-t"
 
-export async function saveAuthorAction(data: any, id?: string) {
+export async function saveAuthorAction(data: AuthorDTO, id?: string) {
   const parse = authorSchema.safeParse(data)
   if (!parse.success) {
     return { success: false, error: "Blogai užpildyti laukeliai!" }
@@ -13,14 +14,17 @@ export async function saveAuthorAction(data: any, id?: string) {
   const authorService = new AuthorService()
   try {
     if (id) {
-      await authorService.update({ ...parse.data, id })
+      const authorToUpdate: IAuthor = { ...parse.data, id }
+      await authorService.update(authorToUpdate)
     } else {
       await authorService.save(parse.data)
     }
     revalidatePath("/authors")
     return { success: true }
-  } catch (error: any) {
-    return { success: false, error: error.message || "Serverio klaida" }
+  } catch (error: unknown) {
+    let message = "Serverio klaida"
+    if (error instanceof Error) message = error.message
+    return { success: false, error: message }
   }
 }
 

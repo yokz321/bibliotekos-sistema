@@ -5,10 +5,31 @@ import { Types } from "mongoose"
 export class BookService {
   async getAll(): Promise<IBook[]> {
     await connectMongoose()
-    return await Book.find()
+    const books = await Book.find()
       .populate("author")
       .populate("publisher")
       .sort({ title: 1 })
+      .lean()
+
+    return books.map((book: any) => ({
+      ...book,
+      id: book._id.toString(),
+      _id: book._id.toString(),
+      author: book.author
+        ? {
+            ...book.author,
+            id: book.author._id.toString(),
+            _id: book.author._id.toString(),
+          }
+        : undefined,
+      publisher: book.publisher
+        ? {
+            ...book.publisher,
+            id: book.publisher._id.toString(),
+            _id: book.publisher._id.toString(),
+          }
+        : undefined,
+    })) as unknown as IBook[]
   }
 
   async save(book: IBook): Promise<void> {

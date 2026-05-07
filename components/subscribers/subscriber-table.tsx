@@ -28,6 +28,7 @@ export function SubscriberTable({ items, onEdit }: Props) {
   const handleDelete = async (id?: string) => {
     if (!id) return
     if (!confirm("Ar tikrai norite pašalinti šį abonentą?")) return
+
     setDeletingId(id)
     const res = await deleteSubscriberAction(id)
     if (res.success) {
@@ -43,10 +44,10 @@ export function SubscriberTable({ items, onEdit }: Props) {
     <Table>
       <TableHeader className="bg-muted/50">
         <TableRow>
-          <TableHead>Vardas</TableHead>
-          <TableHead>Pavardė</TableHead>
-          <TableHead>El. paštas</TableHead>
           <TableHead>Bilieto Nr.</TableHead>
+          <TableHead>Vardas Pavardė</TableHead>
+          <TableHead>Miestas</TableHead>
+          <TableHead>Telefonas</TableHead>
           <TableHead className="text-right">Veiksmai</TableHead>
         </TableRow>
       </TableHeader>
@@ -63,10 +64,12 @@ export function SubscriberTable({ items, onEdit }: Props) {
         ) : (
           items.map((sub) => (
             <TableRow key={sub.id}>
-              <TableCell>{sub.firstName}</TableCell>
-              <TableCell>{sub.lastName}</TableCell>
-              <TableCell>{sub.email}</TableCell>
-              <TableCell>{sub.ticketNumber}</TableCell>
+              <TableCell className="font-medium">{sub.ticketNumber}</TableCell>
+              <TableCell>
+                {sub.firstName} {sub.lastName}
+              </TableCell>
+              <TableCell>{sub.city}</TableCell>
+              <TableCell>{sub.phone}</TableCell>
               <TableCell className="text-right space-x-2">
                 <Button variant="ghost" size="icon" onClick={() => onEdit(sub)}>
                   <Pencil className="h-4 w-4 text-blue-600" />

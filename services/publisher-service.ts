@@ -1,36 +1,28 @@
-import { Publisher, IPublisher } from "@/models/publisher-model"
+import { Publisher } from "@/models/publisher-model"
+import { IPublisher } from "@/types/book-t"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 
 export class PublisherService {
   async getAll(): Promise<IPublisher[]> {
     await connectMongoose()
-    return await Publisher.find().sort({ createdAt: -1 })
+    const publishers = await Publisher.find().sort({ name: 1 }).lean()
+
+    return publishers.map((pub: any) => ({
+      ...pub,
+      id: pub._id.toString(),
+      _id: pub._id.toString(),
+    })) as unknown as IPublisher[]
   }
-
-  async save(publisher: IPublisher): Promise<void> {
+  async save(publisher: Omit<IPublisher, "id">): Promise<void> {
     await connectMongoose()
-
-    const existing = await Publisher.findOne({
-      name: { $regex: new RegExp(`^${publisher.name}$`, "i") },
-    })
-    if (existing) throw new Error("Tokia leidykla jau egzistuoja!")
-
     await Publisher.create(publisher)
   }
 
   async update(publisher: IPublisher): Promise<void> {
     await connectMongoose()
-    const id = publisher.id ?? ""
-
-    const existing = await Publisher.findOne({
-      name: { $regex: new RegExp(`^${publisher.name}$`, "i") },
-      _id: { $ne: new Types.ObjectId(id) },
-    })
-    if (existing) throw new Error("Leidykla tokiu pavadinimu jau egzistuoja!")
-
-    delete publisher.id
-    await Publisher.updateOne({ _id: new Types.ObjectId(id) }, publisher)
+    const { id, ...updateData } = publisher
+    await Publisher.updateOne({ _id: new Types.ObjectId(id) }, updateData)
   }
 
   async delete(id: string): Promise<void> {

@@ -1,17 +1,6 @@
 import { Model, model, models, Schema, Types } from "mongoose"
 import { WithStringId } from "./model-t"
-
-export interface ISubscriber {
-  id?: string
-  ticketNumber: string
-  firstName: string
-  lastName: string
-  city: string
-  street: string
-  houseNumber: string
-  apartmentNumber?: string
-  phone: string
-}
+import { ISubscriber } from "@/types/subscriber-t"
 
 type IReturnType = WithStringId<ISubscriber>
 

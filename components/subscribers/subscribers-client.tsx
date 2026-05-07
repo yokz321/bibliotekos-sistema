@@ -16,6 +16,7 @@ export function SubscribersClient({
 }) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+
   const [editing, setEditing] = useState<ISubscriber | undefined>(undefined)
 
   const handleEdit = (item: ISubscriber) => {
@@ -30,8 +31,11 @@ export function SubscribersClient({
   }
 
   return (
-    <>
-      <div className="flex justify-end mb-4">
+    <div className="space-y-6">
+      {}
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Abonentai</h1>
+
         <Button
           className="bg-orange-600 hover:bg-orange-700"
           onClick={() => {
@@ -42,15 +46,17 @@ export function SubscribersClient({
           <Plus className="mr-2 h-4 w-4" /> Naujas abonentas
         </Button>
       </div>
+
       <Card className="overflow-hidden border shadow-sm">
         <SubscriberTable items={initialData} onEdit={handleEdit} />
       </Card>
+
       <SubscriberDialog
         isOpen={isOpen}
         onOpenChange={setIsOpen}
         editingItem={editing}
         onSuccess={handleSuccess}
       />
-    </>
+    </div>
   )
 }

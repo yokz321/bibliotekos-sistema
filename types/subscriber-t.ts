@@ -1,14 +1,11 @@
-import { StringSchemaDefinition } from "mongoose"
-
 export interface ISubscriber {
-  id?: string
-  city: string
-  street: string
+  id: string
+  ticketNumber: string
   firstName: string
   lastName: string
-  email: string
-  ticketNumber: string
-  phone?: string
+  city: string
+  street: string
   houseNumber: string
   apartmentNumber?: string
+  phone: string
 }

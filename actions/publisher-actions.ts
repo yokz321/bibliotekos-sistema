@@ -3,24 +3,17 @@
 import { PublisherService } from "@/services/publisher-service"
 import { publisherSchema } from "@/dto/publisher-dto"
 import { revalidatePath } from "next/cache"
+import { IPublisher } from "@/types/book-t"
 
 export async function savePublisherAction(data: any, id?: string) {
   const parsed = publisherSchema.safeParse(data)
-
-  if (!parsed.success) {
-    const flatErrors = parsed.error.flatten()
-    const firstErrorMessage = Object.values(flatErrors.fieldErrors).flat()[0]
-
-    return {
-      success: false,
-      error: firstErrorMessage || "Validacijos klaida",
-    }
-  }
+  if (!parsed.success) return { success: false, error: "Validacijos klaida" }
 
   const service = new PublisherService()
   try {
     if (id) {
-      await service.update({ ...parsed.data, id })
+      const toUpdate: IPublisher = { ...parsed.data, id }
+      await service.update(toUpdate)
     } else {
       await service.save(parsed.data)
     }

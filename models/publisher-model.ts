@@ -1,11 +1,6 @@
 import { Model, model, models, Schema, Types } from "mongoose"
 import { WithStringId } from "./model-t"
-
-export interface IPublisher {
-  id?: string
-  name: string
-  location?: string
-}
+import { IPublisher } from "@/types/book-t"
 
 type IReturnType = WithStringId<IPublisher>
 

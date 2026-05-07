@@ -37,8 +37,17 @@ export function BooksClient({
   }
 
   return (
-    <>
-      <div className="flex justify-end mb-4">
+    <div className="space-y-6">
+      {}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Knygos</h1>
+          <p className="text-muted-foreground text-sm">
+            Bibliotekos fondo valdymas
+          </p>
+        </div>
+
+        {}
         <BookFormDialog
           isOpen={isDialogOpen}
           onOpenChange={(open) => {
@@ -55,11 +64,13 @@ export function BooksClient({
           }}
         />
       </div>
+
+      {}
       <BooksTable
         books={initialBooks}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-    </>
+    </div>
   )
 }
