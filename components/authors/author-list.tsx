@@ -1,5 +1,8 @@
 "use client"
-import { deleteAuthorAction } from "@/actions/author-actions"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
   Table,
   TableBody,
@@ -10,30 +13,45 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2, UserCircle2 } from "lucide-react"
-import { toast } from "sonner"
+import { deleteAuthorAction } from "@/actions/author-actions"
+import { IAuthor } from "@/types/book-t"
 
-interface Author {
-  id?: string
-  firstName: string
-  lastName: string
-  biography?: string
-}
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface Props {
-  items: Author[]
-  onEdit: (author: Author) => void
+  items: IAuthor[]
+  onEdit: (author: IAuthor) => void
 }
 
 export function AuthorList({ items, onEdit }: Props) {
-  const handleDelete = async (id?: string) => {
-    if (!id || !confirm("Trinti?")) return
+  const router = useRouter()
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  const executeDelete = async (id: string) => {
+    setDeletingId(id)
     const res = await deleteAuthorAction(id)
-    if (res.success) toast.success("Pašalinta")
+    if (res.success) {
+      toast.success("Autorius pašalintas")
+      router.refresh()
+    } else {
+      toast.error(res.error || "Klaida šalinant")
+    }
+    setDeletingId(null)
   }
 
   return (
     <Table>
-      <TableHeader>
+      <TableHeader className="bg-muted/50">
         <TableRow>
           <TableHead>Autorius</TableHead>
           <TableHead>Biografija</TableHead>
@@ -48,21 +66,46 @@ export function AuthorList({ items, onEdit }: Props) {
               {author.firstName} {author.lastName}
             </TableCell>
             <TableCell>{author.biography || "-"}</TableCell>
-            <TableCell className="text-right">
+            <TableCell className="text-right space-x-2">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => onEdit(author)}
               >
-                <Pencil className="h-4 w-4" />
+                <Pencil className="h-4 w-4 text-blue-600" />
               </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleDelete(author.id)}
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={deletingId === author.id}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Ar tikrai norite ištrinti?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Šis veiksmas pašalins autorių {author.firstName}{" "}
+                      {author.lastName} iš sistemos.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Atšaukti</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => author.id && executeDelete(author.id)}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Ištrinti
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </TableCell>
           </TableRow>
         ))}

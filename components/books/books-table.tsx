@@ -13,6 +13,18 @@ import {
 } from "@/components/ui/table"
 import type { IBook } from "@/types/book-t"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 interface Props {
   books: IBook[]
   onEdit: (book: IBook) => void
@@ -52,17 +64,13 @@ export function BooksTable({ books, onEdit, onDelete }: Props) {
                   <BookOpen className="h-4 w-4 text-orange-600" />
                   {book.title}
                 </TableCell>
-
-                {/* PATAISYTA: Rodome vardą ir pavardę */}
                 <TableCell>
                   {book.author
                     ? `${book.author.firstName} ${book.author.lastName}`
                     : "Nežinomas"}
                 </TableCell>
-
                 <TableCell>{book.publisher?.name || "Nenurodyta"}</TableCell>
                 <TableCell className="text-center">{book.year}</TableCell>
-
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button
@@ -73,15 +81,38 @@ export function BooksTable({ books, onEdit, onDelete }: Props) {
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
-
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive h-8 w-8"
-                      onClick={() => book.id && onDelete(book.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    {}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive h-8 w-8"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Ar tikrai norite ištrinti?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Knyga <strong>{book.title}</strong> bus pašalinta iš
+                            bibliotekos fondo.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Atšaukti</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => book.id && onDelete(book.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Ištrinti
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>

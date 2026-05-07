@@ -10,28 +10,21 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogDescription,
 } from "@/components/ui/dialog"
 import { AuthorList } from "./author-list"
 import { AuthorForm } from "./author-form"
-
-interface Author {
-  id?: string
-  firstName: string
-  lastName: string
-  biography?: string
-}
+import { IAuthor } from "@/types/book-t"
 
 interface Props {
-  initialData: Author[]
+  initialData: IAuthor[]
 }
 
 export function AuthorListWrapper({ initialData }: Props) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const [editingAuthor, setEditingAuthor] = useState<Author | null>(null)
+  const [editingAuthor, setEditingAuthor] = useState<IAuthor | null>(null)
 
-  const handleEdit = (author: Author) => {
+  const handleEdit = (author: IAuthor) => {
     setEditingAuthor(author)
     setIsOpen(true)
   }
@@ -62,9 +55,6 @@ export function AuthorListWrapper({ initialData }: Props) {
               <DialogTitle>
                 {editingAuthor ? "Redaguoti autorių" : "Pridėti autorių"}
               </DialogTitle>
-              <DialogDescription className="hidden">
-                Autoriaus forma
-              </DialogDescription>
             </DialogHeader>
             <AuthorForm
               defaultValues={editingAuthor || undefined}

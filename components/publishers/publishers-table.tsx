@@ -1,6 +1,6 @@
 "use client"
 
-import { Building2, Loader2, Pencil, Trash2 } from "lucide-react"
+import { Building2, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -10,29 +10,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { IPublisher } from "@/types/publisher-t"
+import { IPublisher } from "@/types/book-t"
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface Props {
   publishers: IPublisher[]
-  loading: boolean
   onEdit: (pub: IPublisher) => void
   onDelete: (id: string) => void
 }
 
-export function PublishersTable({
-  publishers,
-  loading,
-  onEdit,
-  onDelete,
-}: Props) {
-  if (loading) {
-    return (
-      <div className="flex justify-center py-10">
-        <Loader2 className="h-6 w-6 animate-spin text-orange-600" />
-      </div>
-    )
-  }
-
+export function PublishersTable({ publishers, onEdit, onDelete }: Props) {
   return (
     <div className="rounded-md border bg-card shadow-sm overflow-hidden">
       <Table>
@@ -70,14 +68,37 @@ export function PublishersTable({
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive hover:bg-red-50"
-                    onClick={() => onDelete(pub.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Ar tikrai norite ištrinti?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Bus pašalinta leidykla: <strong>{pub.name}</strong>.
+                          Šio veiksmo atšaukti negalėsite.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Atšaukti</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => pub.id && onDelete(pub.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Ištrinti
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </TableCell>
               </TableRow>
             ))
