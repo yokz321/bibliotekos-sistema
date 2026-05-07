@@ -28,7 +28,9 @@ export function BooksClient({
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) return
+
     const res = await deleteBookAction(id)
     if (res.success) {
       toast.success("Knyga pašalinta sėkmingai")

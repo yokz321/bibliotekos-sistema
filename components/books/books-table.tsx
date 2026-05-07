@@ -28,7 +28,7 @@ import {
 interface Props {
   books: IBook[]
   onEdit: (book: IBook) => void
-  onDelete: (id: string) => void
+  onDelete: (id?: string) => void
 }
 
 export function BooksTable({ books, onEdit, onDelete }: Props) {
@@ -105,7 +105,7 @@ export function BooksTable({ books, onEdit, onDelete }: Props) {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Atšaukti</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => book.id && onDelete(book.id)}
+                            onClick={() => onDelete(book.id)}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                           >
                             Ištrinti

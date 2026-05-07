@@ -35,8 +35,9 @@ interface Props {
 
 export function AuthorList({ items, onEdit, onSuccess }: Props) {
   const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
+  const executeDelete = async (id?: string) => {
+    if (!id) return
 
-  const executeDelete = async (id: string) => {
     setDeletingId(id)
     const res = await deleteAuthorAction(id)
     if (res.success) {
@@ -97,7 +98,7 @@ export function AuthorList({ items, onEdit, onSuccess }: Props) {
                   <AlertDialogFooter>
                     <AlertDialogCancel>Atšaukti</AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={() => author.id && executeDelete(author.id)}
+                      onClick={() => executeDelete(author.id)}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
                       Ištrinti

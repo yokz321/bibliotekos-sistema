@@ -27,7 +27,7 @@ import {
 interface Props {
   publishers: IPublisher[]
   onEdit: (pub: IPublisher) => void
-  onDelete: (id: string) => void
+  onDelete: (id?: string) => void
 }
 
 export function PublishersTable({ publishers, onEdit, onDelete }: Props) {
@@ -91,7 +91,7 @@ export function PublishersTable({ publishers, onEdit, onDelete }: Props) {
                       <AlertDialogFooter>
                         <AlertDialogCancel>Atšaukti</AlertDialogCancel>
                         <AlertDialogAction
-                          onClick={() => pub.id && onDelete(pub.id)}
+                          onClick={() => onDelete(pub.id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
                           Ištrinti

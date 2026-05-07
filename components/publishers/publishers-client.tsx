@@ -26,7 +26,9 @@ export function PublishersClient({
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) return
+
     const res = await deletePublisherAction(id)
     if (res.success) {
       toast.success("Leidykla pašalinta")
