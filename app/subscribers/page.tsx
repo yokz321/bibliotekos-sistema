@@ -1,10 +1,8 @@
-import { SubscriberService } from "@/services/subscriber-service"
+import { getApi } from "@/utils/server-api"
 import { SubscribersClient } from "@/components/subscribers/subscribers-client"
+import { ISubscriber } from "@/types/subscriber-t"
 
 export default async function SubscribersPage() {
-  const service = new SubscriberService()
-
-  const subscribers = await service.getAll()
-
-  return <SubscribersClient initialData={subscribers} />
+  const subscribers = await getApi<ISubscriber[]>("/api/subscribers")
+  return <SubscribersClient initialData={subscribers ?? []} />
 }

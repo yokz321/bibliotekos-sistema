@@ -8,8 +8,12 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const res = await request.json()
-  const service = new BookService()
-  await service.save(res)
-  return Response.json({ message: "Knyga sėkmingai pridėta" })
+  try {
+    const res = await request.json()
+    const service = new BookService()
+    await service.save(res)
+    return Response.json({ message: "Knyga sėkmingai pridėta" })
+  } catch (error: any) {
+    return Response.json({ error: error.message }, { status: 400 })
+  }
 }

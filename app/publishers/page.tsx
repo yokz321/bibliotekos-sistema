@@ -1,10 +1,8 @@
-import { PublisherService } from "@/services/publisher-service"
+import { getApi } from "@/utils/server-api"
 import { PublishersClient } from "@/components/publishers/publishers-client"
+import { IPublisher } from "@/types/book-t"
 
 export default async function PublishersPage() {
-  const service = new PublisherService()
-
-  const publishers = await service.getAll()
-
-  return <PublishersClient initialData={publishers} />
+  const publishers = await getApi<IPublisher[]>("/api/publishers")
+  return <PublishersClient initialData={publishers ?? []} />
 }

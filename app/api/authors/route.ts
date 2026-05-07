@@ -8,8 +8,12 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const res = await request.json()
-  const service = new AuthorService()
-  await service.save(res)
-  return Response.json({ message: "Data saved" })
+  try {
+    const res = await request.json()
+    const service = new AuthorService()
+    await service.save(res)
+    return Response.json({ message: "Autorius sėkmingai pridėtas" })
+  } catch (error: any) {
+    return Response.json({ error: error.message }, { status: 400 })
+  }
 }
