@@ -1,8 +1,8 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { toast } from "sonner"
 import {
   Dialog,
@@ -21,17 +21,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { saveSubscriberAction } from "@/actions/subscriber-actions"
+import {
+  saveSubscriberAction,
+  getNextTicketNumberAction,
+} from "@/actions/subscriber-actions"
+import { subscriberSchema, SubscriberDTO } from "@/dto/subscriber-dto"
 import { ISubscriber } from "@/types/subscriber-t"
-
-const subscriberSchema = z.object({
-  firstName: z.string().min(1, "Vardas privalomas"),
-  lastName: z.string().min(1, "Pavardė privaloma"),
-  email: z.string().email("Neteisingas el. pašto formatas"),
-  ticketNumber: z.string().min(1, "Bilieto numeris privalomas"),
-  phone: z.string().optional(),
-})
-type SubscriberDTO = z.infer<typeof subscriberSchema>
 
 interface Props {
   isOpen: boolean
@@ -46,42 +41,78 @@ export function SubscriberDialog({
   editingItem,
   onSuccess,
 }: Props) {
+  const [isLoadingNumber, setIsLoadingNumber] = useState(false)
+
   const form = useForm<SubscriberDTO>({
     resolver: zodResolver(subscriberSchema),
-    defaultValues: editingItem || {
+    mode: "onBlur",
+    defaultValues: {
       firstName: "",
       lastName: "",
-      email: "",
       ticketNumber: "",
+      city: "",
+      street: "",
+      houseNumber: "",
+      apartmentNumber: "",
       phone: "",
     },
   })
 
+  useEffect(() => {
+    if (isOpen) {
+      if (editingItem) {
+        form.reset({
+          firstName: editingItem.firstName,
+          lastName: editingItem.lastName,
+          ticketNumber: editingItem.ticketNumber,
+          city: editingItem.city,
+          street: editingItem.street,
+          houseNumber: editingItem.houseNumber,
+          apartmentNumber: editingItem.apartmentNumber || "",
+          phone: editingItem.phone,
+        })
+      } else {
+        form.reset({
+          firstName: "",
+          lastName: "",
+          city: "",
+          street: "",
+          houseNumber: "",
+          apartmentNumber: "",
+          phone: "",
+        })
+
+        setIsLoadingNumber(true)
+        getNextTicketNumberAction().then((nextNumber: string) => {
+          form.setValue("ticketNumber", nextNumber)
+          setIsLoadingNumber(false)
+        })
+      }
+    }
+  }, [isOpen, editingItem, form])
+
   const onSubmit = async (values: SubscriberDTO) => {
     const res = await saveSubscriberAction(values, editingItem?.id)
+
     if (res.success) {
       toast.success(editingItem ? "Atnaujinta!" : "Pridėta!")
       onSuccess()
     } else {
-      toast.error(res.error || "Klaida išsaugant")
+      form.setError("root", {
+        type: "server",
+        message: res.error,
+      })
     }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent
-        key={editingItem?.id || "new"}
-        className="sm:max-w-[500px]"
-      >
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>
-            {editingItem ? "Redaguoti abonentą" : "Naujas abonentas"}
-          </DialogTitle>
-          {}
-          <DialogDescription className="hidden">
-            Abonento forma
-          </DialogDescription>
+          <DialogTitle>{editingItem ? "Redaguoti" : "Naujas"}</DialogTitle>
+          <DialogDescription className="hidden">Form</DialogDescription>
         </DialogHeader>
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -115,26 +146,56 @@ export function SubscriberDialog({
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>El. paštas</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="ticketNumber"
+                name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bilieto Nr.</FormLabel>
+                    <FormLabel>Miestas</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="street"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gatvė</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="houseNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Namo nr.</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="apartmentNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Buto nr.</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -149,13 +210,34 @@ export function SubscriberDialog({
                   <FormItem>
                     <FormLabel>Telefonas</FormLabel>
                     <FormControl>
-                      <Input {...field} value={field.value ?? ""} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="ticketNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Abonento Nr.</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isLoadingNumber} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {form.formState.errors.root && (
+              <div className="p-2 text-sm text-red-600 bg-red-100 rounded-md">
+                {form.formState.errors.root.message}
+              </div>
+            )}
+
             <Button
               type="submit"
               className="w-full bg-orange-600 hover:bg-orange-700"

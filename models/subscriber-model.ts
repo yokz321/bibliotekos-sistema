@@ -3,22 +3,28 @@ import { WithStringId } from "./model-t"
 
 export interface ISubscriber {
   id?: string
+  ticketNumber: string
   firstName: string
   lastName: string
-  email: string
-  ticketNumber: string
-  phone?: string
+  city: string
+  street: string
+  houseNumber: string
+  apartmentNumber?: string
+  phone: string
 }
 
 type IReturnType = WithStringId<ISubscriber>
 
 const SubscriberSchema = new Schema<ISubscriber>(
   {
+    ticketNumber: { type: String, required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    ticketNumber: { type: String, required: true, unique: true },
-    phone: { type: String },
+    city: { type: String, required: true },
+    street: { type: String, required: true },
+    houseNumber: { type: String, required: true },
+    apartmentNumber: { type: String },
+    phone: { type: String, required: true },
   },
   {
     timestamps: true,

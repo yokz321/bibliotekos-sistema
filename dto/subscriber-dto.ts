@@ -1,15 +1,14 @@
 import { z } from "zod"
 
 export const subscriberSchema = z.object({
-  firstName: z.string().min(2, "Vardas per trumpas"),
-  lastName: z.string().min(2, "Pavardė per trumpa"),
-  address: z.string().min(5, "Adresas privalomas"),
-  rentedBooks: z
-    .array(
-      z.object({
-        bookId: z.string().min(1, "Pasirinkite knygą"),
-        borrowDate: z.string().min(1, "Data privaloma"),
-      })
-    )
-    .optional(),
+  ticketNumber: z.string().min(1, "Abonento numeris privalomas"),
+  firstName: z.string().trim().min(2, "Vardas per trumpas"),
+  lastName: z.string().trim().min(2, "Pavardė per trumpa"),
+  city: z.string().trim().min(1, "Miestas privalomas"),
+  street: z.string().trim().min(1, "Gatvė privaloma"),
+  houseNumber: z.string().trim().min(1, "Namo numeris privalomas"),
+  apartmentNumber: z.string().trim().optional().or(z.literal("")),
+  phone: z.string().trim().min(4, "Telefonas privalomas"),
 })
+
+export type SubscriberDTO = z.infer<typeof subscriberSchema>
