@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { saveAuthorAction } from "@/actions/author-actions"
-import { useState } from "react"
 
 interface AuthorFormProps {
   defaultValues?: AuthorDTO
@@ -22,14 +21,16 @@ interface AuthorFormProps {
   onComplete: () => void
 }
 
+const EMPTY_AUTHOR: AuthorDTO = {
+  firstName: "",
+  lastName: "",
+  biography: "",
+}
+
 export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
   const form = useForm<AuthorDTO>({
     resolver: zodResolver(authorSchema),
-    defaultValues: defaultValues || {
-      firstName: "",
-      lastName: "",
-      biography: "",
-    },
+    defaultValues: defaultValues || EMPTY_AUTHOR,
   })
 
   async function onSubmit(values: AuthorDTO) {
@@ -44,6 +45,10 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
       })
     }
   }
+
+  const isSubmitting = form.formState.isSubmitting
+  const submitBtnText = isSubmitting ? "Saugoma..." : "Išsaugoti"
+  const rootError = form.formState.errors.root
 
   return (
     <Form {...form}>
@@ -84,6 +89,7 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
             <FormItem>
               <FormLabel>Biografija</FormLabel>
               <FormControl>
+                {}
                 <Input {...field} value={field.value ?? ""} />
               </FormControl>
               <FormMessage />
@@ -91,19 +97,18 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
           )}
         />
 
-        {}
-        {form.formState.errors.root && (
+        {rootError && (
           <div className="p-2 text-sm font-medium text-red-500 bg-red-50 border border-red-200 rounded-md">
-            {form.formState.errors.root.message}
+            {rootError.message}
           </div>
         )}
 
         <Button
           type="submit"
           className="w-full bg-orange-600 hover:bg-orange-700"
-          disabled={form.formState.isSubmitting}
+          disabled={isSubmitting}
         >
-          {form.formState.isSubmitting ? "Saugoma..." : "Išsaugoti"}
+          {submitBtnText}
         </Button>
       </form>
     </Form>

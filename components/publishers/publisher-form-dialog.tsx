@@ -35,6 +35,11 @@ interface Props {
   onSuccess: () => void
 }
 
+const EMPTY_PUBLISHER: PublisherDTO = {
+  name: "",
+  location: "",
+}
+
 export function PublisherFormDialog({
   isOpen,
   onOpenChange,
@@ -45,39 +50,43 @@ export function PublisherFormDialog({
 
   const form = useForm<PublisherDTO>({
     resolver: zodResolver(publisherSchema),
-    defaultValues: { name: "", location: "" },
+    defaultValues: EMPTY_PUBLISHER,
   })
 
   useEffect(() => {
-    if (editingPublisher && isOpen) {
+    if (!isOpen) return
+
+    if (editingPublisher) {
       form.reset({
-        name: editingPublisher.name,
-        location: editingPublisher.location || "",
-      })
-    } else if (isOpen) {
-      form.reset({ name: "", location: "" })
+        ...editingPublisher,
+        location: editingPublisher.location ?? "",
+      } as PublisherDTO)
+    } else {
+      form.reset(EMPTY_PUBLISHER)
     }
   }, [editingPublisher, isOpen, form])
 
   const onSubmit = async (values: PublisherDTO) => {
     setIsSubmitting(true)
-
     const res = await savePublisherAction(values, editingPublisher?.id)
 
     if (res.success) {
-      toast.success(
-        editingPublisher ? "Leidykla atnaujinta!" : "Leidykla pridėta!"
-      )
+      const msg = editingPublisher
+        ? "Leidykla atnaujinta!"
+        : "Leidykla pridėta!"
+      toast.success(msg)
       onSuccess()
     } else {
-      form.setError("root", {
-        type: "manual",
-        message: res.error,
-      })
+      form.setError("root", { type: "manual", message: res.error })
     }
-
     setIsSubmitting(false)
   }
+
+  const dialogTitle = editingPublisher
+    ? "Redaguoti leidyklą"
+    : "Pridėti leidyklą"
+  const submitBtnText = isSubmitting ? "Saugoma..." : "Išsaugoti"
+  const rootError = form.formState.errors.root
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -88,9 +97,7 @@ export function PublisherFormDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {editingPublisher ? "Redaguoti leidyklą" : "Pridėti leidyklą"}
-          </DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>Įveskite leidyklos duomenis.</DialogDescription>
         </DialogHeader>
 
@@ -135,10 +142,9 @@ export function PublisherFormDialog({
               )}
             />
 
-            {}
-            {form.formState.errors.root && (
+            {rootError && (
               <div className="p-2 text-sm font-medium text-red-500 bg-red-50 border border-red-200 rounded-md">
-                {form.formState.errors.root.message}
+                {rootError.message}
               </div>
             )}
 
@@ -147,7 +153,7 @@ export function PublisherFormDialog({
               className="w-full bg-orange-600 hover:bg-orange-700"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saugoma..." : "Išsaugoti"}
+              {submitBtnText}
             </Button>
           </form>
         </Form>

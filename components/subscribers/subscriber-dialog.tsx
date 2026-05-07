@@ -35,6 +35,17 @@ interface Props {
   onSuccess: () => void
 }
 
+const EMPTY_SUBSCRIBER: SubscriberDTO = {
+  firstName: "",
+  lastName: "",
+  ticketNumber: "",
+  city: "",
+  street: "",
+  houseNumber: "",
+  apartmentNumber: "",
+  phone: "",
+}
+
 export function SubscriberDialog({
   isOpen,
   onOpenChange,
@@ -46,48 +57,25 @@ export function SubscriberDialog({
   const form = useForm<SubscriberDTO>({
     resolver: zodResolver(subscriberSchema),
     mode: "onBlur",
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      ticketNumber: "",
-      city: "",
-      street: "",
-      houseNumber: "",
-      apartmentNumber: "",
-      phone: "",
-    },
+    defaultValues: EMPTY_SUBSCRIBER,
   })
 
   useEffect(() => {
-    if (isOpen) {
-      if (editingItem) {
-        form.reset({
-          firstName: editingItem.firstName,
-          lastName: editingItem.lastName,
-          ticketNumber: editingItem.ticketNumber,
-          city: editingItem.city,
-          street: editingItem.street,
-          houseNumber: editingItem.houseNumber,
-          apartmentNumber: editingItem.apartmentNumber || "",
-          phone: editingItem.phone,
-        })
-      } else {
-        form.reset({
-          firstName: "",
-          lastName: "",
-          city: "",
-          street: "",
-          houseNumber: "",
-          apartmentNumber: "",
-          phone: "",
-        })
+    if (!isOpen) return
 
-        setIsLoadingNumber(true)
-        getNextTicketNumberAction().then((nextNumber: string) => {
-          form.setValue("ticketNumber", nextNumber)
-          setIsLoadingNumber(false)
-        })
-      }
+    if (editingItem) {
+      form.reset({
+        ...editingItem,
+        apartmentNumber: editingItem.apartmentNumber ?? "",
+      } as SubscriberDTO)
+    } else {
+      form.reset(EMPTY_SUBSCRIBER)
+
+      setIsLoadingNumber(true)
+      getNextTicketNumberAction().then((nextNumber: string) => {
+        form.setValue("ticketNumber", nextNumber)
+        setIsLoadingNumber(false)
+      })
     }
   }, [isOpen, editingItem, form])
 
@@ -95,7 +83,8 @@ export function SubscriberDialog({
     const res = await saveSubscriberAction(values, editingItem?.id)
 
     if (res.success) {
-      toast.success(editingItem ? "Atnaujinta!" : "Pridėta!")
+      const msg = editingItem ? "Atnaujinta!" : "Pridėta!"
+      toast.success(msg)
       onSuccess()
     } else {
       form.setError("root", {
@@ -105,12 +94,18 @@ export function SubscriberDialog({
     }
   }
 
+  const dialogTitle = editingItem ? "Redaguoti abonentą" : "Naujas abonentas"
+  const submitBtnText = form.formState.isSubmitting ? "Saugoma..." : "Išsaugoti"
+  const rootError = form.formState.errors.root
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{editingItem ? "Redaguoti" : "Naujas"}</DialogTitle>
-          <DialogDescription className="hidden">Form</DialogDescription>
+          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogDescription className="hidden">
+            Abonento formos pildymas
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -232,9 +227,9 @@ export function SubscriberDialog({
               )}
             />
 
-            {form.formState.errors.root && (
+            {rootError && (
               <div className="p-2 text-sm text-red-600 bg-red-100 rounded-md">
-                {form.formState.errors.root.message}
+                {rootError.message}
               </div>
             )}
 
@@ -243,7 +238,7 @@ export function SubscriberDialog({
               className="w-full bg-orange-600 hover:bg-orange-700"
               disabled={form.formState.isSubmitting}
             >
-              {form.formState.isSubmitting ? "Saugoma..." : "Išsaugoti"}
+              {submitBtnText}
             </Button>
           </form>
         </Form>
