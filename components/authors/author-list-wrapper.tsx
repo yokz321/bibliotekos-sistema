@@ -44,18 +44,21 @@ export function AuthorListWrapper({ initialData }: Props) {
     refreshData()
   }
 
+  const handleOpenChange = (v: boolean) => {
+    setIsOpen(v)
+    if (!v) {
+      setEditingAuthor(undefined)
+    }
+  }
+
+  const dialogTitle = editingAuthor ? "Redaguoti autorių" : "Pridėti autorių"
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Autoriai</h1>
 
-        <Dialog
-          open={isOpen}
-          onOpenChange={(v) => {
-            setIsOpen(v)
-            if (!v) setEditingAuthor(undefined)
-          }}
-        >
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
             <Button className="bg-orange-600 hover:bg-orange-700">
               <Plus className="mr-2 h-4 w-4" /> Naujas autorius
@@ -63,9 +66,7 @@ export function AuthorListWrapper({ initialData }: Props) {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>
-                {editingAuthor ? "Redaguoti autorių" : "Pridėti autorių"}
-              </DialogTitle>
+              <DialogTitle>{dialogTitle}</DialogTitle>
             </DialogHeader>
             <AuthorForm
               defaultValues={editingAuthor}
@@ -77,7 +78,6 @@ export function AuthorListWrapper({ initialData }: Props) {
       </div>
 
       <div className="rounded-md border bg-card shadow-sm overflow-hidden p-4">
-        {}
         <AuthorList
           items={authors}
           onEdit={handleEdit}

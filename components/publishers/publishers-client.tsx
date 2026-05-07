@@ -26,6 +26,19 @@ export function PublishersClient({
     }
   }
 
+  const handleFormSuccess = () => {
+    setIsDialogOpen(false)
+    setEditingPublisher(undefined)
+    refreshData()
+  }
+
+  const handleOpenChange = (open: boolean) => {
+    setIsDialogOpen(open)
+    if (!open) {
+      setEditingPublisher(undefined)
+    }
+  }
+
   const handleDelete = async (id?: string) => {
     if (!id) return
 
@@ -45,7 +58,6 @@ export function PublishersClient({
 
   return (
     <div className="space-y-6">
-      {}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Leidyklos</h1>
@@ -56,13 +68,9 @@ export function PublishersClient({
 
         <PublisherFormDialog
           isOpen={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
+          onOpenChange={handleOpenChange}
           editingPublisher={editingPublisher}
-          onSuccess={() => {
-            setIsDialogOpen(false)
-            setEditingPublisher(undefined)
-            refreshData()
-          }}
+          onSuccess={handleFormSuccess}
         />
       </div>
 

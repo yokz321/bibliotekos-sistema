@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -42,22 +42,19 @@ export function BookFormDialog({
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  useEffect(() => {
-    if (!isOpen) setIsSubmitting(false)
-  }, [isOpen])
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     const formData = new FormData(e.currentTarget)
-
     const data = Object.fromEntries(formData.entries()) as unknown as BookDTO
+
+    const successMessage = editingBook ? "Knyga atnaujinta!" : "Knyga pridėta!"
 
     const res = await saveBookAction(data, editingBook?.id)
 
     if (res.success) {
-      toast.success(editingBook ? "Knyga atnaujinta!" : "Knyga pridėta!")
+      toast.success(successMessage)
       onSuccess()
     } else {
       toast.error(res.error)
@@ -65,6 +62,9 @@ export function BookFormDialog({
 
     setIsSubmitting(false)
   }
+
+  const dialogTitle = editingBook ? "Redaguoti knygą" : "Pridėti naują knygą"
+  const submitButtonText = isSubmitting ? "Saugoma..." : "Išsaugoti"
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -75,9 +75,7 @@ export function BookFormDialog({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>
-            {editingBook ? "Redaguoti knygą" : "Pridėti naują knygą"}
-          </DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>Užpildykite duomenis.</DialogDescription>
         </DialogHeader>
 
@@ -136,7 +134,6 @@ export function BookFormDialog({
             </div>
           </div>
 
-          {}
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="inventoryNumber">Inv. Nr.</Label>
@@ -200,7 +197,7 @@ export function BookFormDialog({
             className="w-full bg-orange-600 hover:bg-orange-700"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Saugoma..." : "Išsaugoti"}
+            {submitButtonText}
           </Button>
         </form>
       </DialogContent>

@@ -28,6 +28,19 @@ export function BooksClient({
     }
   }
 
+  const handleFormSuccess = () => {
+    setIsDialogOpen(false)
+    setEditingBook(undefined)
+    refreshBooks()
+  }
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsDialogOpen(open)
+    if (!open) {
+      setEditingBook(undefined)
+    }
+  }
+
   const handleDelete = async (id?: string) => {
     if (!id) return
 
@@ -55,20 +68,14 @@ export function BooksClient({
           </p>
         </div>
 
+        {}
         <BookFormDialog
           isOpen={isDialogOpen}
-          onOpenChange={(open) => {
-            setIsDialogOpen(open)
-            if (!open) setEditingBook(undefined)
-          }}
+          onOpenChange={handleDialogOpenChange}
           editingBook={editingBook}
           authors={initialAuthors}
           publishers={initialPublishers}
-          onSuccess={() => {
-            setIsDialogOpen(false)
-            setEditingBook(undefined)
-            refreshBooks()
-          }}
+          onSuccess={handleFormSuccess}
         />
       </div>
 
