@@ -5,6 +5,7 @@ import {
   UserCog,
   CalendarCheck,
   LayoutGrid,
+  MapPin,
   LucideIcon,
 } from "lucide-react"
 
@@ -22,6 +23,7 @@ export const NAVIGATION_MENU: NavItem[] = [
     children: [
       { title: "Autoriai", href: "/authors", icon: Users },
       { title: "Leidyklos", href: "/publishers", icon: Building2 },
+      { title: "Miestai", href: "/cities", icon: MapPin }, // NAUJA EILUTĖ
     ],
   },
   { title: "Knygos", href: "/books", icon: Book },
