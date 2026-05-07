@@ -70,7 +70,10 @@ export function PublisherFormDialog({
       )
       onSuccess()
     } else {
-      toast.error(res.error)
+      form.setError("root", {
+        type: "manual",
+        message: res.error,
+      })
     }
 
     setIsSubmitting(false)
@@ -109,7 +112,7 @@ export function PublisherFormDialog({
                       disabled={isSubmitting}
                     />
                   </FormControl>
-                  <FormMessage /> {}
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -131,6 +134,13 @@ export function PublisherFormDialog({
                 </FormItem>
               )}
             />
+
+            {}
+            {form.formState.errors.root && (
+              <div className="p-2 text-sm font-medium text-red-500 bg-red-50 border border-red-200 rounded-md">
+                {form.formState.errors.root.message}
+              </div>
+            )}
 
             <Button
               type="submit"
