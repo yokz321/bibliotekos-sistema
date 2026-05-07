@@ -14,7 +14,6 @@ export const useBoundStore = create<IStoreState>()(
     }),
     {
       name: "bound-store",
-      // storage: createJSONStorage(() => localStorage),
-    },
-  ),
+    }
+  )
 )
