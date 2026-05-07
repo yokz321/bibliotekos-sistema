@@ -52,9 +52,17 @@ export function BooksTable({ books, onEdit, onDelete }: Props) {
                   <BookOpen className="h-4 w-4 text-orange-600" />
                   {book.title}
                 </TableCell>
-                <TableCell>{book.author?.name || "Nežinomas"}</TableCell>
+
+                {/* PATAISYTA: Rodome vardą ir pavardę */}
+                <TableCell>
+                  {book.author
+                    ? `${book.author.firstName} ${book.author.lastName}`
+                    : "Nežinomas"}
+                </TableCell>
+
                 <TableCell>{book.publisher?.name || "Nenurodyta"}</TableCell>
                 <TableCell className="text-center">{book.year}</TableCell>
+
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button
@@ -65,11 +73,12 @@ export function BooksTable({ books, onEdit, onDelete }: Props) {
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
+
                     <Button
                       variant="ghost"
                       size="icon"
                       className="text-destructive h-8 w-8"
-                      onClick={() => onDelete(book.id)}
+                      onClick={() => book.id && onDelete(book.id)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

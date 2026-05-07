@@ -20,8 +20,10 @@ const AuthorSchema = new Schema<IAuthor>(
     timestamps: true,
     collection: "authors",
     toJSON: {
+      versionKey: false,
+      virtuals: true,
       transform: (
-        _doc,
+        _doc: unknown,
         ret: IAuthor & { _id: Types.ObjectId }
       ): IReturnType => {
         const { _id, ...rest } = ret

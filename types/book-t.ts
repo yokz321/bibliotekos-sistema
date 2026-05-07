@@ -1,6 +1,7 @@
 export interface IAuthor {
   id: string
-  name: string
+  firstName: string
+  lastName: string
   biography?: string
 }
 
@@ -11,10 +12,13 @@ export interface IPublisher {
 }
 
 export interface IBook {
-  id: string
+  id?: string
+  inventoryNumber: string
+  isbn: string
   title: string
   author: IAuthor
   publisher: IPublisher
   year: number
-  isbn?: string
+  price: number
+  annotation?: string
 }
