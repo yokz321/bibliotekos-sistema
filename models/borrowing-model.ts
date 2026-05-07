@@ -1,10 +1,12 @@
 import { Model, model, models, Schema, Types } from "mongoose"
 import { WithStringId } from "./model-t"
+import { IBook } from "@/types/book-t"
+import { ISubscriber } from "@/types/subscriber-t"
 
 export interface IBorrowing {
   id?: string
-  bookId: any
-  subscriberId: any
+  bookId: Types.ObjectId | IBook
+  subscriberId: Types.ObjectId | ISubscriber
   borrowDate: Date
   returnDate?: Date
 }
@@ -25,7 +27,10 @@ const BorrowingSchema = new Schema<IBorrowing>(
   {
     collection: "borrowings",
     toJSON: {
-      transform: (_doc, ret): IReturnType => {
+      transform: (
+        _doc: unknown,
+        ret: IBorrowing & { _id: Types.ObjectId }
+      ): IReturnType => {
         const { _id, ...rest } = ret
         return { ...rest, id: _id.toString() }
       },

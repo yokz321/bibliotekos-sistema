@@ -13,7 +13,9 @@ export async function POST(request: NextRequest) {
     const service = new BookService()
     await service.save(res)
     return Response.json({ message: "Knyga sėkmingai pridėta" })
-  } catch (error: any) {
-    return Response.json({ error: error.message }, { status: 400 })
+  } catch (error: unknown) {
+    let message = "Serverio klaida"
+    if (error instanceof Error) message = error.message
+    return { success: false, error: message }
   }
 }

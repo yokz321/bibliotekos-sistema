@@ -8,23 +8,23 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Control } from "react-hook-form"
+import { Control, FieldValues, Path } from "react-hook-form"
 
-interface Props {
-  control: Control<any>
-  name: string
+interface Props<T extends FieldValues> {
+  control: Control<T>
+  name: Path<T>
   label: string
   placeholder?: string
   type?: string
 }
 
-export function TextField({
+export function TextField<T extends FieldValues>({
   control,
   name,
   label,
   placeholder,
   type = "text",
-}: Props) {
+}: Props<T>) {
   return (
     <FormField
       control={control}

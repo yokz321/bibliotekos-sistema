@@ -1,11 +1,12 @@
 import mongoose, { Schema, model, models, Types, Model } from "mongoose"
 import { WithStringId } from "./model-t"
+import { IAuthor, IPublisher } from "@/types/book-t"
 
 export interface IBook {
   id?: string
   title: string
-  author: any
-  publisher: any
+  author: Types.ObjectId | IAuthor
+  publisher: Types.ObjectId | IPublisher
   year: number
   isbn?: string
   inventoryNumber: string
@@ -26,7 +27,6 @@ const BookSchema = new Schema<IBook>(
     },
     year: { type: Number, required: true },
     isbn: { type: String },
-
     inventoryNumber: { type: String, required: true },
     price: { type: Number, required: true, default: 0 },
     annotation: { type: String },
