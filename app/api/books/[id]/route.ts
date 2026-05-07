@@ -7,7 +7,6 @@ export async function PUT(
 ) {
   const { id } = await params
   const res = await request.json()
-  res.id = id
 
   const service = new BookService()
   await service.update(res)

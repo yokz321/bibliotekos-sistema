@@ -38,8 +38,10 @@ export function AuthorListWrapper({ initialData }: Props) {
   }
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex justify-end">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Autoriai</h1>
+
         <Dialog
           open={isOpen}
           onOpenChange={(v) => {
@@ -59,14 +61,17 @@ export function AuthorListWrapper({ initialData }: Props) {
               </DialogTitle>
             </DialogHeader>
             <AuthorForm
-              defaultValues={editingAuthor || undefined}
+              defaultValues={editingAuthor}
               id={editingAuthor?.id}
               onComplete={handleComplete}
             />
           </DialogContent>
         </Dialog>
       </div>
-      <AuthorList items={initialData} onEdit={handleEdit} />
+
+      <div className="rounded-md border bg-card shadow-sm overflow-hidden p-4">
+        <AuthorList items={initialData} onEdit={handleEdit} />
+      </div>
     </div>
   )
 }

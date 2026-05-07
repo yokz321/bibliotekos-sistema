@@ -1,11 +1,14 @@
-import { Author, IAuthor } from "@/models/author-model"
+import { Author } from "@/models/author-model"
+import { IAuthor } from "@/types/book-t" // Naudojame tavo tipą
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 
 export class AuthorService {
   async getAll(): Promise<IAuthor[]> {
     await connectMongoose()
-    return await Author.find().sort({ lastName: 1 })
+    return (await Author.find()
+      .sort({ lastName: 1 })
+      .lean()) as unknown as IAuthor[]
   }
 
   async save(author: IAuthor): Promise<void> {
