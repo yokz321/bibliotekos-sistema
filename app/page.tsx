@@ -6,19 +6,19 @@ export default function Home() {
   const categories = [
     {
       title: "Knygos",
-      href: "/knygos",
+      href: "/books",
       icon: Book,
       description: "Peržiūrėti ir valdyti knygų katalogą",
     },
     {
       title: "Abonentai",
-      href: "/abonentai",
+      href: "/subscribers",
       icon: Users,
       description: "Bibliotekos lankytojų sąrašas ir duomenys",
     },
     {
       title: "Rezervacijos",
-      href: "/rezervacijos",
+      href: "/reservations",
       icon: CalendarCheck,
       description: "Knygų užsakymų ir grąžinimų sekimas",
     },
