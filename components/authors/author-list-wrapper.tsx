@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import {
@@ -14,17 +13,25 @@ import {
 import { AuthorList } from "./author-list"
 import { AuthorForm } from "./author-form"
 import { IAuthor } from "@/types/book-t"
+import { getApi } from "@/utils/server-api"
 
 interface Props {
   initialData: IAuthor[]
 }
 
 export function AuthorListWrapper({ initialData }: Props) {
-  const router = useRouter()
+  const [authors, setAuthors] = useState<IAuthor[]>(initialData)
   const [isOpen, setIsOpen] = useState(false)
   const [editingAuthor, setEditingAuthor] = useState<IAuthor | undefined>(
     undefined
   )
+
+  const refreshData = async () => {
+    const data = await getApi<IAuthor[]>("/api/authors")
+    if (data) {
+      setAuthors(data)
+    }
+  }
 
   const handleEdit = (author: IAuthor) => {
     setEditingAuthor(author)
@@ -34,7 +41,7 @@ export function AuthorListWrapper({ initialData }: Props) {
   const handleComplete = () => {
     setIsOpen(false)
     setEditingAuthor(undefined)
-    router.refresh()
+    refreshData()
   }
 
   return (
@@ -70,7 +77,12 @@ export function AuthorListWrapper({ initialData }: Props) {
       </div>
 
       <div className="rounded-md border bg-card shadow-sm overflow-hidden p-4">
-        <AuthorList items={initialData} onEdit={handleEdit} />
+        {}
+        <AuthorList
+          items={authors}
+          onEdit={handleEdit}
+          onSuccess={refreshData}
+        />
       </div>
     </div>
   )

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,10 +18,10 @@ import { ISubscriber } from "@/types/subscriber-t"
 interface Props {
   items: ISubscriber[]
   onEdit: (item: ISubscriber) => void
+  onRefresh: () => void
 }
 
-export function SubscriberTable({ items, onEdit }: Props) {
-  const router = useRouter()
+export function SubscriberTable({ items, onEdit, onRefresh }: Props) {
   const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
 
   const handleDelete = async (id?: string) => {
@@ -33,7 +32,7 @@ export function SubscriberTable({ items, onEdit }: Props) {
     const res = await deleteSubscriberAction(id)
     if (res.success) {
       toast.success("Abonentas pašalintas")
-      router.refresh()
+      onRefresh()
     } else {
       toast.error(res.error || "Klaida šalinant")
     }

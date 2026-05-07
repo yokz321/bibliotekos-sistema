@@ -3,6 +3,7 @@
 import { BookService } from "@/services/book-service"
 import { bookSchema, type BookDTO } from "@/dto/book-dto"
 import { revalidatePath } from "next/cache"
+import { IBook } from "@/types/book-t"
 
 export async function saveBookAction(data: BookDTO, id?: string) {
   const parse = bookSchema.safeParse(data)
@@ -16,10 +17,15 @@ export async function saveBookAction(data: BookDTO, id?: string) {
   const bookService = new BookService()
 
   const dbData = {
-    ...validatedData,
+    title: validatedData.title,
     author: validatedData.authorId,
     publisher: validatedData.publisherId,
-  }
+    inventoryNumber: validatedData.inventoryNumber,
+    isbn: validatedData.isbn,
+    price: validatedData.price,
+    year: validatedData.year,
+    annotation: validatedData.annotation,
+  } as unknown as IBook
 
   try {
     if (id) {
@@ -44,7 +50,6 @@ export async function deleteBookAction(id: string) {
     revalidatePath("/books")
     return { success: true }
   } catch (error: unknown) {
-    console.error("KLAIDA TRINANT KNYGĄ:", error)
     return { success: false, error: "Nepavyko ištrinti knygos" }
   }
 }

@@ -2,11 +2,11 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 import { BooksTable } from "./books-table"
 import { BookFormDialog } from "./book-form-dialog"
 import { deleteBookAction } from "@/actions/book-actions"
 import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
+import { getApi } from "@/utils/server-api"
 
 export function BooksClient({
   initialBooks,
@@ -17,15 +17,22 @@ export function BooksClient({
   initialAuthors: IAuthor[]
   initialPublishers: IPublisher[]
 }) {
+  const [books, setBooks] = useState<IBook[]>(initialBooks)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingBook, setEditingBook] = useState<IBook | undefined>(undefined)
-  const router = useRouter()
+
+  const refreshBooks = async () => {
+    const data = await getApi<IBook[]>("/api/books")
+    if (data) {
+      setBooks(data)
+    }
+  }
 
   const handleDelete = async (id: string) => {
     const res = await deleteBookAction(id)
     if (res.success) {
       toast.success("Knyga pašalinta sėkmingai")
-      router.refresh()
+      refreshBooks()
     } else {
       toast.error(res.error || "Klaida šalinant")
     }
@@ -38,7 +45,6 @@ export function BooksClient({
 
   return (
     <div className="space-y-6">
-      {}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Knygos</h1>
@@ -47,7 +53,6 @@ export function BooksClient({
           </p>
         </div>
 
-        {}
         <BookFormDialog
           isOpen={isDialogOpen}
           onOpenChange={(open) => {
@@ -60,17 +65,12 @@ export function BooksClient({
           onSuccess={() => {
             setIsDialogOpen(false)
             setEditingBook(undefined)
-            router.refresh()
+            refreshBooks()
           }}
         />
       </div>
 
-      {}
-      <BooksTable
-        books={initialBooks}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <BooksTable books={books} onEdit={handleEdit} onDelete={handleDelete} />
     </div>
   )
 }

@@ -1,23 +1,29 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Plus } from "lucide-react"
 import { SubscriberTable } from "./subscriber-table"
 import { SubscriberDialog } from "./subscriber-dialog"
 import type { ISubscriber } from "@/types/subscriber-t"
+import { getApi } from "@/utils/server-api"
 
 export function SubscribersClient({
   initialData,
 }: {
   initialData: ISubscriber[]
 }) {
-  const router = useRouter()
+  const [data, setData] = useState<ISubscriber[]>(initialData)
   const [isOpen, setIsOpen] = useState(false)
-
   const [editing, setEditing] = useState<ISubscriber | undefined>(undefined)
+
+  const refreshData = async () => {
+    const res = await getApi<ISubscriber[]>("/api/subscribers")
+    if (res) {
+      setData(res)
+    }
+  }
 
   const handleEdit = (item: ISubscriber) => {
     setEditing(item)
@@ -27,12 +33,11 @@ export function SubscribersClient({
   const handleSuccess = () => {
     setIsOpen(false)
     setEditing(undefined)
-    router.refresh()
+    refreshData()
   }
 
   return (
     <div className="space-y-6">
-      {}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Abonentai</h1>
 
@@ -48,7 +53,12 @@ export function SubscribersClient({
       </div>
 
       <Card className="overflow-hidden border shadow-sm">
-        <SubscriberTable items={initialData} onEdit={handleEdit} />
+        {}
+        <SubscriberTable
+          items={data}
+          onEdit={handleEdit}
+          onRefresh={refreshData}
+        />
       </Card>
 
       <SubscriberDialog

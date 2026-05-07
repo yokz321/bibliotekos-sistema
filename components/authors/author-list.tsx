@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import {
   Table,
@@ -31,10 +30,10 @@ import {
 interface Props {
   items: IAuthor[]
   onEdit: (author: IAuthor) => void
+  onSuccess: () => void
 }
 
-export function AuthorList({ items, onEdit }: Props) {
-  const router = useRouter()
+export function AuthorList({ items, onEdit, onSuccess }: Props) {
   const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
 
   const executeDelete = async (id: string) => {
@@ -42,7 +41,7 @@ export function AuthorList({ items, onEdit }: Props) {
     const res = await deleteAuthorAction(id)
     if (res.success) {
       toast.success("Autorius pašalintas")
-      router.refresh()
+      onSuccess()
     } else {
       toast.error(res.error || "Klaida šalinant")
     }
