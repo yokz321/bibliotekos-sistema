@@ -1,9 +1,8 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutGrid } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { CLASSIFIER_ITEMS, MAIN_NAV_ITEMS } from "@/constants/navigation"
+import { NAVIGATION_MENU, NavItem } from "@/constants/navigation"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -17,10 +16,10 @@ import {
 export function DesktopNav() {
   const pathname = usePathname()
 
-  const getStyle = (path: string) =>
+  const getLinkStyle = (href?: string) =>
     cn(
       "bg-transparent hover:bg-transparent focus:bg-transparent",
-      pathname === path
+      pathname === href
         ? "!text-orange-600 font-bold"
         : "!text-slate-600 hover:!text-orange-600"
     )
@@ -29,47 +28,49 @@ export function DesktopNav() {
     <nav className="hidden md:block">
       <NavigationMenu>
         <NavigationMenuList className="gap-1">
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className={getStyle("")}>
-              <LayoutGrid className="h-4 w-4 mr-2" /> Klasifikatoriai
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[200px] gap-1 p-2 bg-white border shadow-md rounded-md">
-                {CLASSIFIER_ITEMS.map((item) => (
-                  <li key={item.href}>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-2 p-3 rounded-md transition-colors",
-                          pathname === item.href
-                            ? "bg-orange-50 text-orange-600 font-bold"
-                            : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
-                        )}
-                      >
-                        <item.icon className="h-4 w-4" /> {item.title}
-                      </Link>
-                    </NavigationMenuLink>
-                  </li>
-                ))}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-
-          {MAIN_NAV_ITEMS.map((item) => (
-            <NavigationMenuItem key={item.href}>
-              <NavigationMenuLink
-                asChild
-                className={cn(
-                  navigationMenuTriggerStyle(),
-                  getStyle(item.href)
-                )}
-              >
-                <Link href={item.href}>
-                  <item.icon className="h-4 w-4 mr-2" />
-                  {item.title}
-                </Link>
-              </NavigationMenuLink>
+          {NAVIGATION_MENU.map((item) => (
+            <NavigationMenuItem key={item.title}>
+              {item.children ? (
+                <>
+                  <NavigationMenuTrigger className={getLinkStyle(item.href)}>
+                    <item.icon className="h-4 w-4 mr-2" /> {item.title}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[200px] gap-1 p-2 bg-white border shadow-md rounded-md">
+                      {item.children.map((child) => (
+                        <li key={child.href}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              href={child.href}
+                              className={cn(
+                                "flex items-center gap-2 p-3 rounded-md transition-colors",
+                                pathname === child.href
+                                  ? "bg-orange-50 text-orange-600 font-bold"
+                                  : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
+                              )}
+                            >
+                              <child.icon className="h-4 w-4" /> {child.title}
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </>
+              ) : (
+                <NavigationMenuLink
+                  asChild
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    getLinkStyle(item.href)
+                  )}
+                >
+                  <Link href={item.href || "#"}>
+                    <item.icon className="h-4 w-4 mr-2" />
+                    {item.title}
+                  </Link>
+                </NavigationMenuLink>
+              )}
             </NavigationMenuItem>
           ))}
         </NavigationMenuList>

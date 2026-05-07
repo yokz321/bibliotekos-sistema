@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { CLASSIFIER_ITEMS, MAIN_NAV_ITEMS } from "@/constants/navigation"
+import { NAVIGATION_MENU } from "@/constants/navigation"
 import {
   Sheet,
   SheetContent,
@@ -19,7 +19,7 @@ export function MobileNav() {
   const pathname = usePathname()
   const [open, setOpen] = React.useState(false)
 
-  const getStyle = (path: string) =>
+  const getStyle = (path?: string) =>
     cn(
       "flex items-center gap-3 p-2 rounded-md transition-colors",
       pathname === path
@@ -42,40 +42,40 @@ export function MobileNav() {
             </SheetTitle>
           </SheetHeader>
           <div className="flex flex-col gap-6 mt-10">
-            {}
-            <div className="space-y-3">
-              <p className="text-[10px] font-bold !text-slate-400 uppercase px-2 tracking-widest">
-                Klasifikatoriai
-              </p>
-              <div className="flex flex-col gap-1">
-                {CLASSIFIER_ITEMS.map((item) => (
+            {NAVIGATION_MENU.map((group) => (
+              <div
+                key={group.title}
+                className={cn("space-y-1", group.children && "border-b pb-4")}
+              >
+                {group.children ? (
+                  <>
+                    <p className="text-[10px] font-bold !text-slate-400 uppercase px-2 tracking-widest mb-2">
+                      {group.title}
+                    </p>
+                    {group.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        onClick={() => setOpen(false)}
+                        className={getStyle(child.href)}
+                      >
+                        <child.icon className="h-5 w-5 !text-orange-600" />
+                        {child.title}
+                      </Link>
+                    ))}
+                  </>
+                ) : (
                   <Link
-                    key={item.href}
-                    href={item.href}
+                    href={group.href || "#"}
                     onClick={() => setOpen(false)}
-                    className={getStyle(item.href)}
+                    className={getStyle(group.href)}
                   >
-                    <item.icon className="h-5 w-5 !text-orange-600" />
-                    {item.title}
+                    <group.icon className="h-5 w-5 !text-orange-600" />
+                    {group.title}
                   </Link>
-                ))}
+                )}
               </div>
-            </div>
-
-            {}
-            <div className="space-y-1 border-t pt-6">
-              {MAIN_NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className={getStyle(item.href)}
-                >
-                  <item.icon className="h-5 w-5 !text-orange-600" />
-                  {item.title}
-                </Link>
-              ))}
-            </div>
+            ))}
           </div>
         </SheetContent>
       </Sheet>

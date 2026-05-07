@@ -1,11 +1,29 @@
-import { Users, Building2, Book, UserCog, CalendarCheck } from "lucide-react"
+import {
+  Users,
+  Building2,
+  Book,
+  UserCog,
+  CalendarCheck,
+  LayoutGrid,
+  LucideIcon,
+} from "lucide-react"
 
-export const CLASSIFIER_ITEMS = [
-  { title: "Autoriai", href: "/authors", icon: Users },
-  { title: "Leidyklos", href: "/publishers", icon: Building2 },
-]
+export interface NavItem {
+  title: string
+  href?: string
+  icon: LucideIcon
+  children?: { title: string; href: string; icon: LucideIcon }[]
+}
 
-export const MAIN_NAV_ITEMS = [
+export const NAVIGATION_MENU: NavItem[] = [
+  {
+    title: "Klasifikatoriai",
+    icon: LayoutGrid,
+    children: [
+      { title: "Autoriai", href: "/authors", icon: Users },
+      { title: "Leidyklos", href: "/publishers", icon: Building2 },
+    ],
+  },
   { title: "Knygos", href: "/books", icon: Book },
   { title: "Abonentai", href: "/subscribers", icon: UserCog },
   { title: "Rezervacijos", href: "/reservations", icon: CalendarCheck },
