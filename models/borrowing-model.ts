@@ -8,7 +8,9 @@ export interface IBorrowing {
   bookId: Types.ObjectId | IBook
   subscriberId: Types.ObjectId | ISubscriber
   borrowDate: Date
+  dueDate: Date
   returnDate?: Date
+  isReturned: boolean
 }
 
 type IReturnType = WithStringId<IBorrowing>
@@ -21,12 +23,16 @@ const BorrowingSchema = new Schema<IBorrowing>(
       ref: "Subscriber",
       required: true,
     },
-    borrowDate: { type: Date, default: Date.now },
+    borrowDate: { type: Date, default: Date.now, required: true },
+    dueDate: { type: Date, required: true },
     returnDate: { type: Date },
+    isReturned: { type: Boolean, default: false, required: true },
   },
   {
+    timestamps: true,
     collection: "borrowings",
     toJSON: {
+      virtuals: true,
       transform: (
         _doc: unknown,
         ret: IBorrowing & { _id: Types.ObjectId }
