@@ -36,10 +36,14 @@ export class PublisherService {
 
   async update(publisher: IPublisher): Promise<void> {
     await connectMongoose()
-
     const { id, ...updateData } = publisher
-
     if (!id) throw new Error("Atnaujinimui reikalingas ID")
+
+    const existing = await Publisher.findOne({
+      _id: { $ne: new Types.ObjectId(id) },
+      name: { $regex: new RegExp(`^${updateData.name}$`, "i") },
+    })
+    if (existing) throw new Error("Tokia leidykla jau egzistuoja!")
 
     await Publisher.updateOne({ _id: new Types.ObjectId(id) }, updateData)
   }

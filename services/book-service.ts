@@ -7,8 +7,8 @@ import { IBook, IAuthor, IPublisher } from "@/types/book-t"
 
 type LeanPopulatedBook = Omit<IBook, "author" | "publisher"> & {
   _id: Types.ObjectId
-  author?: (IAuthor & { _id: Types.ObjectId }) | null
-  publisher?: (IPublisher & { _id: Types.ObjectId }) | null
+  author?: (IAuthor & { _id: Types.ObjectId }) | undefined
+  publisher?: (IPublisher & { _id: Types.ObjectId }) | undefined
 }
 
 export class BookService {

@@ -14,8 +14,8 @@ import {
 
 export interface IBorrowingPopulated {
   id: string
-  bookId: IBook | null
-  subscriberId: ISubscriber | null
+  bookId: IBook | undefined
+  subscriberId: ISubscriber | undefined
   borrowDate: string
   dueDate: string
   returnDate?: string

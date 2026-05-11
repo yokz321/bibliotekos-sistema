@@ -37,8 +37,15 @@ export class AuthorService {
 
   async update(author: IAuthor): Promise<void> {
     await connectMongoose()
-
     const { id, ...updateData } = author
+
+    const existing = await Author.findOne({
+      _id: { $ne: new Types.ObjectId(id) },
+      firstName: { $regex: new RegExp(`^${updateData.firstName}$`, "i") },
+      lastName: { $regex: new RegExp(`^${updateData.lastName}$`, "i") },
+    })
+    if (existing)
+      throw new Error("Kitas autorius su tokiu vardu jau egzistuoja!")
 
     await Author.updateOne({ _id: new Types.ObjectId(id) }, updateData)
   }
