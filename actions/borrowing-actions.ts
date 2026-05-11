@@ -43,7 +43,7 @@ export async function saveBorrowingAction(data: BorrowingDTO) {
 
     revalidatePath("/reservations")
     return { success: true }
-  } catch (error) {
+  } catch {
     return { success: false, error: "Serverio klaida saugant" }
   }
 }
@@ -54,7 +54,7 @@ export async function returnBookAction(id: string) {
     await service.returnBook(id)
     revalidatePath("/reservations")
     return { success: true }
-  } catch (error) {
+  } catch {
     return { success: false, error: "Nepavyko užregistruoti grąžinimo" }
   }
 }
@@ -65,7 +65,7 @@ export async function deleteBorrowingAction(id: string) {
     await service.delete(id)
     revalidatePath("/reservations")
     return { success: true }
-  } catch (error) {
-    return { success: false, error: "Nepavyko ištrinti įrašo" }
+  } catch {
+    return { success: false, error: "Nepavyko ištrinti knygos" }
   }
 }
