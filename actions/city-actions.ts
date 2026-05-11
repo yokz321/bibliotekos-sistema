@@ -3,7 +3,7 @@
 import { CityService } from "@/services/city-service"
 import { citySchema, type CityDTO } from "@/dto/city-dto"
 import { revalidatePath } from "next/cache"
-import { ICity } from "@/types/city-t"
+import type { ICity } from "@/types/city-t"
 
 export async function saveCityAction(data: CityDTO, id?: string) {
   const parsed = citySchema.safeParse(data)
