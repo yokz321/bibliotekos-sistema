@@ -1,6 +1,6 @@
 import { Model, model, models, Schema, Types } from "mongoose"
-import { WithStringId } from "./model-t"
-import { ICity } from "@/types/city-t"
+import type { WithStringId } from "./model-t"
+import type { ICity } from "@/types/city-t"
 
 type IReturnType = WithStringId<ICity>
 

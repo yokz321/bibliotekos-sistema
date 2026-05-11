@@ -1,5 +1,5 @@
 import { City } from "@/models/city-model"
-import { ICity } from "@/types/city-t"
+import { type ICity } from "@/types/city-t"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 

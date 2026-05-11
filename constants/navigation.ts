@@ -6,7 +6,7 @@ import {
   CalendarCheck,
   LayoutGrid,
   MapPin,
-  LucideIcon,
+  type LucideIcon,
 } from "lucide-react"
 
 export interface NavItem {

@@ -1,5 +1,5 @@
 import { Subscriber } from "@/models/subscriber-model"
-import { ISubscriber } from "@/types/subscriber-t"
+import type { ISubscriber } from "@/types/subscriber-t"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 

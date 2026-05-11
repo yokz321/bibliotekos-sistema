@@ -1,4 +1,4 @@
-import { Borrowing, IBorrowing } from "@/models/borrowing-model"
+import { Borrowing, type IBorrowing } from "@/models/borrowing-model"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 
