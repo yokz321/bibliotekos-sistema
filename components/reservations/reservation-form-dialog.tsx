@@ -58,7 +58,6 @@ export function ReservationFormDialog({
   subscribers,
   onSuccess,
 }: Props) {
-  // Naudojame griežtą BorrowingDTO tipą
   const form = useForm<BorrowingDTO>({
     resolver: zodResolver(borrowingSchema),
     mode: "onBlur",
@@ -79,6 +78,9 @@ export function ReservationFormDialog({
 
   const isSubmitting = form.formState.isSubmitting
   const rootError = form.formState.errors.root
+  const currentYear = new Date().getFullYear()
+  const minDate = `${currentYear}-01-01`
+  const maxDate = `${currentYear + 10}-12-31`
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -93,10 +95,11 @@ export function ReservationFormDialog({
         </DialogHeader>
 
         <Form {...form}>
-          {/* handleSubmit apgaubiame arrow funkcija - tai ištaiso TS klaidas */}
+          {}
           <form
             onSubmit={form.handleSubmit((v) => onSubmit(v))}
             className="space-y-4 pt-4"
+            noValidate
           >
             <FormField
               control={form.control}
@@ -162,7 +165,12 @@ export function ReservationFormDialog({
                   <FormItem>
                     <FormLabel>Pasiėmimo data</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input
+                        type="date"
+                        min={minDate}
+                        max={maxDate}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -175,7 +183,12 @@ export function ReservationFormDialog({
                   <FormItem>
                     <FormLabel>Grąžinimo terminas</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input
+                        type="date"
+                        min={minDate}
+                        max={maxDate}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

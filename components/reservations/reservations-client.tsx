@@ -7,6 +7,10 @@ import { ReservationFormDialog } from "./reservation-form-dialog"
 import { getApi } from "@/utils/server-api"
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
+import {
+  returnBookAction,
+  deleteBorrowingAction,
+} from "@/actions/borrowing-actions"
 
 export interface IBorrowingPopulated {
   id: string
@@ -41,32 +45,24 @@ export function ReservationsClient({
   }
 
   const handleReturn = async (id: string) => {
-    try {
-      const res = await fetch(`/api/borrowings/${id}`, { method: "PUT" })
-      if (res.ok) {
-        toast.success("Knyga sėkmingai grąžinta!")
-        refreshData()
-      } else {
-        toast.error("Nepavyko užregistruoti grąžinimo")
-      }
-    } catch (error) {
-      toast.error("Sistemos klaida")
+    const res = await returnBookAction(id)
+    if (res.success) {
+      toast.success("Knyga sėkmingai grąžinta!")
+      refreshData()
+    } else {
+      toast.error(res.error || "Klaida")
     }
   }
 
   const handleDelete = async (id: string) => {
     if (!confirm("Ar tikrai norite ištrinti šį įrašą?")) return
 
-    try {
-      const res = await fetch(`/api/borrowings/${id}`, { method: "DELETE" })
-      if (res.ok) {
-        toast.success("Įrašas pašalintas")
-        refreshData()
-      } else {
-        toast.error("Nepavyko ištrinti")
-      }
-    } catch (error) {
-      toast.error("Sistemos klaida")
+    const res = await deleteBorrowingAction(id)
+    if (res.success) {
+      toast.success("Įrašas pašalintas")
+      refreshData()
+    } else {
+      toast.error(res.error || "Klaida")
     }
   }
 

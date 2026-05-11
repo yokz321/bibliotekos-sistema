@@ -5,6 +5,7 @@ import { Borrowing } from "@/models/borrowing-model"
 import { borrowingSchema, type BorrowingDTO } from "@/dto/borrowing-dto"
 import { revalidatePath } from "next/cache"
 import { Types } from "mongoose"
+import { BorrowingService } from "@/services/borrowing-service"
 
 export async function saveBorrowingAction(data: BorrowingDTO) {
   const parse = borrowingSchema.safeParse(data)
@@ -42,8 +43,29 @@ export async function saveBorrowingAction(data: BorrowingDTO) {
 
     revalidatePath("/reservations")
     return { success: true }
-  } catch (error: unknown) {
-    console.error("KLAIDA SAUGANT REZERVACIJĄ:", error)
-    return { success: false, error: "Serverio klaida saugant duomenis" }
+  } catch (error) {
+    return { success: false, error: "Serverio klaida saugant" }
+  }
+}
+
+export async function returnBookAction(id: string) {
+  const service = new BorrowingService()
+  try {
+    await service.returnBook(id)
+    revalidatePath("/reservations")
+    return { success: true }
+  } catch (error) {
+    return { success: false, error: "Nepavyko užregistruoti grąžinimo" }
+  }
+}
+
+export async function deleteBorrowingAction(id: string) {
+  const service = new BorrowingService()
+  try {
+    await service.delete(id)
+    revalidatePath("/reservations")
+    return { success: true }
+  } catch (error) {
+    return { success: false, error: "Nepavyko ištrinti įrašo" }
   }
 }
