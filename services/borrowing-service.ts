@@ -1,4 +1,4 @@
-import { Borrowing } from "@/models/borrowing-model"
+import { Borrowing, IBorrowing } from "@/models/borrowing-model"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 
@@ -13,6 +13,12 @@ export class BorrowingService {
       .lean()
 
     return JSON.parse(JSON.stringify(results))
+  }
+
+  async save(data: Omit<IBorrowing, "id">) {
+    await connectMongoose()
+
+    return await Borrowing.create(data)
   }
 
   async returnBook(id: string) {
