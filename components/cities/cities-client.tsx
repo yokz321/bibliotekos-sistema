@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useEffect, useState } from "react"
@@ -13,6 +15,8 @@ import { useShallow } from "zustand/react/shallow"
 interface IProps {}
 
 export function CitiesClient(props: IProps) {
+  // Destruktūrizacija pagal dėstytojo praktiką #18
+  // eslint-disable-next-line no-empty-pattern
   const {} = props
 
   const [cities, setCities] = useState<ICity[]>([])
