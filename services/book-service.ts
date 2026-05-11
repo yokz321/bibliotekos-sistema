@@ -15,10 +15,6 @@ export class BookService {
   async getAll(): Promise<IBook[]> {
     try {
       await connectMongoose()
-
-      Author
-      Publisher
-
       const books = (await Book.find()
         .populate("author")
         .populate("publisher")
