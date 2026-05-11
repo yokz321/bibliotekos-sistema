@@ -43,14 +43,6 @@ interface Props {
   onSuccess: () => void
 }
 
-const EMPTY_RESERVATION: BorrowingDTO = {
-  subscriberId: "",
-  bookId: "",
-  borrowDate: new Date().toISOString().split("T")[0] ?? "",
-  dueDate: "",
-  isReturned: false,
-}
-
 export function ReservationFormDialog({
   isOpen,
   onOpenChange,
@@ -61,7 +53,13 @@ export function ReservationFormDialog({
   const form = useForm<BorrowingDTO>({
     resolver: zodResolver(borrowingSchema),
     mode: "onBlur",
-    defaultValues: EMPTY_RESERVATION,
+    defaultValues: {
+      subscriberId: "",
+      bookId: "",
+      borrowDate: new Date().toISOString().split("T")[0] ?? "",
+      dueDate: "",
+      isReturned: false,
+    },
   })
 
   const onSubmit = async (values: BorrowingDTO) => {
@@ -69,7 +67,7 @@ export function ReservationFormDialog({
 
     if (res.success) {
       toast.success("Rezervacija sėkmingai sukurta!")
-      form.reset(EMPTY_RESERVATION)
+      form.reset()
       onSuccess()
     } else {
       form.setError("root", { type: "server", message: res.error })
@@ -78,6 +76,7 @@ export function ReservationFormDialog({
 
   const isSubmitting = form.formState.isSubmitting
   const rootError = form.formState.errors.root
+
   const currentYear = new Date().getFullYear()
   const minDate = `${currentYear}-01-01`
   const maxDate = `${currentYear + 10}-12-31`

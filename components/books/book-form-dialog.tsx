@@ -45,17 +45,6 @@ interface Props {
   onSuccess: () => void
 }
 
-const EMPTY_BOOK: BookDTO = {
-  title: "",
-  authorId: "",
-  publisherId: "",
-  inventoryNumber: "",
-  isbn: "",
-  price: 0,
-  year: new Date().getFullYear(),
-  annotation: "",
-}
-
 export function BookFormDialog({
   isOpen,
   onOpenChange,
@@ -67,7 +56,16 @@ export function BookFormDialog({
   const form = useForm<BookDTO>({
     resolver: zodResolver(bookSchema),
     mode: "onBlur",
-    defaultValues: EMPTY_BOOK,
+    defaultValues: {
+      title: "",
+      authorId: "",
+      publisherId: "",
+      inventoryNumber: "",
+      isbn: "",
+      price: 0,
+      year: new Date().getFullYear(),
+      annotation: "",
+    },
   })
 
   useEffect(() => {
@@ -85,7 +83,7 @@ export function BookFormDialog({
         annotation: editingBook.annotation || "",
       })
     } else {
-      form.reset(EMPTY_BOOK)
+      form.reset()
     }
   }, [isOpen, editingBook, form])
 

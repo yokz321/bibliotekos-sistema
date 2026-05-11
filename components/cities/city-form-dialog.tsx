@@ -35,8 +35,6 @@ interface Props {
   onSuccess: () => void
 }
 
-const EMPTY_CITY: CityDTO = { name: "" }
-
 export function CityFormDialog({
   isOpen,
   onOpenChange,
@@ -48,16 +46,18 @@ export function CityFormDialog({
   const form = useForm<CityDTO>({
     resolver: zodResolver(citySchema),
     mode: "onBlur",
-    defaultValues: EMPTY_CITY,
+    defaultValues: {
+      name: "",
+    },
   })
 
   useEffect(() => {
     if (!isOpen) return
 
     if (editingCity) {
-      form.reset({ ...editingCity } as CityDTO)
+      form.reset({ name: editingCity.name })
     } else {
-      form.reset(EMPTY_CITY)
+      form.reset()
     }
   }, [editingCity, isOpen, form])
 

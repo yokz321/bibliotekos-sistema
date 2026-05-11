@@ -35,11 +35,6 @@ interface Props {
   onSuccess: () => void
 }
 
-const EMPTY_PUBLISHER: PublisherDTO = {
-  name: "",
-  location: "",
-}
-
 export function PublisherFormDialog({
   isOpen,
   onOpenChange,
@@ -51,7 +46,10 @@ export function PublisherFormDialog({
   const form = useForm<PublisherDTO>({
     resolver: zodResolver(publisherSchema),
     mode: "onBlur",
-    defaultValues: EMPTY_PUBLISHER,
+    defaultValues: {
+      name: "",
+      location: "",
+    },
   })
 
   useEffect(() => {
@@ -59,11 +57,11 @@ export function PublisherFormDialog({
 
     if (editingPublisher) {
       form.reset({
-        ...editingPublisher,
+        name: editingPublisher.name,
         location: editingPublisher.location ?? "",
-      } as PublisherDTO)
+      })
     } else {
-      form.reset(EMPTY_PUBLISHER)
+      form.reset()
     }
   }, [editingPublisher, isOpen, form])
 

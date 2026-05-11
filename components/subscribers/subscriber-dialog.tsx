@@ -44,17 +44,6 @@ interface Props {
   cities: ICity[]
 }
 
-const EMPTY_SUBSCRIBER: SubscriberDTO = {
-  firstName: "",
-  lastName: "",
-  ticketNumber: "",
-  city: "",
-  street: "",
-  houseNumber: "",
-  apartmentNumber: "",
-  phone: "",
-}
-
 export function SubscriberDialog({
   isOpen,
   onOpenChange,
@@ -67,7 +56,16 @@ export function SubscriberDialog({
   const form = useForm<SubscriberDTO>({
     resolver: zodResolver(subscriberSchema),
     mode: "onBlur",
-    defaultValues: EMPTY_SUBSCRIBER,
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      ticketNumber: "",
+      city: "",
+      street: "",
+      houseNumber: "",
+      apartmentNumber: "",
+      phone: "",
+    },
   })
 
   useEffect(() => {
@@ -75,11 +73,17 @@ export function SubscriberDialog({
 
     if (editingItem) {
       form.reset({
-        ...editingItem,
+        firstName: editingItem.firstName,
+        lastName: editingItem.lastName,
+        ticketNumber: editingItem.ticketNumber,
+        city: editingItem.city,
+        street: editingItem.street,
+        houseNumber: editingItem.houseNumber,
         apartmentNumber: editingItem.apartmentNumber ?? "",
-      } as SubscriberDTO)
+        phone: editingItem.phone,
+      })
     } else {
-      form.reset(EMPTY_SUBSCRIBER)
+      form.reset()
 
       setIsLoadingNumber(true)
       getNextTicketNumberAction().then((nextNumber: string) => {
@@ -105,7 +109,8 @@ export function SubscriberDialog({
   }
 
   const dialogTitle = editingItem ? "Redaguoti abonentą" : "Naujas abonentas"
-  const submitBtnText = form.formState.isSubmitting ? "Saugoma..." : "Išsaugoti"
+  const isSubmitting = form.formState.isSubmitting
+  const submitBtnText = isSubmitting ? "Saugoma..." : "Išsaugoti"
   const rootError = form.formState.errors.root
 
   return (
@@ -122,6 +127,7 @@ export function SubscriberDialog({
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 pt-2"
+            noValidate
           >
             <div className="grid grid-cols-2 gap-4">
               <FormField
@@ -131,7 +137,7 @@ export function SubscriberDialog({
                   <FormItem>
                     <FormLabel>Vardas</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,7 +150,7 @@ export function SubscriberDialog({
                   <FormItem>
                     <FormLabel>Pavardė</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -161,8 +167,8 @@ export function SubscriberDialog({
                     <FormLabel>Miestas</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      disabled={form.formState.isSubmitting}
+                      value={field.value}
+                      disabled={isSubmitting}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -171,7 +177,10 @@ export function SubscriberDialog({
                       </FormControl>
                       <SelectContent>
                         {cities.map((city) => (
-                          <SelectItem key={city.id} value={city.name}>
+                          <SelectItem
+                            key={city.id ?? city.name}
+                            value={city.name}
+                          >
                             {city.name}
                           </SelectItem>
                         ))}
@@ -188,7 +197,7 @@ export function SubscriberDialog({
                   <FormItem>
                     <FormLabel>Gatvė</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -204,7 +213,7 @@ export function SubscriberDialog({
                   <FormItem>
                     <FormLabel>Namo nr.</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -217,7 +226,7 @@ export function SubscriberDialog({
                   <FormItem>
                     <FormLabel>Buto nr.</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -230,7 +239,7 @@ export function SubscriberDialog({
                   <FormItem>
                     <FormLabel>Telefonas</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -245,7 +254,10 @@ export function SubscriberDialog({
                 <FormItem>
                   <FormLabel>Abonento Nr.</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isLoadingNumber} />
+                    <Input
+                      {...field}
+                      disabled={isLoadingNumber || isSubmitting}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -261,7 +273,7 @@ export function SubscriberDialog({
             <Button
               type="submit"
               className="w-full bg-orange-600 hover:bg-orange-700"
-              disabled={form.formState.isSubmitting}
+              disabled={isSubmitting}
             >
               {submitBtnText}
             </Button>

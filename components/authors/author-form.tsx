@@ -22,17 +22,15 @@ interface AuthorFormProps {
   onComplete: () => void
 }
 
-const EMPTY_AUTHOR: AuthorDTO = {
-  firstName: "",
-  lastName: "",
-  biography: "",
-}
-
 export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
   const form = useForm<AuthorDTO>({
     resolver: zodResolver(authorSchema),
     mode: "onBlur",
-    defaultValues: defaultValues || EMPTY_AUTHOR,
+    defaultValues: defaultValues ?? {
+      firstName: "",
+      lastName: "",
+      biography: "",
+    },
   })
 
   async function onSubmit(values: AuthorDTO) {

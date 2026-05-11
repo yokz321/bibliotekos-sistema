@@ -4,7 +4,6 @@ import { type NextRequest } from "next/server"
 export async function PUT(request: NextRequest) {
   const res = await request.json()
   const service = new CityService()
-
   await service.update(res)
   return Response.json({ message: "Miestas atnaujintas" })
 }
