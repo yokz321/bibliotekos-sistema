@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import { saveAuthorAction } from "@/actions/author-actions"
 
 interface AuthorFormProps {
@@ -30,6 +31,7 @@ const EMPTY_AUTHOR: AuthorDTO = {
 export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
   const form = useForm<AuthorDTO>({
     resolver: zodResolver(authorSchema),
+    mode: "onBlur",
     defaultValues: defaultValues || EMPTY_AUTHOR,
   })
 
@@ -90,7 +92,11 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
               <FormLabel>Biografija</FormLabel>
               <FormControl>
                 {}
-                <Input {...field} value={field.value ?? ""} />
+                <Textarea
+                  {...field}
+                  value={field.value ?? ""}
+                  className="resize-y"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -47,6 +47,7 @@ export function CityFormDialog({
 
   const form = useForm<CityDTO>({
     resolver: zodResolver(citySchema),
+    mode: "onBlur",
     defaultValues: EMPTY_CITY,
   })
 

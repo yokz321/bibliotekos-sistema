@@ -59,56 +59,61 @@ export function AuthorList({ items, onEdit, onSuccess }: Props) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {items.map((author) => (
-          <TableRow key={author.id}>
-            <TableCell className="font-medium flex items-center gap-2">
-              <UserCircle2 className="h-4 w-4 text-orange-600" />
-              {author.firstName} {author.lastName}
-            </TableCell>
-            <TableCell>{author.biography || "-"}</TableCell>
-            <TableCell className="text-right space-x-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onEdit(author)}
-              >
-                <Pencil className="h-4 w-4 text-blue-600" />
-              </Button>
+        {items.map((author) => {
+          const fullName = `${author.firstName} ${author.lastName}`
+          const biographyText = author.biography || "-"
 
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={deletingId === author.id}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Ar tikrai norite ištrinti?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Šis veiksmas pašalins autorių {author.firstName}{" "}
-                      {author.lastName} iš sistemos.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Atšaukti</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => executeDelete(author.id)}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          return (
+            <TableRow key={author.id}>
+              <TableCell className="font-medium flex items-center gap-2">
+                <UserCircle2 className="h-4 w-4 text-orange-600" />
+                {fullName}
+              </TableCell>
+              <TableCell>{biographyText}</TableCell>
+              <TableCell className="text-right space-x-2">
+                {}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onEdit(author)}
+                >
+                  <Pencil className="h-4 w-4 text-blue-600" />
+                </Button>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={deletingId === author.id}
                     >
-                      Ištrinti
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </TableCell>
-          </TableRow>
-        ))}
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Ar tikrai norite ištrinti?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Šis veiksmas pašalins autorių {fullName} iš sistemos.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Atšaukti</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => executeDelete(author.id)}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Ištrinti
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </TableCell>
+            </TableRow>
+          )
+        })}
       </TableBody>
     </Table>
   )

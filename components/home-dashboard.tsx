@@ -1,9 +1,27 @@
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Book, Users, CalendarCheck } from "lucide-react"
+import { Book, Users, CalendarCheck, Building2, MapPin } from "lucide-react"
 
 export function HomeDashboard() {
   const categories = [
+    {
+      title: "Autoriai",
+      href: "/authors",
+      icon: Users,
+      description: "Klasifikatorius: Autorių sąrašas ir valdymas",
+    },
+    {
+      title: "Leidyklos",
+      href: "/publishers",
+      icon: Building2,
+      description: "Klasifikatorius: Leidyklų sąrašas ir valdymas",
+    },
+    {
+      title: "Miestai",
+      href: "/cities",
+      icon: MapPin,
+      description: "Klasifikatorius: Miestų sąrašas ir valdymas",
+    },
     {
       title: "Knygos",
       href: "/books",

@@ -50,6 +50,7 @@ export function PublisherFormDialog({
 
   const form = useForm<PublisherDTO>({
     resolver: zodResolver(publisherSchema),
+    mode: "onBlur",
     defaultValues: EMPTY_PUBLISHER,
   })
 
