@@ -1,47 +1,58 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { CitiesTable } from "./cities-table"
 import { CityFormDialog } from "./city-form-dialog"
 import type { ICity } from "@/types/city-t"
 import { deleteCityAction } from "@/actions/city-actions"
 import { getApi } from "@/utils/server-api"
+import { useBoundStore } from "@/store/app-store"
+import { useShallow } from "zustand/react/shallow"
 
-export function CitiesClient({ data: initialData }: { data: ICity[] }) {
-  const [cities, setCities] = useState<ICity[]>(initialData)
+export function CitiesClient() {
+  const [cities, setCities] = useState<ICity[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCity, setEditingCity] = useState<ICity | undefined>(undefined)
 
-  const refreshData = async () => {
-    const res = await getApi<ICity[]>("/api/cities")
-    if (res) {
-      setCities(res)
-    }
+  const { setMessage } = useBoundStore(
+    useShallow((state) => ({
+      setMessage: state.setMessage,
+    }))
+  )
+
+  const getCitiesFromApi = () => {
+    getApi<ICity[]>("/api/cities").then((res) => {
+      setCities(res ?? [])
+    })
   }
 
-  const handleFormSuccess = () => {
+  useEffect(() => {
+    getCitiesFromApi()
+  }, [])
+
+  const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)
     setEditingCity(undefined)
-    refreshData()
+    if (msg) setMessage(msg)
+    getCitiesFromApi()
   }
 
   const handleOpenChange = (open: boolean) => {
     setIsDialogOpen(open)
-    if (!open) {
-      setEditingCity(undefined)
-    }
+    if (!open) setEditingCity(undefined)
   }
 
   const handleDelete = async (id?: string) => {
     if (!id) return
+    if (!confirm("Ar tikrai norite ištrinti miestą?")) return
 
     const res = await deleteCityAction(id)
     if (res.success) {
-      toast.success("Miestas pašalintas sėkmingai")
-      refreshData()
+      toast.success("Miestas pašalintas")
+      getCitiesFromApi()
     } else {
-      toast.error(res.error || "Klaida šalinant")
+      toast.error(res.error || "Klaida")
     }
   }
 

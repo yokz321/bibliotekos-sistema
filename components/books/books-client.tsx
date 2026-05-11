@@ -1,55 +1,63 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { BooksTable } from "./books-table"
 import { BookFormDialog } from "./book-form-dialog"
 import { deleteBookAction } from "@/actions/book-actions"
 import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
 import { getApi } from "@/utils/server-api"
+import { useBoundStore } from "@/store/app-store"
+import { useShallow } from "zustand/react/shallow"
 
-export function BooksClient({
-  initialBooks,
-  initialAuthors,
-  initialPublishers,
-}: {
-  initialBooks: IBook[]
-  initialAuthors: IAuthor[]
-  initialPublishers: IPublisher[]
-}) {
-  const [books, setBooks] = useState<IBook[]>(initialBooks)
+interface Props {
+  authors: IAuthor[]
+  publishers: IPublisher[]
+}
+
+export function BooksClient({ authors, publishers }: Props) {
+  const [books, setBooks] = useState<IBook[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingBook, setEditingBook] = useState<IBook | undefined>(undefined)
 
-  const refreshBooks = async () => {
-    const data = await getApi<IBook[]>("/api/books")
-    if (data) {
-      setBooks(data)
-    }
+  const { setMessage } = useBoundStore(
+    useShallow((state) => ({
+      setMessage: state.setMessage,
+    }))
+  )
+
+  const getBooksFromApi = () => {
+    getApi<IBook[]>("/api/books").then((data) => {
+      setBooks(data ?? [])
+    })
   }
 
-  const handleFormSuccess = () => {
+  useEffect(() => {
+    getBooksFromApi()
+  }, [])
+
+  const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)
     setEditingBook(undefined)
-    refreshBooks()
+    if (msg) setMessage(msg)
+    getBooksFromApi()
   }
 
   const handleDialogOpenChange = (open: boolean) => {
     setIsDialogOpen(open)
-    if (!open) {
-      setEditingBook(undefined)
-    }
+    if (!open) setEditingBook(undefined)
   }
 
   const handleDelete = async (id?: string) => {
     if (!id) return
+    if (!confirm("Ar tikrai norite ištrinti knygą?")) return
 
     const res = await deleteBookAction(id)
     if (res.success) {
-      toast.success("Knyga pašalinta sėkmingai")
-      refreshBooks()
+      toast.success("Knyga pašalinta")
+      getBooksFromApi()
     } else {
-      toast.error(res.error || "Klaida šalinant")
+      toast.error(res.error || "Klaida")
     }
   }
 
@@ -72,8 +80,8 @@ export function BooksClient({
           isOpen={isDialogOpen}
           onOpenChange={handleDialogOpenChange}
           editingBook={editingBook}
-          authors={initialAuthors}
-          publishers={initialPublishers}
+          authors={authors}
+          publishers={publishers}
           onSuccess={handleFormSuccess}
         />
       </div>

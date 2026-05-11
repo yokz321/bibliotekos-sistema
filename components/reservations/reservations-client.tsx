@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { ReservationsTable } from "./reservations-table"
 import { ReservationFormDialog } from "./reservation-form-dialog"
@@ -11,6 +11,8 @@ import {
   returnBookAction,
   deleteBorrowingAction,
 } from "@/actions/borrowing-actions"
+import { useBoundStore } from "@/store/app-store"
+import { useShallow } from "zustand/react/shallow"
 
 export interface IBorrowingPopulated {
   id: string
@@ -23,32 +25,35 @@ export interface IBorrowingPopulated {
 }
 
 interface Props {
-  initialBorrowings: IBorrowingPopulated[]
   books: IBook[]
   subscribers: ISubscriber[]
 }
 
-export function ReservationsClient({
-  initialBorrowings,
-  books,
-  subscribers,
-}: Props) {
-  const [borrowings, setBorrowings] =
-    useState<IBorrowingPopulated[]>(initialBorrowings)
+export function ReservationsClient({ books, subscribers }: Props) {
+  const [borrowings, setBorrowings] = useState<IBorrowingPopulated[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const refreshData = async () => {
-    const data = await getApi<IBorrowingPopulated[]>("/api/borrowings")
-    if (data) {
-      setBorrowings(data)
-    }
+  const { setMessage } = useBoundStore(
+    useShallow((state) => ({
+      setMessage: state.setMessage,
+    }))
+  )
+
+  const getBorrowingsFromApi = () => {
+    getApi<IBorrowingPopulated[]>("/api/borrowings").then((data) => {
+      setBorrowings(data ?? [])
+    })
   }
+
+  useEffect(() => {
+    getBorrowingsFromApi()
+  }, [])
 
   const handleReturn = async (id: string) => {
     const res = await returnBookAction(id)
     if (res.success) {
       toast.success("Knyga sėkmingai grąžinta!")
-      refreshData()
+      getBorrowingsFromApi()
     } else {
       toast.error(res.error || "Klaida")
     }
@@ -60,15 +65,16 @@ export function ReservationsClient({
     const res = await deleteBorrowingAction(id)
     if (res.success) {
       toast.success("Įrašas pašalintas")
-      refreshData()
+      getBorrowingsFromApi()
     } else {
       toast.error(res.error || "Klaida")
     }
   }
 
-  const handleFormSuccess = () => {
+  const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)
-    refreshData()
+    if (msg) setMessage(msg)
+    getBorrowingsFromApi()
   }
 
   return (

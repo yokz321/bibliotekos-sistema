@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Plus } from "lucide-react"
@@ -9,34 +9,40 @@ import { SubscriberDialog } from "./subscriber-dialog"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
 import { getApi } from "@/utils/server-api"
+import { useBoundStore } from "@/store/app-store"
+import { useShallow } from "zustand/react/shallow"
 
-export function SubscribersClient({
-  initialData,
-  cities,
-}: {
-  initialData: ISubscriber[]
-  cities: ICity[]
-}) {
-  const [data, setData] = useState<ISubscriber[]>(initialData)
+export function SubscribersClient({ cities }: { cities: ICity[] }) {
+  const [data, setData] = useState<ISubscriber[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [editing, setEditing] = useState<ISubscriber | undefined>(undefined)
 
-  const refreshData = async () => {
-    const res = await getApi<ISubscriber[]>("/api/subscribers")
-    if (res) {
-      setData(res)
-    }
+  const { setMessage } = useBoundStore(
+    useShallow((state) => ({
+      setMessage: state.setMessage,
+    }))
+  )
+
+  const getSubscribersFromApi = () => {
+    getApi<ISubscriber[]>("/api/subscribers").then((res) => {
+      setData(res ?? [])
+    })
   }
+
+  useEffect(() => {
+    getSubscribersFromApi()
+  }, [])
 
   const handleEdit = (item: ISubscriber) => {
     setEditing(item)
     setIsOpen(true)
   }
 
-  const handleSuccess = () => {
+  const handleSuccess = (msg?: string) => {
     setIsOpen(false)
     setEditing(undefined)
-    refreshData()
+    if (msg) setMessage(msg)
+    getSubscribersFromApi()
   }
 
   return (
@@ -59,7 +65,7 @@ export function SubscribersClient({
         <SubscriberTable
           items={data}
           onEdit={handleEdit}
-          onRefresh={refreshData}
+          onRefresh={getSubscribersFromApi}
         />
       </Card>
 
