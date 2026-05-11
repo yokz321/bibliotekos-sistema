@@ -22,17 +22,26 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   saveSubscriberAction,
   getNextTicketNumberAction,
 } from "@/actions/subscriber-actions"
 import { subscriberSchema, SubscriberDTO } from "@/dto/subscriber-dto"
 import { ISubscriber } from "@/types/subscriber-t"
+import { ICity } from "@/types/city-t"
 
 interface Props {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   editingItem: ISubscriber | undefined
   onSuccess: () => void
+  cities: ICity[]
 }
 
 const EMPTY_SUBSCRIBER: SubscriberDTO = {
@@ -51,6 +60,7 @@ export function SubscriberDialog({
   onOpenChange,
   editingItem,
   onSuccess,
+  cities,
 }: Props) {
   const [isLoadingNumber, setIsLoadingNumber] = useState(false)
 
@@ -149,9 +159,24 @@ export function SubscriberDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Miestas</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={form.formState.isSubmitting}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pasirinkite miestą" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {cities.map((city) => (
+                          <SelectItem key={city.id} value={city.name}>
+                            {city.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

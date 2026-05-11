@@ -7,12 +7,15 @@ import { Plus } from "lucide-react"
 import { SubscriberTable } from "./subscriber-table"
 import { SubscriberDialog } from "./subscriber-dialog"
 import type { ISubscriber } from "@/types/subscriber-t"
+import type { ICity } from "@/types/city-t"
 import { getApi } from "@/utils/server-api"
 
 export function SubscribersClient({
   initialData,
+  cities,
 }: {
   initialData: ISubscriber[]
+  cities: ICity[]
 }) {
   const [data, setData] = useState<ISubscriber[]>(initialData)
   const [isOpen, setIsOpen] = useState(false)
@@ -53,7 +56,6 @@ export function SubscribersClient({
       </div>
 
       <Card className="overflow-hidden border shadow-sm">
-        {}
         <SubscriberTable
           items={data}
           onEdit={handleEdit}
@@ -66,6 +68,7 @@ export function SubscribersClient({
         onOpenChange={setIsOpen}
         editingItem={editing}
         onSuccess={handleSuccess}
+        cities={cities}
       />
     </div>
   )

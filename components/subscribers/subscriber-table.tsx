@@ -61,33 +61,41 @@ export function SubscriberTable({ items, onEdit, onRefresh }: Props) {
             </TableCell>
           </TableRow>
         ) : (
-          items.map((sub) => (
-            <TableRow key={sub.id}>
-              <TableCell className="font-medium">{sub.ticketNumber}</TableCell>
-              <TableCell>
-                {sub.firstName} {sub.lastName}
-              </TableCell>
-              <TableCell>{sub.city}</TableCell>
-              <TableCell>{sub.phone}</TableCell>
-              <TableCell className="text-right space-x-2">
-                <Button variant="ghost" size="icon" onClick={() => onEdit(sub)}>
-                  <Pencil className="h-4 w-4 text-blue-600" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDelete(sub.id)}
-                  disabled={deletingId === sub.id}
-                >
-                  {deletingId === sub.id ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  )}
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))
+          items.map((sub) => {
+            const fullName = `${sub.firstName} ${sub.lastName}`
+
+            return (
+              <TableRow key={sub.id}>
+                <TableCell className="font-medium">
+                  {sub.ticketNumber}
+                </TableCell>
+                <TableCell>{fullName}</TableCell>
+                <TableCell>{sub.city}</TableCell>
+                <TableCell>{sub.phone}</TableCell>
+                <TableCell className="text-right space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onEdit(sub)}
+                  >
+                    <Pencil className="h-4 w-4 text-blue-600" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(sub.id)}
+                    disabled={deletingId === sub.id}
+                  >
+                    {deletingId === sub.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    )}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )
+          })
         )}
       </TableBody>
     </Table>
