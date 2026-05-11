@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import {
@@ -14,44 +14,48 @@ import { AuthorList } from "./author-list"
 import { AuthorForm } from "./author-form"
 import type { IAuthor } from "@/types/book-t"
 import { getApi } from "@/utils/server-api"
+import { useBoundStore } from "@/store/app-store"
+import { useShallow } from "zustand/react/shallow"
 
-interface Props {
-  initialData: IAuthor[]
-}
-
-export function AuthorListWrapper({ initialData }: Props) {
-  const [authors, setAuthors] = useState<IAuthor[]>(initialData)
+export function AuthorListWrapper() {
+  const [authors, setAuthors] = useState<IAuthor[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [editingAuthor, setEditingAuthor] = useState<IAuthor | undefined>(
     undefined
   )
 
-  const refreshData = async () => {
-    const data = await getApi<IAuthor[]>("/api/authors")
-    if (data) {
-      setAuthors(data)
-    }
+  const { setMessage } = useBoundStore(
+    useShallow((state) => ({
+      setMessage: state.setMessage,
+    }))
+  )
+
+  const getAuthorsFromApi = () => {
+    getApi<IAuthor[]>("/api/authors").then((data) => {
+      setAuthors(data ?? [])
+    })
   }
+
+  useEffect(() => {
+    getAuthorsFromApi()
+  }, [])
 
   const handleEdit = (author: IAuthor) => {
     setEditingAuthor(author)
     setIsOpen(true)
   }
 
-  const handleComplete = () => {
+  const handleComplete = (msg?: string) => {
     setIsOpen(false)
     setEditingAuthor(undefined)
-    refreshData()
+    if (msg) setMessage(msg)
+    getAuthorsFromApi()
   }
 
   const handleOpenChange = (v: boolean) => {
     setIsOpen(v)
-    if (!v) {
-      setEditingAuthor(undefined)
-    }
+    if (!v) setEditingAuthor(undefined)
   }
-
-  const dialogTitle = editingAuthor ? "Redaguoti autorių" : "Pridėti autorių"
 
   return (
     <div className="space-y-6">
@@ -66,7 +70,9 @@ export function AuthorListWrapper({ initialData }: Props) {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{dialogTitle}</DialogTitle>
+              <DialogTitle>
+                {editingAuthor ? "Redaguoti autorių" : "Pridėti autorių"}
+              </DialogTitle>
             </DialogHeader>
             <AuthorForm
               defaultValues={editingAuthor}
@@ -81,7 +87,7 @@ export function AuthorListWrapper({ initialData }: Props) {
         <AuthorList
           items={authors}
           onEdit={handleEdit}
-          onSuccess={refreshData}
+          onSuccess={getAuthorsFromApi}
         />
       </div>
     </div>
