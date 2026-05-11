@@ -16,6 +16,6 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     let message = "Serverio klaida"
     if (error instanceof Error) message = error.message
-    return { success: false, error: message }
+    return Response.json({ success: false, error: message }, { status: 500 })
   }
 }
