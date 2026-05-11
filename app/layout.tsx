@@ -30,17 +30,14 @@ export default function RootLayout({
           geist.variable
         )}
       >
-        {}
         <div className="relative flex min-h-screen flex-col">
           <Header />
-          {}
           <main className="flex-1 container mx-auto max-w-screen-xl py-6 px-4">
             {children}
           </main>
           <Footer />
         </div>
 
-        {}
         <Toaster position="top-right" richColors closeButton />
       </body>
     </html>

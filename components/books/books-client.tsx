@@ -68,7 +68,6 @@ export function BooksClient({
           </p>
         </div>
 
-        {}
         <BookFormDialog
           isOpen={isDialogOpen}
           onOpenChange={handleDialogOpenChange}

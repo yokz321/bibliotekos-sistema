@@ -71,7 +71,6 @@ export function AuthorList({ items, onEdit, onSuccess }: Props) {
               </TableCell>
               <TableCell>{biographyText}</TableCell>
               <TableCell className="text-right space-x-2">
-                {}
                 <Button
                   variant="ghost"
                   size="icon"

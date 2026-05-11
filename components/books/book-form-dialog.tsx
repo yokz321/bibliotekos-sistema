@@ -121,7 +121,6 @@ export function BookFormDialog({
         </DialogHeader>
 
         <Form {...form}>
-          {}
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 pt-4"

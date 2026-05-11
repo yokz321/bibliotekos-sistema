@@ -91,7 +91,6 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
             <FormItem>
               <FormLabel>Biografija</FormLabel>
               <FormControl>
-                {}
                 <Textarea
                   {...field}
                   value={field.value ?? ""}

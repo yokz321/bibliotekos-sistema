@@ -95,7 +95,6 @@ export function ReservationFormDialog({
         </DialogHeader>
 
         <Form {...form}>
-          {}
           <form
             onSubmit={form.handleSubmit((v) => onSubmit(v))}
             className="space-y-4 pt-4"
