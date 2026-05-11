@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { NAVIGATION_MENU, type NavItem } from "@/constants/navigation"
+import { NAVIGATION_MENU } from "@/constants/navigation"
 import {
   NavigationMenu,
   NavigationMenuContent,

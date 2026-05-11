@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models, Types, Model } from "mongoose"
+import { Schema, model, models, type Types, type Model } from "mongoose"
 import type { WithStringId } from "./model-t"
 import type { IAuthor, IPublisher } from "@/types/book-t"
 

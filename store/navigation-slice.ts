@@ -4,7 +4,7 @@ import type { INavSlice } from "./store-t"
 export const createNavigationSlice: StateCreator<INavSlice> = (set) => ({
   menu: [],
   setMenu: (menu) =>
-    set((state) => ({
+    set(() => ({
       menu,
     })),
 })

@@ -16,8 +16,8 @@ export class BookService {
     try {
       await connectMongoose()
 
-      const _auth = Author
-      const _pub = Publisher
+      Author
+      Publisher
 
       const books = (await Book.find()
         .populate("author")

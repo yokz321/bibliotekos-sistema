@@ -84,12 +84,17 @@ export function SubscriberDialog({
       })
     } else {
       form.reset()
+      const fetchNextNumber = async () => {
+        setIsLoadingNumber(true)
+        try {
+          const nextNumber = await getNextTicketNumberAction()
+          form.setValue("ticketNumber", nextNumber)
+        } finally {
+          setIsLoadingNumber(false)
+        }
+      }
 
-      setIsLoadingNumber(true)
-      getNextTicketNumberAction().then((nextNumber: string) => {
-        form.setValue("ticketNumber", nextNumber)
-        setIsLoadingNumber(false)
-      })
+      fetchNextNumber()
     }
   }, [isOpen, editingItem, form])
 

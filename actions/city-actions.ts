@@ -39,6 +39,6 @@ export async function deleteCityAction(id: string) {
     revalidatePath("/cities")
     return { success: true }
   } catch (error: unknown) {
-    return { success: false, error: "Nepavyko pašalinti miesto" }
+    return { success: false, error: "Nepavyko ištrinti knygos" }
   }
 }
