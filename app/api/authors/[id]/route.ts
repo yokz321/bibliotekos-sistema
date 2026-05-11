@@ -9,7 +9,9 @@ export async function PUT(
   const res = await request.json()
 
   const service = new AuthorService()
-  await service.update(res)
+
+  await service.update({ ...res, id })
+
   return Response.json({ message: "Update successful" })
 }
 
@@ -19,6 +21,8 @@ export async function DELETE(
 ) {
   const { id } = await params
   const service = new AuthorService()
+
   await service.delete(id)
+
   return Response.json({ message: "Delete successful" })
 }

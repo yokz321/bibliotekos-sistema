@@ -9,7 +9,7 @@ export async function PUT(
   const res = await request.json()
 
   const service = new PublisherService()
-  await service.update(res)
+  await service.update({ ...res, id })
   return Response.json({ message: "Update successful" })
 }
 
