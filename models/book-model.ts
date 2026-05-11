@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, models, Types, Model } from "mongoose"
-import { WithStringId } from "./model-t"
-import { IAuthor, IPublisher } from "@/types/book-t"
+import type { WithStringId } from "./model-t"
+import type { IAuthor, IPublisher } from "@/types/book-t"
 
 export interface IBook {
   id?: string
