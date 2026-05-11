@@ -49,7 +49,7 @@ export async function deleteBookAction(id: string) {
     await bookService.delete(id)
     revalidatePath("/books")
     return { success: true }
-  } catch (error: unknown) {
+  } catch {
     return { success: false, error: "Nepavyko ištrinti knygos" }
   }
 }

@@ -38,7 +38,7 @@ export async function deleteCityAction(id: string) {
     await service.delete(id)
     revalidatePath("/cities")
     return { success: true }
-  } catch (error: unknown) {
+  } catch {
     return { success: false, error: "Nepavyko ištrinti knygos" }
   }
 }
