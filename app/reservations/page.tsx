@@ -1,7 +1,7 @@
 import { getApi } from "@/utils/server-api"
-import { IBook } from "@/types/book-t"
-import { ISubscriber } from "@/types/subscriber-t"
-import { IBorrowingPopulated } from "@/components/reservations/reservations-client"
+import type { IBook } from "@/types/book-t"
+import type { ISubscriber } from "@/types/subscriber-t"
+import type { IBorrowingPopulated } from "@/components/reservations/reservations-client"
 import { ReservationsClient } from "@/components/reservations/reservations-client"
 
 export default async function ReservationsPage() {

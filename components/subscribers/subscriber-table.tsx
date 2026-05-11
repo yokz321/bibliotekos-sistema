@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table"
 import { Pencil, Trash2, Loader2 } from "lucide-react"
 import { deleteSubscriberAction } from "@/actions/subscriber-actions"
-import { ISubscriber } from "@/types/subscriber-t"
+import type { ISubscriber } from "@/types/subscriber-t"
 
 interface Props {
   items: ISubscriber[]

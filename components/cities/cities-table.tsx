@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ICity } from "@/types/city-t"
+import type { ICity } from "@/types/city-t"
 import {
   AlertDialog,
   AlertDialogAction,

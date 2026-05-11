@@ -4,7 +4,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { CitiesTable } from "./cities-table"
 import { CityFormDialog } from "./city-form-dialog"
-import { ICity } from "@/types/city-t"
+import type { ICity } from "@/types/city-t"
 import { deleteCityAction } from "@/actions/city-actions"
 import { getApi } from "@/utils/server-api"
 

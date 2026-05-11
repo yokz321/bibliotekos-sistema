@@ -1,6 +1,6 @@
 import { getApi } from "@/utils/server-api"
 import { CitiesClient } from "@/components/cities/cities-client"
-import { ICity } from "@/types/city-t"
+import type { ICity } from "@/types/city-t"
 
 export default async function CitiesPage() {
   const cities = await getApi<ICity[]>("/api/cities")

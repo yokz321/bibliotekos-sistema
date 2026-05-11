@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { AuthorList } from "./author-list"
 import { AuthorForm } from "./author-form"
-import { IAuthor } from "@/types/book-t"
+import type { IAuthor } from "@/types/book-t"
 import { getApi } from "@/utils/server-api"
 
 interface Props {

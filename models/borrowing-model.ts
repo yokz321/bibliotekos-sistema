@@ -1,7 +1,7 @@
 import { Model, model, models, Schema, Types } from "mongoose"
-import { WithStringId } from "./model-t"
-import { IBook } from "@/types/book-t"
-import { ISubscriber } from "@/types/subscriber-t"
+import type { WithStringId } from "./model-t"
+import type { IBook } from "@/types/book-t"
+import type { ISubscriber } from "@/types/subscriber-t"
 
 export interface IBorrowing {
   id?: string

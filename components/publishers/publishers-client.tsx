@@ -4,7 +4,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { PublishersTable } from "./publishers-table"
 import { PublisherFormDialog } from "./publisher-form-dialog"
-import { IPublisher } from "@/types/book-t"
+import type { IPublisher } from "@/types/book-t"
 import { deletePublisherAction } from "@/actions/publisher-actions"
 import { getApi } from "@/utils/server-api"
 

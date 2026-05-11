@@ -5,7 +5,7 @@ import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
 import { revalidatePath } from "next/cache"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Subscriber } from "@/models/subscriber-model"
-import { ISubscriber } from "@/types/subscriber-t"
+import type { ISubscriber } from "@/types/subscriber-t"
 
 export async function saveSubscriberAction(data: SubscriberDTO, id?: string) {
   const parse = subscriberSchema.safeParse(data)

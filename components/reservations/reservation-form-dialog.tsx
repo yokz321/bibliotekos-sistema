@@ -46,7 +46,7 @@ interface Props {
 const EMPTY_RESERVATION: BorrowingDTO = {
   subscriberId: "",
   bookId: "",
-  borrowDate: new Date().toISOString().split("T")[0],
+  borrowDate: new Date().toISOString().split("T")[0] ?? "",
   dueDate: "",
   isReturned: false,
 }

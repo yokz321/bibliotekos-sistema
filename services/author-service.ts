@@ -1,5 +1,5 @@
 import { Author } from "@/models/author-model"
-import { IAuthor } from "@/types/book-t"
+import type { IAuthor } from "@/types/book-t"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 

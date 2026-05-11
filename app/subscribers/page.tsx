@@ -1,7 +1,7 @@
 import { getApi } from "@/utils/server-api"
 import { SubscribersClient } from "@/components/subscribers/subscribers-client"
-import { ISubscriber } from "@/types/subscriber-t"
-import { ICity } from "@/types/city-t"
+import type { ISubscriber } from "@/types/subscriber-t"
+import type { ICity } from "@/types/city-t"
 
 export default async function SubscribersPage() {
   const [subscribers, cities] = await Promise.all([

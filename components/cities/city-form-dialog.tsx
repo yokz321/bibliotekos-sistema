@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { citySchema, CityDTO } from "@/dto/city-dto"
+import { citySchema, type CityDTO } from "@/dto/city-dto"
 import { saveCityAction } from "@/actions/city-actions"
 import { toast } from "sonner"
 import { Plus } from "lucide-react"
@@ -26,7 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ICity } from "@/types/city-t"
+import type { ICity } from "@/types/city-t"
 
 interface Props {
   isOpen: boolean

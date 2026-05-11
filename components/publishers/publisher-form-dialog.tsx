@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { publisherSchema, PublisherDTO } from "@/dto/publisher-dto"
+import { publisherSchema, type PublisherDTO } from "@/dto/publisher-dto"
 import { savePublisherAction } from "@/actions/publisher-actions"
 import { toast } from "sonner"
 import { Plus } from "lucide-react"
@@ -26,7 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { IPublisher } from "@/types/publisher-t"
+import type { IPublisher } from "@/types/publisher-t"
 
 interface Props {
   isOpen: boolean

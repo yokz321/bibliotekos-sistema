@@ -3,7 +3,7 @@
 import { BookService } from "@/services/book-service"
 import { bookSchema, type BookDTO } from "@/dto/book-dto"
 import { revalidatePath } from "next/cache"
-import { IBook } from "@/types/book-t"
+import type { IBook } from "@/types/book-t"
 
 export async function saveBookAction(data: BookDTO, id?: string) {
   const parse = bookSchema.safeParse(data)

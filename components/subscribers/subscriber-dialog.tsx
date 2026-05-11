@@ -32,9 +32,9 @@ import {
   saveSubscriberAction,
   getNextTicketNumberAction,
 } from "@/actions/subscriber-actions"
-import { subscriberSchema, SubscriberDTO } from "@/dto/subscriber-dto"
-import { ISubscriber } from "@/types/subscriber-t"
-import { ICity } from "@/types/city-t"
+import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
+import type { ISubscriber } from "@/types/subscriber-t"
+import type { ICity } from "@/types/city-t"
 
 interface Props {
   isOpen: boolean

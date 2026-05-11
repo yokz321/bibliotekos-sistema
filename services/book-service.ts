@@ -3,7 +3,7 @@ import { Author } from "@/models/author-model"
 import { Publisher } from "@/models/publisher-model"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
-import { IBook, IAuthor, IPublisher } from "@/types/book-t"
+import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
 
 type LeanPopulatedBook = Omit<IBook, "author" | "publisher"> & {
   _id: Types.ObjectId

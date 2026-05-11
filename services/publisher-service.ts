@@ -1,5 +1,5 @@
 import { Publisher } from "@/models/publisher-model"
-import { IPublisher } from "@/types/book-t"
+import type { IPublisher } from "@/types/book-t"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 

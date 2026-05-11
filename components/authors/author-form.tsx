@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { authorSchema, AuthorDTO } from "@/dto/author-dto"
+import { authorSchema, type AuthorDTO } from "@/dto/author-dto"
 import {
   Form,
   FormControl,
