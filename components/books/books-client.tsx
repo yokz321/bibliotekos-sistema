@@ -10,12 +10,14 @@ import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
-interface Props {
+interface IProps {
   authors: IAuthor[]
   publishers: IPublisher[]
 }
 
-export function BooksClient({ authors, publishers }: Props) {
+export function BooksClient(props: IProps) {
+  const { authors, publishers } = props
+
   const [books, setBooks] = useState<IBook[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingBook, setEditingBook] = useState<IBook | undefined>(undefined)

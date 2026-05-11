@@ -1,53 +1,64 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { PublishersTable } from "./publishers-table"
 import { PublisherFormDialog } from "./publisher-form-dialog"
 import type { IPublisher } from "@/types/book-t"
 import { deletePublisherAction } from "@/actions/publisher-actions"
 import { getApi } from "@/utils/server-api"
+import { useBoundStore } from "@/store/app-store"
+import { useShallow } from "zustand/react/shallow"
 
-export function PublishersClient({
-  initialData,
-}: {
-  initialData: IPublisher[]
-}) {
-  const [data, setData] = useState<IPublisher[]>(initialData)
+interface IProps {}
+
+export function PublishersClient(props: IProps) {
+  const {} = props
+
+  const [data, setData] = useState<IPublisher[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingPublisher, setEditingPublisher] = useState<
     IPublisher | undefined
   >(undefined)
 
-  const refreshData = async () => {
-    const res = await getApi<IPublisher[]>("/api/publishers")
-    if (res) {
-      setData(res)
-    }
+  const { setMessage } = useBoundStore(
+    useShallow((state) => ({
+      setMessage: state.setMessage,
+    }))
+  )
+
+  const getPublishersFromApi = () => {
+    getApi<IPublisher[]>("/api/publishers").then((res) => {
+      setData(res ?? [])
+    })
   }
 
-  const handleFormSuccess = () => {
+  useEffect(() => {
+    getPublishersFromApi()
+  }, [])
+
+  const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)
     setEditingPublisher(undefined)
-    refreshData()
+    if (msg) setMessage(msg)
+    getPublishersFromApi()
   }
 
   const handleOpenChange = (open: boolean) => {
     setIsDialogOpen(open)
-    if (!open) {
-      setEditingPublisher(undefined)
-    }
+    if (!open) setEditingPublisher(undefined)
   }
 
   const handleDelete = async (id?: string) => {
     if (!id) return
+    if (!confirm("Ar tikrai norite ištrinti leidyklą?")) return
 
     const res = await deletePublisherAction(id)
     if (res.success) {
       toast.success("Leidykla pašalinta")
-      refreshData()
+      getPublishersFromApi()
     } else {
-      toast.error(res.error || "Klaida šalinant")
+      toast.error(res.error || "Klaida")
     }
   }
 

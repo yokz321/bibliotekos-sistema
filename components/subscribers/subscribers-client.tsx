@@ -12,7 +12,13 @@ import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
-export function SubscribersClient({ cities }: { cities: ICity[] }) {
+interface IProps {
+  cities: ICity[]
+}
+
+export function SubscribersClient(props: IProps) {
+  const { cities } = props
+
   const [data, setData] = useState<ISubscriber[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [editing, setEditing] = useState<ISubscriber | undefined>(undefined)

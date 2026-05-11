@@ -10,7 +10,11 @@ import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
-export function CitiesClient() {
+interface IProps {}
+
+export function CitiesClient(props: IProps) {
+  const {} = props
+
   const [cities, setCities] = useState<ICity[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCity, setEditingCity] = useState<ICity | undefined>(undefined)

@@ -24,12 +24,14 @@ export interface IBorrowingPopulated {
   isReturned: boolean
 }
 
-interface Props {
+interface IProps {
   books: IBook[]
   subscribers: ISubscriber[]
 }
 
-export function ReservationsClient({ books, subscribers }: Props) {
+export function ReservationsClient(props: IProps) {
+  const { books, subscribers } = props
+
   const [borrowings, setBorrowings] = useState<IBorrowingPopulated[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
