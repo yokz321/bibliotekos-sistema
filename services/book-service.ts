@@ -16,8 +16,8 @@ export class BookService {
     try {
       await connectMongoose()
       const books = (await Book.find()
-        .populate("author")
-        .populate("publisher")
+        .populate({ path: "author", model: Author })
+        .populate({ path: "publisher", model: Publisher })
         .sort({ title: 1 })
         .lean()) as unknown as LeanPopulatedBook[]
 
