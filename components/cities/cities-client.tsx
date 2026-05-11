@@ -1,44 +1,74 @@
-"use server"
+"use client"
 
-import { CityService } from "@/services/city-service"
-import { citySchema, type CityDTO } from "@/dto/city-dto"
-import { revalidatePath } from "next/cache"
+import { useState } from "react"
+import { toast } from "sonner"
+import { CitiesTable } from "./cities-table"
+import { CityFormDialog } from "./city-form-dialog"
 import { ICity } from "@/types/city-t"
+import { deleteCityAction } from "@/actions/city-actions"
+import { getApi } from "@/utils/server-api"
 
-export async function saveCityAction(data: CityDTO, id?: string) {
-  const parsed = citySchema.safeParse(data)
+export function CitiesClient({ data: initialData }: { data: ICity[] }) {
+  const [cities, setCities] = useState<ICity[]>(initialData)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingCity, setEditingCity] = useState<ICity | undefined>(undefined)
 
-  if (!parsed.success) {
-    const firstError = parsed.error.issues[0]?.message || "Validacijos klaida"
-    return { success: false, error: firstError }
-  }
-
-  const service = new CityService()
-
-  try {
-    if (id) {
-      const toUpdate: ICity = { ...parsed.data, id }
-      await service.update(toUpdate)
-    } else {
-      await service.save(parsed.data)
+  const refreshData = async () => {
+    const res = await getApi<ICity[]>("/api/cities")
+    if (res) {
+      setCities(res)
     }
-
-    revalidatePath("/cities")
-    return { success: true }
-  } catch (error: unknown) {
-    let errorMessage = "Serverio klaida"
-    if (error instanceof Error) errorMessage = error.message
-    return { success: false, error: errorMessage }
   }
-}
 
-export async function deleteCityAction(id: string) {
-  const service = new CityService()
-  try {
-    await service.delete(id)
-    revalidatePath("/cities")
-    return { success: true }
-  } catch (error: unknown) {
-    return { success: false, error: "Nepavyko pašalinti miesto" }
+  const handleFormSuccess = () => {
+    setIsDialogOpen(false)
+    setEditingCity(undefined)
+    refreshData()
   }
+
+  const handleOpenChange = (open: boolean) => {
+    setIsDialogOpen(open)
+    if (!open) {
+      setEditingCity(undefined)
+    }
+  }
+
+  const handleDelete = async (id?: string) => {
+    if (!id) return
+
+    const res = await deleteCityAction(id)
+    if (res.success) {
+      toast.success("Miestas pašalintas sėkmingai")
+      refreshData()
+    } else {
+      toast.error(res.error || "Klaida šalinant")
+    }
+  }
+
+  const openEdit = (city: ICity) => {
+    setEditingCity(city)
+    setIsDialogOpen(true)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Miestai</h1>
+          <p className="text-muted-foreground text-sm">
+            Klasifikatoriaus valdymas
+          </p>
+        </div>
+
+        <CityFormDialog
+          isOpen={isDialogOpen}
+          onOpenChange={handleOpenChange}
+          editingCity={editingCity}
+          onSuccess={handleFormSuccess}
+        />
+      </div>
+
+      <CitiesTable cities={cities} onEdit={openEdit} onDelete={handleDelete} />
+    </div>
+  )
 }
