@@ -36,21 +36,16 @@ import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
 
-interface Props {
+interface IProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   editingItem: ISubscriber | undefined
-  onSuccess: () => void
+  onSuccess: (msg?: string) => void
   cities: ICity[]
 }
 
-export function SubscriberDialog({
-  isOpen,
-  onOpenChange,
-  editingItem,
-  onSuccess,
-  cities,
-}: Props) {
+export function SubscriberDialog(props: IProps) {
+  const { isOpen, onOpenChange, editingItem, onSuccess, cities } = props
   const [isLoadingNumber, setIsLoadingNumber] = useState(false)
 
   const form = useForm<SubscriberDTO>({
@@ -102,9 +97,8 @@ export function SubscriberDialog({
     const res = await saveSubscriberAction(values, editingItem?.id)
 
     if (res.success) {
-      const msg = editingItem ? "Atnaujinta!" : "Pridėta!"
-      toast.success(msg)
-      onSuccess()
+      toast.success(res.message || "Abonentas išsaugotas")
+      onSuccess(res.message)
     } else {
       form.setError("root", {
         type: "server",

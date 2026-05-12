@@ -28,19 +28,15 @@ import {
 } from "@/components/ui/dialog"
 import type { ICity } from "@/types/city-t"
 
-interface Props {
+interface IProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   editingCity: ICity | undefined
-  onSuccess: () => void
+  onSuccess: (msg?: string) => void
 }
 
-export function CityFormDialog({
-  isOpen,
-  onOpenChange,
-  editingCity,
-  onSuccess,
-}: Props) {
+export function CityFormDialog(props: IProps) {
+  const { isOpen, onOpenChange, editingCity, onSuccess } = props
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<CityDTO>({
@@ -66,9 +62,8 @@ export function CityFormDialog({
     const res = await saveCityAction(values, editingCity?.id)
 
     if (res.success) {
-      const msg = editingCity ? "Miestas atnaujintas!" : "Miestas pridėtas!"
-      toast.success(msg)
-      onSuccess()
+      toast.success(res.message || "Operacija sėkminga")
+      onSuccess(res.message)
     } else {
       form.setError("root", { type: "server", message: res.error })
     }
@@ -96,6 +91,7 @@ export function CityFormDialog({
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 pt-4"
+            noValidate
           >
             <FormField
               control={form.control}

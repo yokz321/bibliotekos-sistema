@@ -35,21 +35,17 @@ import { saveBorrowingAction } from "@/actions/borrowing-actions"
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
 
-interface Props {
+interface IProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   books: IBook[]
   subscribers: ISubscriber[]
-  onSuccess: () => void
+  onSuccess: (msg?: string) => void
 }
 
-export function ReservationFormDialog({
-  isOpen,
-  onOpenChange,
-  books,
-  subscribers,
-  onSuccess,
-}: Props) {
+export function ReservationFormDialog(props: IProps) {
+  const { isOpen, onOpenChange, books, subscribers, onSuccess } = props
+
   const form = useForm<BorrowingDTO>({
     resolver: zodResolver(borrowingSchema),
     mode: "onBlur",
@@ -66,9 +62,9 @@ export function ReservationFormDialog({
     const res = await saveBorrowingAction(values)
 
     if (res.success) {
-      toast.success("Rezervacija sėkmingai sukurta!")
+      toast.success(res.message || "Rezervacija sėkmingai sukurta!")
       form.reset()
-      onSuccess()
+      onSuccess(res.message)
     } else {
       form.setError("root", { type: "server", message: res.error })
     }

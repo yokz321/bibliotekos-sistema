@@ -36,23 +36,19 @@ import { saveBookAction } from "@/actions/book-actions"
 import { bookSchema, type BookDTO } from "@/dto/book-dto"
 import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
 
-interface Props {
+interface IProps {
   isOpen: boolean
   onOpenChange: (v: boolean) => void
   editingBook: IBook | undefined
   authors: IAuthor[]
   publishers: IPublisher[]
-  onSuccess: () => void
+  onSuccess: (msg?: string) => void
 }
 
-export function BookFormDialog({
-  isOpen,
-  onOpenChange,
-  editingBook,
-  authors,
-  publishers,
-  onSuccess,
-}: Props) {
+export function BookFormDialog(props: IProps) {
+  const { isOpen, onOpenChange, editingBook, authors, publishers, onSuccess } =
+    props
+
   const form = useForm<BookDTO>({
     resolver: zodResolver(bookSchema),
     mode: "onBlur",
@@ -91,8 +87,8 @@ export function BookFormDialog({
     const res = await saveBookAction(values, editingBook?.id)
 
     if (res.success) {
-      toast.success(editingBook ? "Knyga atnaujinta!" : "Knyga pridėta!")
-      onSuccess()
+      toast.success(res.message || "Operacija sėkminga")
+      onSuccess(res.message)
     } else {
       form.setError("root", { type: "server", message: res.error })
     }
@@ -122,6 +118,7 @@ export function BookFormDialog({
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 pt-4"
+            noValidate
           >
             <FormField
               control={form.control}
