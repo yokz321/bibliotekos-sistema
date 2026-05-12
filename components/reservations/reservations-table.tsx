@@ -15,13 +15,15 @@ import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import type { IBorrowingPopulated } from "@/types/borrowing-t"
 
-interface Props {
+interface IProps {
   items: IBorrowingPopulated[]
   onReturn: (id: string) => void
   onDelete: (id: string) => void
 }
 
-export function ReservationsTable({ items, onReturn, onDelete }: Props) {
+export function ReservationsTable(props: IProps) {
+  const { items, onReturn, onDelete } = props
+
   return (
     <Card className="overflow-hidden border shadow-sm">
       <Table>
