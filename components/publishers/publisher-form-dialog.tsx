@@ -28,19 +28,15 @@ import {
 } from "@/components/ui/dialog"
 import type { IPublisher } from "@/types/publisher-t"
 
-interface Props {
+interface IProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   editingPublisher: IPublisher | undefined
-  onSuccess: () => void
+  onSuccess: (msg?: string) => void
 }
 
-export function PublisherFormDialog({
-  isOpen,
-  onOpenChange,
-  editingPublisher,
-  onSuccess,
-}: Props) {
+export function PublisherFormDialog(props: IProps) {
+  const { isOpen, onOpenChange, editingPublisher, onSuccess } = props
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<PublisherDTO>({
@@ -70,11 +66,8 @@ export function PublisherFormDialog({
     const res = await savePublisherAction(values, editingPublisher?.id)
 
     if (res.success) {
-      const msg = editingPublisher
-        ? "Leidykla atnaujinta!"
-        : "Leidykla pridėta!"
-      toast.success(msg)
-      onSuccess()
+      toast.success(res.message || "Leidykla išsaugota!")
+      onSuccess(res.message)
     } else {
       form.setError("root", { type: "manual", message: res.error })
     }
@@ -104,6 +97,7 @@ export function PublisherFormDialog({
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 pt-4"
+            noValidate
           >
             <FormField
               control={form.control}
