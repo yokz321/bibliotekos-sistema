@@ -1,3 +1,5 @@
+import type { Types } from "mongoose"
+
 export interface IAuthor {
   id: string
   firstName: string
@@ -21,4 +23,10 @@ export interface IBook {
   year: number
   price: number
   annotation?: string
+}
+
+export type ILeanPopulatedBook = Omit<IBook, "author" | "publisher"> & {
+  _id: Types.ObjectId
+  author?: (IAuthor & { _id: Types.ObjectId }) | undefined
+  publisher?: (IPublisher & { _id: Types.ObjectId }) | undefined
 }

@@ -1,3 +1,5 @@
+import type { Types } from "mongoose"
+
 export interface ISubscriber {
   id: string
   ticketNumber: string
@@ -9,3 +11,5 @@ export interface ISubscriber {
   apartmentNumber?: string
   phone: string
 }
+
+export type ILeanSubscriber = ISubscriber & { _id: Types.ObjectId }

@@ -1,11 +1,11 @@
-import { Borrowing, type IBorrowing } from "@/models/borrowing-model"
+import { Borrowing } from "@/models/borrowing-model"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
+import type { BorrowingDTO } from "@/dto/borrowing-dto"
 
 export class BorrowingService {
   async getAll() {
     await connectMongoose()
-
     const results = await Borrowing.find()
       .populate("bookId")
       .populate("subscriberId")
@@ -15,10 +15,30 @@ export class BorrowingService {
     return JSON.parse(JSON.stringify(results))
   }
 
-  async save(data: Omit<IBorrowing, "id">) {
+  async save(data: BorrowingDTO) {
     await connectMongoose()
 
-    return await Borrowing.create(data)
+    const today = new Date()
+
+    const overdueBorrowing = await Borrowing.findOne({
+      subscriberId: new Types.ObjectId(data.subscriberId),
+      isReturned: false,
+      dueDate: { $lt: today },
+    })
+
+    if (overdueBorrowing) {
+      throw new Error(
+        "Abonentas negali pasiimti naujos knygos, nes turi vėluojančių negrąžintų knygų!"
+      )
+    }
+
+    return await Borrowing.create({
+      subscriberId: new Types.ObjectId(data.subscriberId),
+      bookId: new Types.ObjectId(data.bookId),
+      borrowDate: new Date(data.borrowDate),
+      dueDate: new Date(data.dueDate),
+      isReturned: data.isReturned,
+    })
   }
 
   async returnBook(id: string) {

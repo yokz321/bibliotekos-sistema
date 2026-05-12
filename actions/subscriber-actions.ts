@@ -3,9 +3,6 @@
 import { SubscriberService } from "@/services/subscriber-service"
 import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
 import { revalidatePath } from "next/cache"
-import { connectMongoose } from "@/utils/mongoose-client"
-import { Subscriber } from "@/models/subscriber-model"
-import type { ISubscriber } from "@/types/subscriber-t"
 import type { IState } from "@/types/shared-t"
 
 export async function saveSubscriberAction(
@@ -16,34 +13,13 @@ export async function saveSubscriberAction(
   if (!parse.success) {
     return { success: false, error: "Užpildykite visus privalomus laukus!" }
   }
-  const dto = parse.data
 
-  await connectMongoose()
-
+  const service = new SubscriberService()
   try {
-    const query: Record<string, unknown> = {
-      firstName: { $regex: new RegExp(`^${dto.firstName}$`, "i") },
-      lastName: { $regex: new RegExp(`^${dto.lastName}$`, "i") },
-      city: { $regex: new RegExp(`^${dto.city}$`, "i") },
-      street: { $regex: new RegExp(`^${dto.street}$`, "i") },
-      houseNumber: dto.houseNumber,
-    }
-
     if (id) {
-      query._id = { $ne: id }
-    }
-
-    const existingPerson = await Subscriber.findOne(query)
-    if (existingPerson) {
-      return { success: false, error: "Asmuo su tokiu adresu jau egzistuoja!" }
-    }
-
-    const service = new SubscriberService()
-    if (id) {
-      const toUpdate: ISubscriber = { ...dto, id }
-      await service.update(toUpdate)
+      await service.update({ ...parse.data, id })
     } else {
-      await service.save(dto)
+      await service.save(parse.data)
     }
 
     revalidatePath("/subscribers")
@@ -51,8 +27,10 @@ export async function saveSubscriberAction(
       success: true,
       message: id ? "Atnaujinta sėkmingai" : "Pridėta sėkmingai",
     }
-  } catch {
-    return { success: false, error: "Serverio klaida" }
+  } catch (error) {
+    let message = "Serverio klaida"
+    if (error instanceof Error) message = error.message
+    return { success: false, error: message }
   }
 }
 
@@ -68,13 +46,6 @@ export async function deleteSubscriberAction(id: string): Promise<IState> {
 }
 
 export async function getNextTicketNumberAction(): Promise<string> {
-  await connectMongoose()
-  const lastSub = await Subscriber.findOne().sort({ ticketNumber: -1 }).lean()
-
-  if (!lastSub || !lastSub.ticketNumber) {
-    return "1001"
-  }
-
-  const nextNumber = parseInt(lastSub.ticketNumber, 10) + 1
-  return isNaN(nextNumber) ? "1001" : nextNumber.toString()
+  const service = new SubscriberService()
+  return await service.getNextTicketNumber()
 }

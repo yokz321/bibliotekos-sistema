@@ -1,10 +1,7 @@
 "use server"
 
-import { connectMongoose } from "@/utils/mongoose-client"
-import { Borrowing } from "@/models/borrowing-model"
 import { borrowingSchema, type BorrowingDTO } from "@/dto/borrowing-dto"
 import { revalidatePath } from "next/cache"
-import { Types } from "mongoose"
 import { BorrowingService } from "@/services/borrowing-service"
 import type { IState } from "@/types/shared-t"
 
@@ -14,38 +11,15 @@ export async function saveBorrowingAction(data: BorrowingDTO): Promise<IState> {
     return { success: false, error: "Užpildykite visus privalomus laukus!" }
   }
 
-  const dto = parse.data
-  await connectMongoose()
-
+  const service = new BorrowingService()
   try {
-    const today = new Date()
-
-    const overdueBorrowing = await Borrowing.findOne({
-      subscriberId: new Types.ObjectId(dto.subscriberId),
-      isReturned: false,
-      dueDate: { $lt: today },
-    })
-
-    if (overdueBorrowing) {
-      return {
-        success: false,
-        error:
-          "Abonentas negali pasiimti naujos knygos, nes turi vėluojančių negrąžintų knygų!",
-      }
-    }
-
-    await Borrowing.create({
-      subscriberId: new Types.ObjectId(dto.subscriberId),
-      bookId: new Types.ObjectId(dto.bookId),
-      borrowDate: new Date(dto.borrowDate),
-      dueDate: new Date(dto.dueDate),
-      isReturned: dto.isReturned,
-    })
-
+    await service.save(parse.data)
     revalidatePath("/reservations")
     return { success: true, message: "Knyga išduota sėkmingai" }
-  } catch {
-    return { success: false, error: "Serverio klaida saugant" }
+  } catch (error) {
+    let message = "Serverio klaida saugant"
+    if (error instanceof Error) message = error.message
+    return { success: false, error: message }
   }
 }
 
@@ -54,7 +28,7 @@ export async function returnBookAction(id: string): Promise<IState> {
   try {
     await service.returnBook(id)
     revalidatePath("/reservations")
-    return { success: true, message: "Knyga grąžinta sėkmingai" }
+    return { success: true, message: "Knyga grąžinta" }
   } catch {
     return { success: false, error: "Nepavyko užregistruoti grąžinimo" }
   }

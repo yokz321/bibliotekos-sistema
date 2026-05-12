@@ -3,7 +3,6 @@
 import { BookService } from "@/services/book-service"
 import { bookSchema, type BookDTO } from "@/dto/book-dto"
 import { revalidatePath } from "next/cache"
-import type { IBook } from "@/types/book-t"
 import type { IState } from "@/types/shared-t"
 
 export async function saveBookAction(
@@ -17,25 +16,12 @@ export async function saveBookAction(
     return { success: false, error: firstError }
   }
 
-  const validatedData = parse.data
-  const bookService = new BookService()
-
-  const dbData = {
-    title: validatedData.title,
-    author: validatedData.authorId,
-    publisher: validatedData.publisherId,
-    inventoryNumber: validatedData.inventoryNumber,
-    isbn: validatedData.isbn,
-    price: validatedData.price,
-    year: validatedData.year,
-    annotation: validatedData.annotation,
-  } as unknown as IBook
-
+  const service = new BookService()
   try {
     if (id) {
-      await bookService.update({ ...dbData, id })
+      await service.update(id, parse.data)
     } else {
-      await bookService.save(dbData)
+      await service.save(parse.data)
     }
     revalidatePath("/books")
     return { success: true, message: "Knyga sėkmingai išsaugota" }
@@ -47,9 +33,9 @@ export async function saveBookAction(
 }
 
 export async function deleteBookAction(id: string): Promise<IState> {
-  const bookService = new BookService()
+  const service = new BookService()
   try {
-    await bookService.delete(id)
+    await service.delete(id)
     revalidatePath("/books")
     return { success: true, message: "Knyga sėkmingai pašalinta" }
   } catch {

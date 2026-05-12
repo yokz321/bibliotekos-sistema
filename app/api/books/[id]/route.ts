@@ -1,15 +1,21 @@
 import { BookService } from "@/services/book-service"
 import { type NextRequest } from "next/server"
 
-export async function PUT(request: NextRequest) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
   const res = await request.json()
   const service = new BookService()
-  await service.update(res)
+
+  await service.update(id, res)
+
   return Response.json({ message: "Knyga sėkmingai atnaujinta" })
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params

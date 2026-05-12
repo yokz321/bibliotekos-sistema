@@ -3,15 +3,23 @@ import { Author } from "@/models/author-model"
 import { Publisher } from "@/models/publisher-model"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
-import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
-
-type LeanPopulatedBook = Omit<IBook, "author" | "publisher"> & {
-  _id: Types.ObjectId
-  author?: (IAuthor & { _id: Types.ObjectId }) | undefined
-  publisher?: (IPublisher & { _id: Types.ObjectId }) | undefined
-}
+import type { IBook, ILeanPopulatedBook } from "@/types/book-t"
+import type { BookDTO } from "@/dto/book-dto"
 
 export class BookService {
+  private mapDtoToDb(dto: BookDTO) {
+    return {
+      title: dto.title,
+      author: new Types.ObjectId(dto.authorId),
+      publisher: new Types.ObjectId(dto.publisherId),
+      inventoryNumber: dto.inventoryNumber,
+      isbn: dto.isbn,
+      price: dto.price,
+      year: dto.year,
+      annotation: dto.annotation,
+    }
+  }
+
   async getAll(): Promise<IBook[]> {
     try {
       await connectMongoose()
@@ -19,24 +27,18 @@ export class BookService {
         .populate({ path: "author", model: Author })
         .populate({ path: "publisher", model: Publisher })
         .sort({ title: 1 })
-        .lean()) as unknown as LeanPopulatedBook[]
+        .lean()) as unknown as ILeanPopulatedBook[]
 
       return books.map((book) => ({
         ...book,
         id: book._id.toString(),
         author:
           book.author && book.author._id
-            ? {
-                ...book.author,
-                id: book.author._id.toString(),
-              }
+            ? { ...book.author, id: book.author._id.toString() }
             : undefined,
         publisher:
           book.publisher && book.publisher._id
-            ? {
-                ...book.publisher,
-                id: book.publisher._id.toString(),
-              }
+            ? { ...book.publisher, id: book.publisher._id.toString() }
             : undefined,
       })) as unknown as IBook[]
     } catch (error) {
@@ -45,16 +47,16 @@ export class BookService {
     }
   }
 
-  async save(book: Omit<IBook, "id">): Promise<void> {
+  async save(dto: BookDTO): Promise<void> {
     await connectMongoose()
-    await Book.create(book)
+    const dbData = this.mapDtoToDb(dto)
+    await Book.create(dbData)
   }
 
-  async update(book: IBook): Promise<void> {
+  async update(id: string, dto: BookDTO): Promise<void> {
     await connectMongoose()
-    const { id, ...updateData } = book
-    if (!id) throw new Error("Atnaujinimui reikalingas ID")
-    await Book.updateOne({ _id: new Types.ObjectId(id) }, updateData)
+    const dbData = this.mapDtoToDb(dto)
+    await Book.updateOne({ _id: new Types.ObjectId(id) }, dbData)
   }
 
   async delete(id: string): Promise<void> {
