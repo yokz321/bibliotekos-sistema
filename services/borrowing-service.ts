@@ -6,7 +6,7 @@ import type { IBorrowingPopulated } from "@/types/borrowing-t"
 
 type LeanResult = {
   _id: Types.ObjectId
-  bookId?: { _id: Types.ObjectId; title: string }
+  bookId?: { _id: Types.ObjectId; title: string; inventoryNumber: string }
   subscriberId?: {
     _id: Types.ObjectId
     firstName: string
@@ -27,6 +27,53 @@ export class BorrowingService {
       .populate("bookId")
       .populate("subscriberId")
       .sort({ createdAt: -1 })
+      .lean()
+
+    const leanResults = results as unknown as LeanResult[]
+
+    return leanResults.map((result) => {
+      const { _id, bookId, subscriberId, ...rest } = result
+
+      return {
+        ...rest,
+        id: _id.toString(),
+        bookId: bookId ? { ...bookId, id: bookId._id.toString() } : undefined,
+        subscriberId: subscriberId
+          ? { ...subscriberId, id: subscriberId._id.toString() }
+          : undefined,
+        borrowDate: rest.borrowDate.toISOString(),
+        dueDate: rest.dueDate.toISOString(),
+        returnDate: rest.returnDate?.toISOString(),
+      }
+    }) as unknown as IBorrowingPopulated[]
+  }
+
+  async getReportData(filters: {
+    subscriberId?: string
+    bookId?: string
+    onlyOverdue?: boolean
+  }): Promise<IBorrowingPopulated[]> {
+    await connectMongoose()
+
+    const query: Record<string, unknown> = {}
+
+    if (filters.subscriberId) {
+      query.subscriberId = new Types.ObjectId(filters.subscriberId)
+    }
+
+    if (filters.bookId) {
+      query.bookId = new Types.ObjectId(filters.bookId)
+    }
+
+    if (filters.onlyOverdue) {
+      query.isReturned = false
+      query.dueDate = { $lt: new Date() }
+    }
+
+    const results = await Borrowing.find(query)
+      .populate("bookId")
+      .populate("subscriberId")
+      .sort({ dueDate: 1 })
       .lean()
 
     const leanResults = results as unknown as LeanResult[]
