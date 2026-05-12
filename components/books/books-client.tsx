@@ -12,14 +12,15 @@ import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
 interface IProps {
+  initialBooks: IBook[]
   authors: IAuthor[]
   publishers: IPublisher[]
 }
 
 export function BooksClient(props: IProps) {
-  const { authors, publishers } = props
+  const { initialBooks, authors, publishers } = props
 
-  const [books, setBooks] = useState<IBook[]>([])
+  const [books, setBooks] = useState<IBook[]>(initialBooks)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingBook, setEditingBook] = useState<IBook | undefined>(undefined)
 
@@ -36,8 +37,8 @@ export function BooksClient(props: IProps) {
   }
 
   useEffect(() => {
-    getBooksFromApi()
-  }, [])
+    setBooks(initialBooks)
+  }, [initialBooks])
 
   const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)

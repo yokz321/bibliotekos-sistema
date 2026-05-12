@@ -11,14 +11,15 @@ import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
 interface IProps {
+  initialData: ICity[]
   className?: string
 }
 
 export function CitiesClient(props: IProps) {
-  const { className } = props
+  const { initialData, className } = props
   void className
 
-  const [cities, setCities] = useState<ICity[]>([])
+  const [cities, setCities] = useState<ICity[]>(initialData)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCity, setEditingCity] = useState<ICity | undefined>(undefined)
 
@@ -35,8 +36,8 @@ export function CitiesClient(props: IProps) {
   }
 
   useEffect(() => {
-    getCitiesFromApi()
-  }, [])
+    setCities(initialData)
+  }, [initialData])
 
   const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)

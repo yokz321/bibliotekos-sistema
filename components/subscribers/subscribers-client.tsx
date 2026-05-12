@@ -13,15 +13,16 @@ import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
 interface IProps {
+  initialData: ISubscriber[]
   cities: ICity[]
   className?: string
 }
 
 export function SubscribersClient(props: IProps) {
-  const { cities, className } = props
+  const { initialData, cities, className } = props
   void className
 
-  const [data, setData] = useState<ISubscriber[]>([])
+  const [data, setData] = useState<ISubscriber[]>(initialData)
   const [isOpen, setIsOpen] = useState(false)
   const [editing, setEditing] = useState<ISubscriber | undefined>(undefined)
 
@@ -38,8 +39,8 @@ export function SubscribersClient(props: IProps) {
   }
 
   useEffect(() => {
-    getSubscribersFromApi()
-  }, [])
+    setData(initialData)
+  }, [initialData])
 
   const handleEdit = (item: ISubscriber) => {
     setEditing(item)

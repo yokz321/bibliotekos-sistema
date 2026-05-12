@@ -11,14 +11,15 @@ import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
 interface IProps {
+  initialData: IPublisher[]
   className?: string
 }
 
 export function PublishersClient(props: IProps) {
-  const { className } = props
+  const { initialData, className } = props
   void className
 
-  const [data, setData] = useState<IPublisher[]>([])
+  const [data, setData] = useState<IPublisher[]>(initialData)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingPublisher, setEditingPublisher] = useState<
     IPublisher | undefined
@@ -37,8 +38,8 @@ export function PublishersClient(props: IProps) {
   }
 
   useEffect(() => {
-    getPublishersFromApi()
-  }, [])
+    setData(initialData)
+  }, [initialData])
 
   const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)

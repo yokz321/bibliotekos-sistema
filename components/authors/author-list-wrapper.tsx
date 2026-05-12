@@ -18,14 +18,13 @@ import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
 interface IProps {
-  className?: string
+  initialData: IAuthor[]
 }
 
 export function AuthorListWrapper(props: IProps) {
-  const { className } = props
-  void className
+  const { initialData } = props
 
-  const [authors, setAuthors] = useState<IAuthor[]>([])
+  const [authors, setAuthors] = useState<IAuthor[]>(initialData)
   const [isOpen, setIsOpen] = useState(false)
   const [editingAuthor, setEditingAuthor] = useState<IAuthor | undefined>(
     undefined
@@ -44,8 +43,10 @@ export function AuthorListWrapper(props: IProps) {
   }
 
   useEffect(() => {
-    getAuthorsFromApi()
-  }, [])
+    if (initialData.length === 0) {
+      getAuthorsFromApi()
+    }
+  }, [initialData])
 
   const handleEdit = (author: IAuthor) => {
     setEditingAuthor(author)

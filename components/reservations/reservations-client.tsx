@@ -15,14 +15,16 @@ import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
 interface IProps {
+  initialBorrowings: IBorrowingPopulated[]
   books: IBook[]
   subscribers: ISubscriber[]
 }
 
 export function ReservationsClient(props: IProps) {
-  const { books, subscribers } = props
+  const { initialBorrowings, books, subscribers } = props
 
-  const [borrowings, setBorrowings] = useState<IBorrowingPopulated[]>([])
+  const [borrowings, setBorrowings] =
+    useState<IBorrowingPopulated[]>(initialBorrowings)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const { setMessage } = useBoundStore(
@@ -38,8 +40,8 @@ export function ReservationsClient(props: IProps) {
   }
 
   useEffect(() => {
-    getBorrowingsFromApi()
-  }, [])
+    setBorrowings(initialBorrowings)
+  }, [initialBorrowings])
 
   const handleReturn = async (id: string) => {
     const res = await returnBookAction(id)
@@ -52,8 +54,6 @@ export function ReservationsClient(props: IProps) {
   }
 
   const handleDelete = async (id: string) => {
-    if (!id) return
-
     const res = await deleteBorrowingAction(id)
     if (res.success) {
       if (res.message) setMessage(res.message)
