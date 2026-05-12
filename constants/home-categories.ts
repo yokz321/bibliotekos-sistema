@@ -4,6 +4,8 @@ import {
   CalendarCheck,
   Building2,
   MapPin,
+  ClipboardList,
+  Library,
   type LucideIcon,
 } from "lucide-react"
 
@@ -50,5 +52,17 @@ export const HOME_CATEGORIES: HomeCategory[] = [
     href: "/reservations",
     icon: CalendarCheck,
     description: "Knygų užsakymų ir grąžinimų sekimas",
+  },
+  {
+    title: "Išdavimų ataskaitos",
+    href: "/reports/borrowings",
+    icon: ClipboardList,
+    description: "Skaitytojų turimos knygos ir skolininkai",
+  },
+  {
+    title: "Fondo ataskaitos",
+    href: "/reports/inventory",
+    icon: Library,
+    description: "Inventorinis sąrašas ir knygų judėjimas",
   },
 ]

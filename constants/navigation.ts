@@ -6,6 +6,9 @@ import {
   CalendarCheck,
   LayoutGrid,
   MapPin,
+  FileText,
+  ClipboardList,
+  Library,
 } from "lucide-react"
 import type { NavItem } from "@/types/nav-t"
 
@@ -22,4 +25,20 @@ export const NAVIGATION_MENU: NavItem[] = [
   { title: "Knygos", href: "/books", icon: Book },
   { title: "Abonentai", href: "/subscribers", icon: UserCog },
   { title: "Rezervacijos", href: "/reservations", icon: CalendarCheck },
+  {
+    title: "Ataskaitos",
+    icon: FileText,
+    children: [
+      {
+        title: "Knygų išdavimai",
+        href: "/reports/borrowings",
+        icon: ClipboardList,
+      },
+      {
+        title: "Fondo inventorizacija",
+        href: "/reports/inventory",
+        icon: Library,
+      },
+    ],
+  },
 ]
