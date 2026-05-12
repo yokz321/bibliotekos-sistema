@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog"
 import type { ICity } from "@/types/city-t"
 
-interface IProps {
+type IProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   editingCity: ICity | undefined

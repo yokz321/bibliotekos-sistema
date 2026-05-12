@@ -17,7 +17,7 @@ import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
-interface IProps {
+type IProps = {
   initialData: IAuthor[]
   className?: string
 }

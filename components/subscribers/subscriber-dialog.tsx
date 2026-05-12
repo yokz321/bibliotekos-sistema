@@ -36,7 +36,7 @@ import { TextField } from "@/components/parts/text-field"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
 
-interface IProps {
+type IProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   editingItem: ISubscriber | undefined

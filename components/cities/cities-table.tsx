@@ -23,7 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-interface IProps {
+type IProps = {
   cities: ICity[]
   onEdit: (city: ICity) => void
   onDelete: (id?: string) => void

@@ -11,8 +11,10 @@ import { Input } from "@/components/ui/input"
 import type { Control, FieldValues, Path } from "react-hook-form"
 import type { InputHTMLAttributes } from "react"
 
-interface IProps<T extends FieldValues>
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "name"> {
+type IProps<T extends FieldValues> = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "name"
+> & {
   control: Control<T>
   name: Path<T>
   label: string

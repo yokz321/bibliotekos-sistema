@@ -26,7 +26,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-interface IProps {
+type IProps = {
   items: ISubscriber[]
   onEdit: (item: ISubscriber) => void
   onRefresh: () => void

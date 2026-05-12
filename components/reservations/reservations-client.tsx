@@ -14,7 +14,7 @@ import {
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
-interface IProps {
+type IProps = {
   initialBorrowings: IBorrowingPopulated[]
   books: IBook[]
   subscribers: ISubscriber[]

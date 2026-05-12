@@ -21,7 +21,7 @@ import {
 import { TextField } from "@/components/parts/text-field"
 import type { IPublisher } from "@/types/publisher-t"
 
-interface IProps {
+type IProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   editingPublisher: IPublisher | undefined

@@ -25,7 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-interface IProps {
+type IProps = {
   books: IBook[]
   onEdit: (book: IBook) => void
   onDelete: (id?: string) => void

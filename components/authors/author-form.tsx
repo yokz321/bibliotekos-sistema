@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 
-interface IProps {
+type IProps = {
   defaultValues?: AuthorDTO
   id?: string
   onComplete: (msg?: string) => void

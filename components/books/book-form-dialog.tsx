@@ -37,7 +37,7 @@ import type { IBook } from "@/types/book-t"
 import type { IAuthor } from "@/types/author-t"
 import type { IPublisher } from "@/types/publisher-t"
 
-interface IProps {
+type IProps = {
   isOpen: boolean
   onOpenChange: (v: boolean) => void
   editingBook: IBook | undefined

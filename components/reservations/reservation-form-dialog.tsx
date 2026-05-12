@@ -35,7 +35,7 @@ import { TextField } from "@/components/parts/text-field"
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
 
-interface IProps {
+type IProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   books: IBook[]

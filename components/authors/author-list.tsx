@@ -27,7 +27,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-interface IProps {
+type IProps = {
   items: IAuthor[]
   onEdit: (author: IAuthor) => void
   onSuccess: () => void
