@@ -17,7 +17,7 @@ const PublisherSchema = new Schema<IPublisher>(
       versionKey: false,
       virtuals: true,
       transform: (
-        _doc: unknown,
+        doc: unknown,
         ret: IPublisher & { _id: Types.ObjectId }
       ): IReturnType => {
         const { _id, ...rest } = ret

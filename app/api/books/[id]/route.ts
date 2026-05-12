@@ -15,11 +15,13 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
   const service = new BookService()
+
   await service.delete(id)
+
   return Response.json({ message: "Knyga sėkmingai pašalinta" })
 }

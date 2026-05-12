@@ -23,7 +23,7 @@ const SubscriberSchema = new Schema<ISubscriber>(
       versionKey: false,
       virtuals: true,
       transform: (
-        _doc: unknown,
+        doc: unknown,
         ret: ISubscriber & { _id: Types.ObjectId }
       ): IReturnType => {
         const { _id, ...rest } = ret

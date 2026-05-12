@@ -34,7 +34,7 @@ const BorrowingSchema = new Schema<IBorrowing>(
     toJSON: {
       virtuals: true,
       transform: (
-        _doc: unknown,
+        doc: unknown,
         ret: IBorrowing & { _id: Types.ObjectId }
       ): IReturnType => {
         const { _id, ...rest } = ret
