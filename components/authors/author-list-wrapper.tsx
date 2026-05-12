@@ -44,6 +44,11 @@ export function AuthorListWrapper(props: IProps) {
     })
   }
 
+  const handleAdd = () => {
+    setEditingAuthor(undefined)
+    setIsOpen(true)
+  }
+
   const handleEdit = (author: IAuthor) => {
     setEditingAuthor(author)
     setIsOpen(true)
@@ -68,7 +73,10 @@ export function AuthorListWrapper(props: IProps) {
 
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
-            <Button className="bg-orange-600 hover:bg-orange-700">
+            <Button
+              className="bg-orange-600 hover:bg-orange-700"
+              onClick={handleAdd}
+            >
               <Plus className="mr-2 h-4 w-4" /> Naujas autorius
             </Button>
           </DialogTrigger>

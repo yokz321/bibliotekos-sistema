@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { publisherSchema, type PublisherDTO } from "@/dto/publisher-dto"
 import { savePublisherAction } from "@/actions/publisher-actions"
 import { toast } from "sonner"
-import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -16,7 +15,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { TextField } from "@/components/parts/text-field"
 import type { IPublisher } from "@/types/publisher-t"
@@ -62,11 +60,6 @@ export function PublisherFormDialog(props: IProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button className="bg-orange-600 hover:bg-orange-700">
-          <Plus className="mr-2 h-4 w-4" /> Nauja leidykla
-        </Button>
-      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
@@ -84,6 +77,7 @@ export function PublisherFormDialog(props: IProps) {
               name="name"
               label="Pavadinimas"
               placeholder="Leidyklos pavadinimas"
+              disabled={isSubmitting}
             />
 
             <TextField
@@ -91,6 +85,7 @@ export function PublisherFormDialog(props: IProps) {
               name="location"
               label="Miestas / Adresas"
               placeholder="Miestas (nebūtina)"
+              disabled={isSubmitting}
             />
 
             {rootError && (

@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { ReservationsTable } from "./reservations-table"
 import { ReservationFormDialog } from "./reservation-form-dialog"
 import { getApi } from "@/utils/server-api"
@@ -38,6 +40,10 @@ export function ReservationsClient(props: IProps) {
     })
   }
 
+  const handleAdd = () => {
+    setIsDialogOpen(true)
+  }
+
   const handleReturn = async (id: string) => {
     const res = await returnBookAction(id)
     if (res.success) {
@@ -73,6 +79,13 @@ export function ReservationsClient(props: IProps) {
             Knygų išdavimo ir grąžinimo apskaita
           </p>
         </div>
+
+        <Button
+          className="bg-orange-600 hover:bg-orange-700"
+          onClick={handleAdd}
+        >
+          <Plus className="mr-2 h-4 w-4" /> Nauja registracija
+        </Button>
 
         <ReservationFormDialog
           isOpen={isDialogOpen}

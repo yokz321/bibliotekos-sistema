@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
+import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { CitiesTable } from "./cities-table"
 import { CityFormDialog } from "./city-form-dialog"
 import type { ICity } from "@/types/city-t"
@@ -33,6 +35,11 @@ export function CitiesClient(props: IProps) {
     getApi<ICity[]>("/api/cities").then((res) => {
       setCities(res ?? [])
     })
+  }
+
+  const handleAdd = () => {
+    setEditingCity(undefined)
+    setIsDialogOpen(true)
   }
 
   const handleFormSuccess = (msg?: string) => {
@@ -76,6 +83,13 @@ export function CitiesClient(props: IProps) {
             Klasifikatoriaus valdymas
           </p>
         </div>
+
+        <Button
+          className="bg-orange-600 hover:bg-orange-700"
+          onClick={handleAdd}
+        >
+          <Plus className="mr-2 h-4 w-4" /> Naujas miestas
+        </Button>
 
         <CityFormDialog
           isOpen={isDialogOpen}

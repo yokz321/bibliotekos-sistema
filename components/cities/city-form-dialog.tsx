@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { citySchema, type CityDTO } from "@/dto/city-dto"
 import { saveCityAction } from "@/actions/city-actions"
 import { toast } from "sonner"
-import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { TextField } from "@/components/parts/text-field"
@@ -17,7 +16,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import type { ICity } from "@/types/city-t"
 
@@ -59,11 +57,6 @@ export function CityFormDialog(props: IProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button className="bg-orange-600 hover:bg-orange-700">
-          <Plus className="mr-2 h-4 w-4" /> Naujas miestas
-        </Button>
-      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
@@ -81,6 +74,7 @@ export function CityFormDialog(props: IProps) {
               name="name"
               label="Pavadinimas"
               placeholder="Miesto pavadinimas"
+              disabled={isSubmitting}
             />
 
             {rootError && (

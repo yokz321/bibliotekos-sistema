@@ -38,6 +38,11 @@ export function SubscribersClient(props: IProps) {
     })
   }
 
+  const handleAdd = () => {
+    setEditing(undefined)
+    setIsOpen(true)
+  }
+
   const handleEdit = (item: ISubscriber) => {
     setEditing(item)
     setIsOpen(true)
@@ -57,10 +62,7 @@ export function SubscribersClient(props: IProps) {
 
         <Button
           className="bg-orange-600 hover:bg-orange-700"
-          onClick={() => {
-            setEditing(undefined)
-            setIsOpen(true)
-          }}
+          onClick={handleAdd}
         >
           <Plus className="mr-2 h-4 w-4" /> Naujas abonentas
         </Button>

@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
+import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { PublishersTable } from "./publishers-table"
 import { PublisherFormDialog } from "./publisher-form-dialog"
 import type { IPublisher } from "@/types/publisher-t"
@@ -35,6 +37,11 @@ export function PublishersClient(props: IProps) {
     getApi<IPublisher[]>("/api/publishers").then((res) => {
       setData(res ?? [])
     })
+  }
+
+  const handleAdd = () => {
+    setEditingPublisher(undefined)
+    setIsDialogOpen(true)
   }
 
   const handleFormSuccess = (msg?: string) => {
@@ -78,6 +85,12 @@ export function PublishersClient(props: IProps) {
             Klasifikatoriaus valdymas
           </p>
         </div>
+        <Button
+          className="bg-orange-600 hover:bg-orange-700"
+          onClick={handleAdd}
+        >
+          <Plus className="mr-2 h-4 w-4" /> Nauja leidykla
+        </Button>
 
         <PublisherFormDialog
           isOpen={isDialogOpen}

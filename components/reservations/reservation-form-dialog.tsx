@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -26,7 +25,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 
 import { borrowingSchema, type BorrowingDTO } from "@/dto/borrowing-dto"
@@ -79,11 +77,6 @@ export function ReservationFormDialog(props: IProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button className="bg-orange-600 hover:bg-orange-700">
-          <Plus className="mr-2 h-4 w-4" /> Nauja registracija
-        </Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Knygos išdavimo registracija</DialogTitle>
