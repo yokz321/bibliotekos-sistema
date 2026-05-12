@@ -4,8 +4,12 @@ import { AuthorService } from "@/services/author-service"
 import { authorSchema, type AuthorDTO } from "@/dto/author-dto"
 import { revalidatePath } from "next/cache"
 import type { IAuthor } from "@/types/book-t"
+import type { IState } from "@/types/shared-t"
 
-export async function saveAuthorAction(data: AuthorDTO, id?: string) {
+export async function saveAuthorAction(
+  data: AuthorDTO,
+  id?: string
+): Promise<IState> {
   const parse = authorSchema.safeParse(data)
 
   if (!parse.success) {
@@ -23,7 +27,7 @@ export async function saveAuthorAction(data: AuthorDTO, id?: string) {
       await authorService.save(parse.data)
     }
     revalidatePath("/authors")
-    return { success: true }
+    return { success: true, message: "Autorius sėkmingai išsaugotas" }
   } catch (error: unknown) {
     let message = "Serverio klaida"
     if (error instanceof Error) message = error.message
@@ -31,12 +35,12 @@ export async function saveAuthorAction(data: AuthorDTO, id?: string) {
   }
 }
 
-export async function deleteAuthorAction(id: string) {
+export async function deleteAuthorAction(id: string): Promise<IState> {
   const authorService = new AuthorService()
   try {
     await authorService.delete(id)
     revalidatePath("/authors")
-    return { success: true }
+    return { success: true, message: "Autorius pašalintas" }
   } catch (error: unknown) {
     console.error("KLAIDA TRINANT AUTORIŲ:", error)
 

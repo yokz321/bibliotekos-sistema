@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input"
 import type { Control, FieldValues, Path } from "react-hook-form"
 
-interface Props<T extends FieldValues> {
+interface IProps<T extends FieldValues> {
   control: Control<T>
   name: Path<T>
   label: string
@@ -18,13 +18,9 @@ interface Props<T extends FieldValues> {
   type?: string
 }
 
-export function TextField<T extends FieldValues>({
-  control,
-  name,
-  label,
-  placeholder,
-  type = "text",
-}: Props<T>) {
+export function TextField<T extends FieldValues>(props: IProps<T>) {
+  const { control, name, label, placeholder, type = "text" } = props
+
   return (
     <FormField
       control={control}

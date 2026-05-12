@@ -16,13 +16,15 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { saveAuthorAction } from "@/actions/author-actions"
 
-interface AuthorFormProps {
+interface IProps {
   defaultValues?: AuthorDTO
   id?: string
-  onComplete: () => void
+  onComplete: (msg?: string) => void
 }
 
-export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
+export function AuthorForm(props: IProps) {
+  const { defaultValues, id, onComplete } = props
+
   const form = useForm<AuthorDTO>({
     resolver: zodResolver(authorSchema),
     mode: "onBlur",
@@ -37,7 +39,7 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
     const res = await saveAuthorAction(values, id)
 
     if (res.success) {
-      onComplete()
+      onComplete(res.message)
     } else {
       form.setError("root", {
         type: "manual",
@@ -52,7 +54,11 @@ export function AuthorForm({ defaultValues, id, onComplete }: AuthorFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 pt-4"
+        noValidate
+      >
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}

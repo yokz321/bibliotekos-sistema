@@ -27,21 +27,24 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-interface Props {
+interface IProps {
   items: IAuthor[]
   onEdit: (author: IAuthor) => void
   onSuccess: () => void
 }
 
-export function AuthorList({ items, onEdit, onSuccess }: Props) {
+export function AuthorList(props: IProps) {
+  const { items, onEdit, onSuccess } = props
+
   const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
+
   const executeDelete = async (id?: string) => {
     if (!id) return
 
     setDeletingId(id)
     const res = await deleteAuthorAction(id)
     if (res.success) {
-      toast.success("Autorius pašalintas")
+      toast.success(res.message || "Autorius pašalintas")
       onSuccess()
     } else {
       toast.error(res.error || "Klaida šalinant")
