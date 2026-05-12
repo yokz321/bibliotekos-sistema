@@ -58,7 +58,10 @@ export function PublishersClient(props: IProps) {
 
     const res = await deletePublisherAction(id)
     if (res.success) {
-      toast.success("Leidykla pašalinta")
+      if (res.message) {
+        toast.success(res.message)
+        setMessage(res.message)
+      }
       getPublishersFromApi()
     } else {
       toast.error(res.error || "Klaida")

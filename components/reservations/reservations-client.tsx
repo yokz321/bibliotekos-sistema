@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { toast } from "sonner"
 import { ReservationsTable } from "./reservations-table"
 import { ReservationFormDialog } from "./reservation-form-dialog"
 import { getApi } from "@/utils/server-api"
@@ -45,10 +44,10 @@ export function ReservationsClient(props: IProps) {
   const handleReturn = async (id: string) => {
     const res = await returnBookAction(id)
     if (res.success) {
-      toast.success("Knyga sėkmingai grąžinta!")
+      if (res.message) setMessage(res.message)
       getBorrowingsFromApi()
     } else {
-      toast.error(res.error || "Klaida")
+      if (res.error) setMessage("Klaida: " + res.error)
     }
   }
 
@@ -57,10 +56,10 @@ export function ReservationsClient(props: IProps) {
 
     const res = await deleteBorrowingAction(id)
     if (res.success) {
-      toast.success("Įrašas pašalintas")
+      if (res.message) setMessage(res.message)
       getBorrowingsFromApi()
     } else {
-      toast.error(res.error || "Klaida")
+      if (res.error) setMessage("Klaida: " + res.error)
     }
   }
 

@@ -56,7 +56,10 @@ export function CitiesClient(props: IProps) {
 
     const res = await deleteCityAction(id)
     if (res.success) {
-      toast.success("Miestas pašalintas")
+      if (res.message) {
+        toast.success(res.message)
+        setMessage(res.message)
+      }
       getCitiesFromApi()
     } else {
       toast.error(res.error || "Klaida")

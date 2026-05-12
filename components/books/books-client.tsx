@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { toast } from "sonner"
 import { BooksTable } from "./books-table"
 import { BookFormDialog } from "./book-form-dialog"
 import { deleteBookAction } from "@/actions/book-actions"
@@ -56,10 +55,10 @@ export function BooksClient(props: IProps) {
 
     const res = await deleteBookAction(id)
     if (res.success) {
-      toast.success("Knyga pašalinta")
+      if (res.message) setMessage(res.message)
       getBooksFromApi()
     } else {
-      toast.error(res.error || "Klaida")
+      if (res.error) setMessage("Klaida: " + res.error)
     }
   }
 

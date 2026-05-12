@@ -17,7 +17,14 @@ import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
-export function AuthorListWrapper() {
+interface IProps {
+  className?: string
+}
+
+export function AuthorListWrapper(props: IProps) {
+  const { className } = props
+  void className
+
   const [authors, setAuthors] = useState<IAuthor[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [editingAuthor, setEditingAuthor] = useState<IAuthor | undefined>(

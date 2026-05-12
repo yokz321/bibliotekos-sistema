@@ -14,10 +14,12 @@ import { useShallow } from "zustand/react/shallow"
 
 interface IProps {
   cities: ICity[]
+  className?: string
 }
 
 export function SubscribersClient(props: IProps) {
-  const { cities } = props
+  const { cities, className } = props
+  void className
 
   const [data, setData] = useState<ISubscriber[]>([])
   const [isOpen, setIsOpen] = useState(false)
