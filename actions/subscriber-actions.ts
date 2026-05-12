@@ -51,7 +51,7 @@ export async function saveSubscriberAction(
       success: true,
       message: id ? "Atnaujinta sėkmingai" : "Pridėta sėkmingai",
     }
-  } catch (error) {
+  } catch {
     return { success: false, error: "Serverio klaida" }
   }
 }
