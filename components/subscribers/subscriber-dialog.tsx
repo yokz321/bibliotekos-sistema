@@ -87,8 +87,6 @@ export function SubscriberDialog(props: IProps) {
         }
       }
       fetchNextNumber()
-    } else if (!isOpen) {
-      setGeneratedNumber("")
     }
   }, [isOpen, editingItem])
 
@@ -106,12 +104,17 @@ export function SubscriberDialog(props: IProps) {
     }
   }
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) setGeneratedNumber("")
+    onOpenChange(open)
+  }
+
   const dialogTitle = editingItem ? "Redaguoti abonentą" : "Naujas abonentas"
   const isSubmitting = form.formState.isSubmitting
   const rootError = form.formState.errors.root
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
