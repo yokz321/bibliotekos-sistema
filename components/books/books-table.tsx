@@ -25,13 +25,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-interface Props {
+interface IProps {
   books: IBook[]
   onEdit: (book: IBook) => void
   onDelete: (id?: string) => void
 }
 
-export function BooksTable({ books, onEdit, onDelete }: Props) {
+export function BooksTable(props: IProps) {
+  const { books, onEdit, onDelete } = props
+
   return (
     <Card className="overflow-hidden border shadow-sm">
       <Table>

@@ -4,8 +4,12 @@ import { PublisherService } from "@/services/publisher-service"
 import { publisherSchema, type PublisherDTO } from "@/dto/publisher-dto"
 import { revalidatePath } from "next/cache"
 import type { IPublisher } from "@/types/book-t"
+import type { IState } from "@/types/shared-t"
 
-export async function savePublisherAction(data: PublisherDTO, id?: string) {
+export async function savePublisherAction(
+  data: PublisherDTO,
+  id?: string
+): Promise<IState> {
   const parsed = publisherSchema.safeParse(data)
 
   if (!parsed.success) {
@@ -24,27 +28,21 @@ export async function savePublisherAction(data: PublisherDTO, id?: string) {
     }
 
     revalidatePath("/publishers")
-    return { success: true }
+    return { success: true, message: "Leidykla išsaugota" }
   } catch (error: unknown) {
-    console.error("KLAIDA SAUGANT LEIDYKLĄ:", error)
-
     let errorMessage = "Serverio klaida"
-    if (error instanceof Error) {
-      errorMessage = error.message
-    }
-
+    if (error instanceof Error) errorMessage = error.message
     return { success: false, error: errorMessage }
   }
 }
 
-export async function deletePublisherAction(id: string) {
+export async function deletePublisherAction(id: string): Promise<IState> {
   const service = new PublisherService()
   try {
     await service.delete(id)
     revalidatePath("/publishers")
-    return { success: true }
-  } catch (error: unknown) {
-    console.error("KLAIDA TRINANT LEIDYKLĄ:", error)
+    return { success: true, message: "Leidykla pašalinta" }
+  } catch {
     return { success: false, error: "Nepavyko pašalinti leidyklos" }
   }
 }

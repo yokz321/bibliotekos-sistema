@@ -24,13 +24,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-interface Props {
+interface IProps {
   publishers: IPublisher[]
   onEdit: (pub: IPublisher) => void
   onDelete: (id?: string) => void
 }
 
-export function PublishersTable({ publishers, onEdit, onDelete }: Props) {
+export function PublishersTable(props: IProps) {
+  const { publishers, onEdit, onDelete } = props
+
   return (
     <div className="rounded-md border bg-card shadow-sm overflow-hidden">
       <Table>

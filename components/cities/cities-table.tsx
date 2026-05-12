@@ -23,13 +23,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-interface Props {
+interface IProps {
   cities: ICity[]
   onEdit: (city: ICity) => void
   onDelete: (id?: string) => void
 }
 
-export function CitiesTable({ cities, onEdit, onDelete }: Props) {
+export function CitiesTable(props: IProps) {
+  const { cities, onEdit, onDelete } = props
+
   return (
     <div className="rounded-md border bg-card shadow-sm overflow-hidden">
       <Table>

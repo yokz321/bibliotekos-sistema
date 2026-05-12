@@ -4,8 +4,12 @@ import { CityService } from "@/services/city-service"
 import { citySchema, type CityDTO } from "@/dto/city-dto"
 import { revalidatePath } from "next/cache"
 import type { ICity } from "@/types/city-t"
+import type { IState } from "@/types/shared-t"
 
-export async function saveCityAction(data: CityDTO, id?: string) {
+export async function saveCityAction(
+  data: CityDTO,
+  id?: string
+): Promise<IState> {
   const parsed = citySchema.safeParse(data)
 
   if (!parsed.success) {
@@ -24,7 +28,7 @@ export async function saveCityAction(data: CityDTO, id?: string) {
     }
 
     revalidatePath("/cities")
-    return { success: true }
+    return { success: true, message: "Miestas išsaugotas" }
   } catch (error: unknown) {
     let errorMessage = "Serverio klaida"
     if (error instanceof Error) errorMessage = error.message
@@ -32,13 +36,13 @@ export async function saveCityAction(data: CityDTO, id?: string) {
   }
 }
 
-export async function deleteCityAction(id: string) {
+export async function deleteCityAction(id: string): Promise<IState> {
   const service = new CityService()
   try {
     await service.delete(id)
     revalidatePath("/cities")
-    return { success: true }
+    return { success: true, message: "Miestas pašalintas" }
   } catch {
-    return { success: false, error: "Nepavyko ištrinti knygos" }
+    return { success: false, error: "Nepavyko pašalinti miesto" }
   }
 }

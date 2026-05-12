@@ -6,8 +6,9 @@ import { borrowingSchema, type BorrowingDTO } from "@/dto/borrowing-dto"
 import { revalidatePath } from "next/cache"
 import { Types } from "mongoose"
 import { BorrowingService } from "@/services/borrowing-service"
+import type { IState } from "@/types/shared-t"
 
-export async function saveBorrowingAction(data: BorrowingDTO) {
+export async function saveBorrowingAction(data: BorrowingDTO): Promise<IState> {
   const parse = borrowingSchema.safeParse(data)
   if (!parse.success) {
     return { success: false, error: "Užpildykite visus privalomus laukus!" }
@@ -42,30 +43,30 @@ export async function saveBorrowingAction(data: BorrowingDTO) {
     })
 
     revalidatePath("/reservations")
-    return { success: true }
+    return { success: true, message: "Knyga išduota sėkmingai" }
   } catch {
     return { success: false, error: "Serverio klaida saugant" }
   }
 }
 
-export async function returnBookAction(id: string) {
+export async function returnBookAction(id: string): Promise<IState> {
   const service = new BorrowingService()
   try {
     await service.returnBook(id)
     revalidatePath("/reservations")
-    return { success: true }
+    return { success: true, message: "Knyga grąžinta sėkmingai" }
   } catch {
     return { success: false, error: "Nepavyko užregistruoti grąžinimo" }
   }
 }
 
-export async function deleteBorrowingAction(id: string) {
+export async function deleteBorrowingAction(id: string): Promise<IState> {
   const service = new BorrowingService()
   try {
     await service.delete(id)
     revalidatePath("/reservations")
-    return { success: true }
+    return { success: true, message: "Rezervacija ištrinta" }
   } catch {
-    return { success: false, error: "Nepavyko ištrinti knygos" }
+    return { success: false, error: "Nepavyko ištrinti įrašo" }
   }
 }

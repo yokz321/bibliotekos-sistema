@@ -6,8 +6,12 @@ import { revalidatePath } from "next/cache"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Subscriber } from "@/models/subscriber-model"
 import type { ISubscriber } from "@/types/subscriber-t"
+import type { IState } from "@/types/shared-t"
 
-export async function saveSubscriberAction(data: SubscriberDTO, id?: string) {
+export async function saveSubscriberAction(
+  data: SubscriberDTO,
+  id?: string
+): Promise<IState> {
   const parse = subscriberSchema.safeParse(data)
   if (!parse.success) {
     return { success: false, error: "Užpildykite visus privalomus laukus!" }
@@ -31,23 +35,7 @@ export async function saveSubscriberAction(data: SubscriberDTO, id?: string) {
 
     const existingPerson = await Subscriber.findOne(query)
     if (existingPerson) {
-      return {
-        success: false,
-        error: "Asmuo su tokiu vardu, pavarde ir adresu jau egzistuoja!",
-      }
-    }
-
-    const ticketQuery: Record<string, unknown> = {
-      ticketNumber: dto.ticketNumber,
-    }
-
-    if (id) {
-      ticketQuery._id = { $ne: id }
-    }
-
-    const existingTicket = await Subscriber.findOne(ticketQuery)
-    if (existingTicket) {
-      return { success: false, error: "Abonento numeris jau užimtas!" }
+      return { success: false, error: "Asmuo su tokiu adresu jau egzistuoja!" }
     }
 
     const service = new SubscriberService()
@@ -59,27 +47,22 @@ export async function saveSubscriberAction(data: SubscriberDTO, id?: string) {
     }
 
     revalidatePath("/subscribers")
-    return { success: true }
-  } catch (error: unknown) {
-    console.error("KLAIDA SAUGANT ABONENTĄ:", error)
-
-    let errorMessage = "Serverio klaida"
-    if (error instanceof Error) {
-      errorMessage = error.message
+    return {
+      success: true,
+      message: id ? "Atnaujinta sėkmingai" : "Pridėta sėkmingai",
     }
-
-    return { success: false, error: errorMessage }
+  } catch (error) {
+    return { success: false, error: "Serverio klaida" }
   }
 }
 
-export async function deleteSubscriberAction(id: string) {
+export async function deleteSubscriberAction(id: string): Promise<IState> {
   const service = new SubscriberService()
   try {
     await service.delete(id)
     revalidatePath("/subscribers")
-    return { success: true }
-  } catch (error: unknown) {
-    console.error("KLAIDA TRINANT ABONENTĄ:", error)
+    return { success: true, message: "Abonentas pašalintas" }
+  } catch {
     return { success: false, error: "Nepavyko ištrinti abonento" }
   }
 }

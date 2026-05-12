@@ -15,13 +15,15 @@ import { Pencil, Trash2, Loader2 } from "lucide-react"
 import { deleteSubscriberAction } from "@/actions/subscriber-actions"
 import type { ISubscriber } from "@/types/subscriber-t"
 
-interface Props {
+interface IProps {
   items: ISubscriber[]
   onEdit: (item: ISubscriber) => void
   onRefresh: () => void
 }
 
-export function SubscriberTable({ items, onEdit, onRefresh }: Props) {
+export function SubscriberTable(props: IProps) {
+  const { items, onEdit, onRefresh } = props
+
   const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
 
   const handleDelete = async (id?: string) => {
@@ -31,7 +33,7 @@ export function SubscriberTable({ items, onEdit, onRefresh }: Props) {
     setDeletingId(id)
     const res = await deleteSubscriberAction(id)
     if (res.success) {
-      toast.success("Abonentas pašalintas")
+      toast.success(res.message || "Abonentas pašalintas")
       onRefresh()
     } else {
       toast.error(res.error || "Klaida šalinant")
