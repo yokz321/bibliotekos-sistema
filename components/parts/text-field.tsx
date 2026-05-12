@@ -9,17 +9,17 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import type { Control, FieldValues, Path } from "react-hook-form"
+import type { InputHTMLAttributes } from "react"
 
-interface IProps<T extends FieldValues> {
+interface IProps<T extends FieldValues>
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "name"> {
   control: Control<T>
   name: Path<T>
   label: string
-  placeholder?: string
-  type?: string
 }
 
 export function TextField<T extends FieldValues>(props: IProps<T>) {
-  const { control, name, label, placeholder, type = "text" } = props
+  const { control, name, label, placeholder, type = "text", ...rest } = props
 
   return (
     <FormField
@@ -29,7 +29,7 @@ export function TextField<T extends FieldValues>(props: IProps<T>) {
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input type={type} placeholder={placeholder} {...field} />
+            <Input type={type} placeholder={placeholder} {...field} {...rest} />
           </FormControl>
           <FormMessage />
         </FormItem>

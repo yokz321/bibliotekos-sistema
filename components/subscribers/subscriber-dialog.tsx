@@ -11,16 +11,15 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
+import { Form } from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
@@ -33,6 +32,7 @@ import {
   getNextTicketNumberAction,
 } from "@/actions/subscriber-actions"
 import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
+import { TextField } from "@/components/parts/text-field"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
 
@@ -108,7 +108,6 @@ export function SubscriberDialog(props: IProps) {
 
   const dialogTitle = editingItem ? "Redaguoti abonentą" : "Naujas abonentas"
   const isSubmitting = form.formState.isSubmitting
-  const submitBtnText = isSubmitting ? "Saugoma..." : "Išsaugoti"
   const rootError = form.formState.errors.root
 
   return (
@@ -128,31 +127,17 @@ export function SubscriberDialog(props: IProps) {
             noValidate
           >
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+              <TextField
                 control={form.control}
                 name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Vardas</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Vardas"
+                disabled={isSubmitting}
               />
-              <FormField
+              <TextField
                 control={form.control}
                 name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pavardė</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Pavardė"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -188,78 +173,40 @@ export function SubscriberDialog(props: IProps) {
                   </FormItem>
                 )}
               />
-              <FormField
+              <TextField
                 control={form.control}
                 name="street"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gatvė</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Gatvė"
+                disabled={isSubmitting}
               />
             </div>
 
             <div className="grid grid-cols-3 gap-4">
-              <FormField
+              <TextField
                 control={form.control}
                 name="houseNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Namo nr.</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Namo nr."
+                disabled={isSubmitting}
               />
-              <FormField
+              <TextField
                 control={form.control}
                 name="apartmentNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Buto nr.</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Buto nr."
+                disabled={isSubmitting}
               />
-              <FormField
+              <TextField
                 control={form.control}
                 name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Telefonas</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Telefonas"
+                disabled={isSubmitting}
               />
             </div>
 
-            <FormField
+            <TextField
               control={form.control}
               name="ticketNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Abonento Nr.</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isLoadingNumber || isSubmitting}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Abonento Nr."
+              disabled={isLoadingNumber || isSubmitting}
             />
 
             {rootError && (
@@ -273,7 +220,7 @@ export function SubscriberDialog(props: IProps) {
               className="w-full bg-orange-600 hover:bg-orange-700"
               disabled={isSubmitting}
             >
-              {submitBtnText}
+              {isSubmitting ? "Saugoma..." : "Išsaugoti"}
             </Button>
           </form>
         </Form>

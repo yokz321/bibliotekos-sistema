@@ -6,9 +6,8 @@ import { toast } from "sonner"
 import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Form } from "@/components/ui/form"
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -32,6 +31,7 @@ import {
 
 import { borrowingSchema, type BorrowingDTO } from "@/dto/borrowing-dto"
 import { saveBorrowingAction } from "@/actions/borrowing-actions"
+import { TextField } from "@/components/parts/text-field"
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
 
@@ -91,7 +91,7 @@ export function ReservationFormDialog(props: IProps) {
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((v) => onSubmit(v))}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 pt-4"
             noValidate
           >
@@ -103,7 +103,7 @@ export function ReservationFormDialog(props: IProps) {
                   <FormLabel>Abonentas</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger disabled={isSubmitting}>
                         <SelectValue placeholder="Pasirinkite abonentą" />
                       </SelectTrigger>
                     </FormControl>
@@ -131,7 +131,7 @@ export function ReservationFormDialog(props: IProps) {
                   <FormLabel>Knyga</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger disabled={isSubmitting}>
                         <SelectValue placeholder="Pasirinkite knygą" />
                       </SelectTrigger>
                     </FormControl>
@@ -152,41 +152,23 @@ export function ReservationFormDialog(props: IProps) {
             />
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+              <TextField
                 control={form.control}
                 name="borrowDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pasiėmimo data</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="date"
-                        min={minDate}
-                        max={maxDate}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Pasiėmimo data"
+                type="date"
+                min={minDate}
+                max={maxDate}
+                disabled={isSubmitting}
               />
-              <FormField
+              <TextField
                 control={form.control}
                 name="dueDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Grąžinimo terminas</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="date"
-                        min={minDate}
-                        max={maxDate}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Grąžinimo terminas"
+                type="date"
+                min={minDate}
+                max={maxDate}
+                disabled={isSubmitting}
               />
             </div>
 
