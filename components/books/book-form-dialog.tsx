@@ -34,7 +34,9 @@ import {
 
 import { saveBookAction } from "@/actions/book-actions"
 import { bookSchema, type BookDTO } from "@/dto/book-dto"
-import type { IBook, IAuthor, IPublisher } from "@/types/book-t"
+import type { IPublisher } from "@/types/publisher-t"
+import type { IAuthor } from "@/types/author-t"
+import type { IBook } from "@/types/book-t"
 
 interface IProps {
   isOpen: boolean

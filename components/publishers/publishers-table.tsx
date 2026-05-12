@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { IPublisher } from "@/types/book-t"
+import type { IPublisher } from "@/types/publisher-t"
 
 import {
   AlertDialog,

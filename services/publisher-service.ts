@@ -1,13 +1,7 @@
 import { Publisher } from "@/models/publisher-model"
-import type { IPublisher } from "@/types/book-t"
+import type { IPublisher, ILeanPublisher } from "@/types/publisher-t"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
-
-type LeanPublisher = {
-  _id: Types.ObjectId
-  name: string
-  location?: string
-}
 
 export class PublisherService {
   async getAll(): Promise<IPublisher[]> {
@@ -15,7 +9,7 @@ export class PublisherService {
 
     const publishers = (await Publisher.find()
       .sort({ name: 1 })
-      .lean()) as unknown as LeanPublisher[]
+      .lean()) as unknown as ILeanPublisher[]
 
     return publishers.map((pub) => ({
       ...pub,

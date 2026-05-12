@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { AuthorList } from "./author-list"
 import { AuthorForm } from "./author-form"
-import type { IAuthor } from "@/types/book-t"
+import type { IAuthor } from "@/types/author-t"
 import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"

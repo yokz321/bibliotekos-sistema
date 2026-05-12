@@ -3,7 +3,7 @@
 import { AuthorService } from "@/services/author-service"
 import { authorSchema, type AuthorDTO } from "@/dto/author-dto"
 import { revalidatePath } from "next/cache"
-import type { IAuthor } from "@/types/book-t"
+import type { IAuthor } from "@/types/author-t"
 import type { IState } from "@/types/shared-t"
 
 export async function saveAuthorAction(

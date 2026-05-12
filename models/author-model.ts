@@ -1,6 +1,6 @@
 import { Model, model, models, Schema, Types } from "mongoose"
 import type { WithStringId } from "./model-t"
-import type { IAuthor } from "@/types/book-t"
+import type { IAuthor } from "@/types/author-t"
 
 type IReturnType = WithStringId<IAuthor>
 

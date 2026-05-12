@@ -1,12 +1,7 @@
 import { City } from "@/models/city-model"
-import { type ICity } from "@/types/city-t"
+import type { ICity, ILeanCity } from "@/types/city-t"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
-
-type LeanCity = {
-  _id: Types.ObjectId
-  name: string
-}
 
 export class CityService {
   async getAll(): Promise<ICity[]> {
@@ -14,7 +9,7 @@ export class CityService {
 
     const cities = (await City.find()
       .sort({ name: 1 })
-      .lean()) as unknown as LeanCity[]
+      .lean()) as unknown as ILeanCity[]
 
     return cities.map((city) => ({
       ...city,

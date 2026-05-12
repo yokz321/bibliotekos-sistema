@@ -1,14 +1,7 @@
 import { Author } from "@/models/author-model"
-import type { IAuthor } from "@/types/book-t"
+import type { IAuthor, ILeanAuthor } from "@/types/author-t"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
-
-type LeanAuthor = {
-  _id: Types.ObjectId
-  firstName: string
-  lastName: string
-  biography?: string
-}
 
 export class AuthorService {
   async getAll(): Promise<IAuthor[]> {
@@ -16,7 +9,8 @@ export class AuthorService {
 
     const authors = (await Author.find()
       .sort({ lastName: 1 })
-      .lean()) as unknown as LeanAuthor[]
+      .lean()) as unknown as ILeanAuthor[]
+
     return authors.map((author) => ({
       ...author,
       id: author._id.toString(),

@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2, UserCircle2 } from "lucide-react"
 import { deleteAuthorAction } from "@/actions/author-actions"
-import type { IAuthor } from "@/types/book-t"
+import type { IAuthor } from "@/types/author-t"
 
 import {
   AlertDialog,

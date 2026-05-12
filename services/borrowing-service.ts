@@ -2,9 +2,10 @@ import { Borrowing } from "@/models/borrowing-model"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 import type { BorrowingDTO } from "@/dto/borrowing-dto"
+import type { IBorrowingPopulated } from "@/types/borrowing-t"
 
 export class BorrowingService {
-  async getAll() {
+  async getAll(): Promise<IBorrowingPopulated[]> {
     await connectMongoose()
     const results = await Borrowing.find()
       .populate("bookId")
@@ -12,10 +13,10 @@ export class BorrowingService {
       .sort({ createdAt: -1 })
       .lean()
 
-    return JSON.parse(JSON.stringify(results))
+    return JSON.parse(JSON.stringify(results)) as IBorrowingPopulated[]
   }
 
-  async save(data: BorrowingDTO) {
+  async save(data: BorrowingDTO): Promise<void> {
     await connectMongoose()
 
     const today = new Date()
@@ -32,7 +33,7 @@ export class BorrowingService {
       )
     }
 
-    return await Borrowing.create({
+    await Borrowing.create({
       subscriberId: new Types.ObjectId(data.subscriberId),
       bookId: new Types.ObjectId(data.bookId),
       borrowDate: new Date(data.borrowDate),
@@ -41,7 +42,7 @@ export class BorrowingService {
     })
   }
 
-  async returnBook(id: string) {
+  async returnBook(id: string): Promise<void> {
     await connectMongoose()
 
     await Borrowing.updateOne(
@@ -53,7 +54,7 @@ export class BorrowingService {
     )
   }
 
-  async delete(id: string) {
+  async delete(id: string): Promise<void> {
     await connectMongoose()
     await Borrowing.deleteOne({ _id: new Types.ObjectId(id) })
   }

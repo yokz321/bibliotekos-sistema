@@ -1,17 +1,6 @@
 import type { Types } from "mongoose"
-
-export interface IAuthor {
-  id: string
-  firstName: string
-  lastName: string
-  biography?: string
-}
-
-export interface IPublisher {
-  id: string
-  name: string
-  location?: string
-}
+import type { IAuthor } from "./author-t"
+import type { IPublisher } from "./publisher-t"
 
 export interface IBook {
   id?: string

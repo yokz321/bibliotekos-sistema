@@ -3,7 +3,7 @@
 import { PublisherService } from "@/services/publisher-service"
 import { publisherSchema, type PublisherDTO } from "@/dto/publisher-dto"
 import { revalidatePath } from "next/cache"
-import type { IPublisher } from "@/types/book-t"
+import type { IPublisher } from "@/types/publisher-t"
 import type { IState } from "@/types/shared-t"
 
 export async function savePublisherAction(
