@@ -5,6 +5,8 @@ import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 import type { IBook, ILeanPopulatedBook } from "@/types/book-t"
 import type { BookDTO } from "@/dto/book-dto"
+import type { IAuthor } from "@/types/author-t"
+import type { IPublisher } from "@/types/publisher-t"
 
 export class BookService {
   private mapDtoToDb(dto: BookDTO) {
@@ -20,6 +22,36 @@ export class BookService {
     }
   }
 
+  private mapBook(book: ILeanPopulatedBook): IBook {
+    const { _id, author, publisher, ...rest } = book
+
+    const mappedAuthor: IAuthor =
+      author && author._id
+        ? {
+            id: author._id.toString(),
+            firstName: author.firstName,
+            lastName: author.lastName,
+            biography: author.biography,
+          }
+        : { id: "", firstName: "Nežinomas", lastName: "Autorius" }
+
+    const mappedPublisher: IPublisher =
+      publisher && publisher._id
+        ? {
+            id: publisher._id.toString(),
+            name: publisher.name,
+            location: publisher.location,
+          }
+        : { id: "", name: "Nenurodyta" }
+
+    return {
+      ...rest,
+      id: _id.toString(),
+      author: mappedAuthor,
+      publisher: mappedPublisher,
+    }
+  }
+
   async getAll(): Promise<IBook[]> {
     try {
       await connectMongoose()
@@ -29,22 +61,36 @@ export class BookService {
         .sort({ title: 1 })
         .lean()) as unknown as ILeanPopulatedBook[]
 
-      return books.map((book) => ({
-        ...book,
-        id: book._id.toString(),
-        author:
-          book.author && book.author._id
-            ? { ...book.author, id: book.author._id.toString() }
-            : undefined,
-        publisher:
-          book.publisher && book.publisher._id
-            ? { ...book.publisher, id: book.publisher._id.toString() }
-            : undefined,
-      })) as unknown as IBook[]
+      return books.map((book) => this.mapBook(book))
     } catch (error) {
       console.error("KLAIDA BOOK SERVICE:", error)
       throw error
     }
+  }
+
+  async getInventoryReport(filters: {
+    authorId?: string
+    publisherId?: string
+  }): Promise<IBook[]> {
+    await connectMongoose()
+
+    const query: Record<string, unknown> = {}
+
+    if (filters.authorId) {
+      query.author = new Types.ObjectId(filters.authorId)
+    }
+
+    if (filters.publisherId) {
+      query.publisher = new Types.ObjectId(filters.publisherId)
+    }
+
+    const books = (await Book.find(query)
+      .populate({ path: "author", model: Author })
+      .populate({ path: "publisher", model: Publisher })
+      .sort({ title: 1 })
+      .lean()) as unknown as ILeanPopulatedBook[]
+
+    return books.map((book) => this.mapBook(book))
   }
 
   async save(dto: BookDTO): Promise<void> {
