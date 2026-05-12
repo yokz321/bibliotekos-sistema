@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { BooksTable } from "./books-table"
 import { BookFormDialog } from "./book-form-dialog"
 import { deleteBookAction } from "@/actions/book-actions"
@@ -35,10 +35,6 @@ export function BooksClient(props: IProps) {
       setBooks(data ?? [])
     })
   }
-
-  useEffect(() => {
-    setBooks(initialBooks)
-  }, [initialBooks])
 
   const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)

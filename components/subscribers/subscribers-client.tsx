@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Plus } from "lucide-react"
@@ -37,10 +37,6 @@ export function SubscribersClient(props: IProps) {
       setData(res ?? [])
     })
   }
-
-  useEffect(() => {
-    setData(initialData)
-  }, [initialData])
 
   const handleEdit = (item: ISubscriber) => {
     setEditing(item)

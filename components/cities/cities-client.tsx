@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import { CitiesTable } from "./cities-table"
 import { CityFormDialog } from "./city-form-dialog"
@@ -34,10 +34,6 @@ export function CitiesClient(props: IProps) {
       setCities(res ?? [])
     })
   }
-
-  useEffect(() => {
-    setCities(initialData)
-  }, [initialData])
 
   const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import {
@@ -19,10 +19,12 @@ import { useShallow } from "zustand/react/shallow"
 
 interface IProps {
   initialData: IAuthor[]
+  className?: string
 }
 
 export function AuthorListWrapper(props: IProps) {
-  const { initialData } = props
+  const { initialData, className } = props
+  void className
 
   const [authors, setAuthors] = useState<IAuthor[]>(initialData)
   const [isOpen, setIsOpen] = useState(false)
@@ -41,12 +43,6 @@ export function AuthorListWrapper(props: IProps) {
       setAuthors(data ?? [])
     })
   }
-
-  useEffect(() => {
-    if (initialData.length === 0) {
-      getAuthorsFromApi()
-    }
-  }, [initialData])
 
   const handleEdit = (author: IAuthor) => {
     setEditingAuthor(author)

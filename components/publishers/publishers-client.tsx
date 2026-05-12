@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import { PublishersTable } from "./publishers-table"
 import { PublisherFormDialog } from "./publisher-form-dialog"
@@ -36,10 +36,6 @@ export function PublishersClient(props: IProps) {
       setData(res ?? [])
     })
   }
-
-  useEffect(() => {
-    setData(initialData)
-  }, [initialData])
 
   const handleFormSuccess = (msg?: string) => {
     setIsDialogOpen(false)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { ReservationsTable } from "./reservations-table"
 import { ReservationFormDialog } from "./reservation-form-dialog"
 import { getApi } from "@/utils/server-api"
@@ -22,7 +22,6 @@ interface IProps {
 
 export function ReservationsClient(props: IProps) {
   const { initialBorrowings, books, subscribers } = props
-
   const [borrowings, setBorrowings] =
     useState<IBorrowingPopulated[]>(initialBorrowings)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -38,10 +37,6 @@ export function ReservationsClient(props: IProps) {
       setBorrowings(data ?? [])
     })
   }
-
-  useEffect(() => {
-    setBorrowings(initialBorrowings)
-  }, [initialBorrowings])
 
   const handleReturn = async (id: string) => {
     const res = await returnBookAction(id)
