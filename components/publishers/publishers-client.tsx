@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useEffect, useState } from "react"
@@ -12,11 +10,13 @@ import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
-interface IProps {}
+interface IProps {
+  className?: string
+}
 
 export function PublishersClient(props: IProps) {
-  // eslint-disable-next-line no-empty-pattern
-  const {} = props
+  const { className } = props
+  void className
 
   const [data, setData] = useState<IPublisher[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
