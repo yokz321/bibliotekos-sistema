@@ -53,7 +53,6 @@ export function BooksClient(props: IProps) {
 
   const handleDelete = async (id?: string) => {
     if (!id) return
-    if (!confirm("Ar tikrai norite ištrinti knygą?")) return
 
     const res = await deleteBookAction(id)
     if (res.success) {

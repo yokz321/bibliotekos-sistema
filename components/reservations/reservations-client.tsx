@@ -52,7 +52,7 @@ export function ReservationsClient(props: IProps) {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Ar tikrai norite ištrinti šį įrašą?")) return
+    if (!id) return
 
     const res = await deleteBorrowingAction(id)
     if (res.success) {

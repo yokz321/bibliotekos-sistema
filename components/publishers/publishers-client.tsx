@@ -54,7 +54,6 @@ export function PublishersClient(props: IProps) {
 
   const handleDelete = async (id?: string) => {
     if (!id) return
-    if (!confirm("Ar tikrai norite ištrinti leidyklą?")) return
 
     const res = await deletePublisherAction(id)
     if (res.success) {

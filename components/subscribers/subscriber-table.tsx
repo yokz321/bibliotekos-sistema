@@ -14,6 +14,17 @@ import {
 import { Pencil, Trash2, Loader2 } from "lucide-react"
 import { deleteSubscriberAction } from "@/actions/subscriber-actions"
 import type { ISubscriber } from "@/types/subscriber-t"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface IProps {
   items: ISubscriber[]
@@ -23,15 +34,12 @@ interface IProps {
 
 export function SubscriberTable(props: IProps) {
   const { items, onEdit, onRefresh } = props
-
   const [deletingId, setDeletingId] = useState<string | undefined>(undefined)
 
-  const handleDelete = async (id?: string) => {
-    if (!id) return
-    if (!confirm("Ar tikrai norite pašalinti šį abonentą?")) return
-
+  const executeDelete = async (id: string) => {
     setDeletingId(id)
     const res = await deleteSubscriberAction(id)
+
     if (res.success) {
       toast.success(res.message || "Abonentas pašalintas")
       onRefresh()
@@ -82,18 +90,42 @@ export function SubscriberTable(props: IProps) {
                   >
                     <Pencil className="h-4 w-4 text-blue-600" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(sub.id)}
-                    disabled={deletingId === sub.id}
-                  >
-                    {deletingId === sub.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    )}
-                  </Button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={deletingId === sub.id}
+                      >
+                        {deletingId === sub.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Ar tikrai norite pašalinti?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Abonentas <strong>{fullName}</strong> bus ištrintas iš
+                          sistemos. Šio veiksmo atšaukti negalėsite.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Atšaukti</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => executeDelete(sub.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Ištrinti
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </TableCell>
               </TableRow>
             )

@@ -52,7 +52,6 @@ export function CitiesClient(props: IProps) {
 
   const handleDelete = async (id?: string) => {
     if (!id) return
-    if (!confirm("Ar tikrai norite ištrinti miestą?")) return
 
     const res = await deleteCityAction(id)
     if (res.success) {
