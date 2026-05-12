@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import type { IBorrowingPopulated } from "./reservations-client"
+import type { IBorrowingPopulated } from "@/types/borrowing-t"
 
 interface Props {
   items: IBorrowingPopulated[]

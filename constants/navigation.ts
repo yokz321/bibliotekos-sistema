@@ -6,15 +6,8 @@ import {
   CalendarCheck,
   LayoutGrid,
   MapPin,
-  type LucideIcon,
 } from "lucide-react"
-
-export interface NavItem {
-  title: string
-  href?: string
-  icon: LucideIcon
-  children?: { title: string; href: string; icon: LucideIcon }[]
-}
+import type { NavItem } from "@/types/nav-t"
 
 export const NAVIGATION_MENU: NavItem[] = [
   {
@@ -23,7 +16,7 @@ export const NAVIGATION_MENU: NavItem[] = [
     children: [
       { title: "Autoriai", href: "/authors", icon: Users },
       { title: "Leidyklos", href: "/publishers", icon: Building2 },
-      { title: "Miestai", href: "/cities", icon: MapPin }, // NAUJA EILUTĖ
+      { title: "Miestai", href: "/cities", icon: MapPin },
     ],
   },
   { title: "Knygos", href: "/books", icon: Book },

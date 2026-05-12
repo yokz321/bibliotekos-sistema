@@ -7,22 +7,13 @@ import { ReservationFormDialog } from "./reservation-form-dialog"
 import { getApi } from "@/utils/server-api"
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
+import type { IBorrowingPopulated } from "@/types/borrowing-t"
 import {
   returnBookAction,
   deleteBorrowingAction,
 } from "@/actions/borrowing-actions"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
-
-export interface IBorrowingPopulated {
-  id: string
-  bookId: IBook | undefined
-  subscriberId: ISubscriber | undefined
-  borrowDate: string
-  dueDate: string
-  returnDate?: string
-  isReturned: boolean
-}
 
 interface IProps {
   books: IBook[]
