@@ -1,11 +1,11 @@
 import type { INav } from "@/types/nav-t"
 
-export interface INotificationSlice {
+export type INotificationSlice = {
   messages: string[]
   setMessage: (message: string) => void
 }
 
-export interface INavSlice {
+export type INavSlice = {
   menu: INav[]
   setMenu: (menu: INav[]) => void
 }

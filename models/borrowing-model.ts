@@ -3,7 +3,7 @@ import type { WithStringId } from "./model-t"
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
 
-export interface IBorrowing {
+export type IBorrowing = {
   id?: string
   bookId: Types.ObjectId | IBook
   subscriberId: Types.ObjectId | ISubscriber

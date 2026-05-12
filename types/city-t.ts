@@ -1,6 +1,6 @@
 import type { Types } from "mongoose"
 
-export interface ICity {
+export type ICity = {
   id: string
   name: string
 }

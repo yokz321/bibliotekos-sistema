@@ -1,6 +1,6 @@
 import type { Types } from "mongoose"
 
-export interface IAuthor {
+export type IAuthor = {
   id: string
   firstName: string
   lastName: string

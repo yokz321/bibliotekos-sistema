@@ -1,6 +1,6 @@
 import type { Types } from "mongoose"
 
-export interface ISubscriber {
+export type ISubscriber = {
   id: string
   ticketNumber: string
   firstName: string

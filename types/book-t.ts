@@ -2,7 +2,7 @@ import type { Types } from "mongoose"
 import type { IAuthor } from "./author-t"
 import type { IPublisher } from "./publisher-t"
 
-export interface IBook {
+export type IBook = {
   id?: string
   inventoryNumber: string
   isbn: string

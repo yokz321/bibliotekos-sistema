@@ -5,7 +5,7 @@ const DB_NAME = process.env.MONGO_DB
 
 if (!URI) throw new Error("MONGO_URI nerasta .env faile!")
 
-interface MongooseCache {
+type MongooseCache = {
   conn: typeof mongoose | undefined
   promise: Promise<typeof mongoose> | undefined
 }

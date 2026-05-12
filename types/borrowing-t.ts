@@ -1,7 +1,7 @@
 import type { IBook } from "./book-t"
 import type { ISubscriber } from "./subscriber-t"
 
-export interface IBorrowingPopulated {
+export type IBorrowingPopulated = {
   id: string
   bookId: IBook | undefined
   subscriberId: ISubscriber | undefined

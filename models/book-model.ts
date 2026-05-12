@@ -2,7 +2,7 @@ import { Schema, model, models, type Types, type Model } from "mongoose"
 import type { WithStringId } from "./model-t"
 import type { IAuthor } from "@/types/author-t"
 import type { IPublisher } from "@/types/publisher-t"
-export interface IBook {
+export type IBook = {
   id?: string
   title: string
   author: Types.ObjectId | IAuthor

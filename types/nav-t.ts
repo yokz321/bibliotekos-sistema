@@ -1,11 +1,11 @@
 import type { LucideIcon } from "lucide-react"
 
-export interface INav {
+export type INav = {
   title: string
   slug: string
 }
 
-export interface NavItem {
+export type NavItem = {
   title: string
   href?: string
   icon: LucideIcon
