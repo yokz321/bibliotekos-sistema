@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { Plus } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { TextField } from "@/components/parts/text-field"
 import {
   Form,
   FormControl,
@@ -113,18 +113,11 @@ export function BookFormDialog(props: IProps) {
             className="space-y-4 pt-4"
             noValidate
           >
-            <FormField
+            <TextField
               control={form.control}
               name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pavadinimas</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={isSubmitting} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Pavadinimas"
+              placeholder="Knygos pavadinimas"
             />
 
             <div className="grid grid-cols-2 gap-4">
@@ -188,19 +181,13 @@ export function BookFormDialog(props: IProps) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+              <TextField
                 control={form.control}
                 name="inventoryNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Inv. Nr.</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Inv. Nr."
+                placeholder="Inventorinis numeris"
               />
+
               <FormField
                 control={form.control}
                 name="price"
@@ -245,33 +232,19 @@ export function BookFormDialog(props: IProps) {
                   </FormItem>
                 )}
               />
-              <FormField
+              <TextField
                 control={form.control}
                 name="isbn"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>ISBN</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="ISBN"
+                placeholder="ISBN numeris"
               />
             </div>
 
-            <FormField
+            <TextField
               control={form.control}
               name="annotation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Anotacija</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={isSubmitting} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Anotacija"
+              placeholder="Trumpas aprašymas"
             />
 
             {rootError && (

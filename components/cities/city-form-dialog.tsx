@@ -9,15 +9,8 @@ import { toast } from "sonner"
 import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { TextField } from "@/components/parts/text-field"
+import { Form } from "@/components/ui/form"
 import {
   Dialog,
   DialogContent,
@@ -83,22 +76,11 @@ export function CityFormDialog(props: IProps) {
             className="space-y-4 pt-4"
             noValidate
           >
-            <FormField
+            <TextField
               control={form.control}
               name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pavadinimas</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Miestas"
-                      {...field}
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Pavadinimas"
+              placeholder="Miesto pavadinimas"
             />
 
             {rootError && (

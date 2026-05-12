@@ -9,15 +9,7 @@ import { toast } from "sonner"
 import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form } from "@/components/ui/form"
 import {
   Dialog,
   DialogContent,
@@ -26,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { TextField } from "@/components/parts/text-field"
 import type { IPublisher } from "@/types/publisher-t"
 
 interface IProps {
@@ -86,40 +79,18 @@ export function PublisherFormDialog(props: IProps) {
             className="space-y-4 pt-4"
             noValidate
           >
-            <FormField
+            <TextField
               control={form.control}
               name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pavadinimas</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Leidyklos pavadinimas"
-                      {...field}
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Pavadinimas"
+              placeholder="Leidyklos pavadinimas"
             />
 
-            <FormField
+            <TextField
               control={form.control}
               name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Miestas / Adresas</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Miestas (nebūtina)"
-                      {...field}
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Miestas / Adresas"
+              placeholder="Miestas (nebūtina)"
             />
 
             {rootError && (

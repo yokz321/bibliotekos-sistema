@@ -49,7 +49,7 @@ export function ReservationFormDialog(props: IProps) {
   const form = useForm<BorrowingDTO>({
     resolver: zodResolver(borrowingSchema),
     mode: "onBlur",
-    defaultValues: {
+    values: {
       subscriberId: "",
       bookId: "",
       borrowDate: new Date().toISOString().split("T")[0] ?? "",

@@ -3,18 +3,18 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { authorSchema, type AuthorDTO } from "@/dto/author-dto"
+import { Form } from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
+import { saveAuthorAction } from "@/actions/author-actions"
+import { TextField } from "@/components/parts/text-field"
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { saveAuthorAction } from "@/actions/author-actions"
 
 interface IProps {
   defaultValues?: AuthorDTO
@@ -37,19 +37,14 @@ export function AuthorForm(props: IProps) {
 
   async function onSubmit(values: AuthorDTO) {
     const res = await saveAuthorAction(values, id)
-
     if (res.success) {
       onComplete(res.message)
     } else {
-      form.setError("root", {
-        type: "manual",
-        message: res.error,
-      })
+      form.setError("root", { type: "manual", message: res.error })
     }
   }
 
   const isSubmitting = form.formState.isSubmitting
-  const submitBtnText = isSubmitting ? "Saugoma..." : "Išsaugoti"
   const rootError = form.formState.errors.root
 
   return (
@@ -60,31 +55,17 @@ export function AuthorForm(props: IProps) {
         noValidate
       >
         <div className="grid grid-cols-2 gap-4">
-          <FormField
+          <TextField
             control={form.control}
             name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Vardas</FormLabel>
-                <FormControl>
-                  <Input {...field} disabled={isSubmitting} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Vardas"
+            placeholder="Vardas"
           />
-          <FormField
+          <TextField
             control={form.control}
             name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pavardė</FormLabel>
-                <FormControl>
-                  <Input {...field} disabled={isSubmitting} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Pavardė"
+            placeholder="Pavardė"
           />
         </div>
 
@@ -118,7 +99,7 @@ export function AuthorForm(props: IProps) {
           className="w-full bg-orange-600 hover:bg-orange-700"
           disabled={isSubmitting}
         >
-          {submitBtnText}
+          {isSubmitting ? "Saugoma..." : "Išsaugoti"}
         </Button>
       </form>
     </Form>
