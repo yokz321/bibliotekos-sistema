@@ -28,7 +28,7 @@ export function AuthorForm(props: IProps) {
   const form = useForm<AuthorDTO>({
     resolver: zodResolver(authorSchema),
     mode: "onBlur",
-    defaultValues: defaultValues ?? {
+    values: defaultValues ?? {
       firstName: "",
       lastName: "",
       biography: "",
@@ -67,7 +67,7 @@ export function AuthorForm(props: IProps) {
               <FormItem>
                 <FormLabel>Vardas</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} disabled={isSubmitting} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -80,7 +80,7 @@ export function AuthorForm(props: IProps) {
               <FormItem>
                 <FormLabel>Pavardė</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} disabled={isSubmitting} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -99,6 +99,7 @@ export function AuthorForm(props: IProps) {
                   {...field}
                   value={field.value ?? ""}
                   className="resize-y"
+                  disabled={isSubmitting}
                 />
               </FormControl>
               <FormMessage />

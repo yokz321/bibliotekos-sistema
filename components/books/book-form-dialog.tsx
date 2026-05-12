@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
@@ -34,9 +33,9 @@ import {
 
 import { saveBookAction } from "@/actions/book-actions"
 import { bookSchema, type BookDTO } from "@/dto/book-dto"
-import type { IPublisher } from "@/types/publisher-t"
-import type { IAuthor } from "@/types/author-t"
 import type { IBook } from "@/types/book-t"
+import type { IAuthor } from "@/types/author-t"
+import type { IPublisher } from "@/types/publisher-t"
 
 interface IProps {
   isOpen: boolean
@@ -54,36 +53,28 @@ export function BookFormDialog(props: IProps) {
   const form = useForm<BookDTO>({
     resolver: zodResolver(bookSchema),
     mode: "onBlur",
-    defaultValues: {
-      title: "",
-      authorId: "",
-      publisherId: "",
-      inventoryNumber: "",
-      isbn: "",
-      price: 0,
-      year: new Date().getFullYear(),
-      annotation: "",
-    },
+    values: editingBook
+      ? {
+          title: editingBook.title,
+          authorId: editingBook.author?.id || "",
+          publisherId: editingBook.publisher?.id || "",
+          inventoryNumber: editingBook.inventoryNumber,
+          isbn: editingBook.isbn || "",
+          price: editingBook.price || 0,
+          year: editingBook.year || new Date().getFullYear(),
+          annotation: editingBook.annotation || "",
+        }
+      : {
+          title: "",
+          authorId: "",
+          publisherId: "",
+          inventoryNumber: "",
+          isbn: "",
+          price: 0,
+          year: new Date().getFullYear(),
+          annotation: "",
+        },
   })
-
-  useEffect(() => {
-    if (!isOpen) return
-
-    if (editingBook) {
-      form.reset({
-        title: editingBook.title,
-        authorId: editingBook.author?.id || "",
-        publisherId: editingBook.publisher?.id || "",
-        inventoryNumber: editingBook.inventoryNumber,
-        isbn: editingBook.isbn || "",
-        price: editingBook.price || 0,
-        year: editingBook.year || new Date().getFullYear(),
-        annotation: editingBook.annotation || "",
-      })
-    } else {
-      form.reset()
-    }
-  }, [isOpen, editingBook, form])
 
   const onSubmit = async (values: BookDTO) => {
     const res = await saveBookAction(values, editingBook?.id)

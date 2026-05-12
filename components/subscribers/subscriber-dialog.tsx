@@ -47,51 +47,50 @@ interface IProps {
 export function SubscriberDialog(props: IProps) {
   const { isOpen, onOpenChange, editingItem, onSuccess, cities } = props
   const [isLoadingNumber, setIsLoadingNumber] = useState(false)
+  const [generatedNumber, setGeneratedNumber] = useState("")
 
   const form = useForm<SubscriberDTO>({
     resolver: zodResolver(subscriberSchema),
     mode: "onBlur",
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      ticketNumber: "",
-      city: "",
-      street: "",
-      houseNumber: "",
-      apartmentNumber: "",
-      phone: "",
-    },
+    values: editingItem
+      ? {
+          firstName: editingItem.firstName,
+          lastName: editingItem.lastName,
+          ticketNumber: editingItem.ticketNumber,
+          city: editingItem.city,
+          street: editingItem.street,
+          houseNumber: editingItem.houseNumber,
+          apartmentNumber: editingItem.apartmentNumber ?? "",
+          phone: editingItem.phone,
+        }
+      : {
+          firstName: "",
+          lastName: "",
+          ticketNumber: generatedNumber,
+          city: "",
+          street: "",
+          houseNumber: "",
+          apartmentNumber: "",
+          phone: "",
+        },
   })
 
   useEffect(() => {
-    if (!isOpen) return
-
-    if (editingItem) {
-      form.reset({
-        firstName: editingItem.firstName,
-        lastName: editingItem.lastName,
-        ticketNumber: editingItem.ticketNumber,
-        city: editingItem.city,
-        street: editingItem.street,
-        houseNumber: editingItem.houseNumber,
-        apartmentNumber: editingItem.apartmentNumber ?? "",
-        phone: editingItem.phone,
-      })
-    } else {
-      form.reset()
+    if (isOpen && !editingItem) {
       const fetchNextNumber = async () => {
         setIsLoadingNumber(true)
         try {
           const nextNumber = await getNextTicketNumberAction()
-          form.setValue("ticketNumber", nextNumber)
+          setGeneratedNumber(nextNumber)
         } finally {
           setIsLoadingNumber(false)
         }
       }
-
       fetchNextNumber()
+    } else if (!isOpen) {
+      setGeneratedNumber("")
     }
-  }, [isOpen, editingItem, form])
+  }, [isOpen, editingItem])
 
   const onSubmit = async (values: SubscriberDTO) => {
     const res = await saveSubscriberAction(values, editingItem?.id)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { publisherSchema, type PublisherDTO } from "@/dto/publisher-dto"
@@ -42,24 +42,11 @@ export function PublisherFormDialog(props: IProps) {
   const form = useForm<PublisherDTO>({
     resolver: zodResolver(publisherSchema),
     mode: "onBlur",
-    defaultValues: {
-      name: "",
-      location: "",
+    values: {
+      name: editingPublisher?.name ?? "",
+      location: editingPublisher?.location ?? "",
     },
   })
-
-  useEffect(() => {
-    if (!isOpen) return
-
-    if (editingPublisher) {
-      form.reset({
-        name: editingPublisher.name,
-        location: editingPublisher.location ?? "",
-      })
-    } else {
-      form.reset()
-    }
-  }, [editingPublisher, isOpen, form])
 
   const onSubmit = async (values: PublisherDTO) => {
     setIsSubmitting(true)

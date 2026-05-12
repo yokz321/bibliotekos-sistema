@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { citySchema, type CityDTO } from "@/dto/city-dto"
@@ -42,20 +42,10 @@ export function CityFormDialog(props: IProps) {
   const form = useForm<CityDTO>({
     resolver: zodResolver(citySchema),
     mode: "onBlur",
-    defaultValues: {
-      name: "",
+    values: {
+      name: editingCity?.name ?? "",
     },
   })
-
-  useEffect(() => {
-    if (!isOpen) return
-
-    if (editingCity) {
-      form.reset({ name: editingCity.name })
-    } else {
-      form.reset()
-    }
-  }, [editingCity, isOpen, form])
 
   const onSubmit = async (values: CityDTO) => {
     setIsSubmitting(true)
