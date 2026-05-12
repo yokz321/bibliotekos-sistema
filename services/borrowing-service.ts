@@ -4,16 +4,48 @@ import { Types } from "mongoose"
 import type { BorrowingDTO } from "@/dto/borrowing-dto"
 import type { IBorrowingPopulated } from "@/types/borrowing-t"
 
+type LeanResult = {
+  _id: Types.ObjectId
+  bookId?: { _id: Types.ObjectId; title: string }
+  subscriberId?: {
+    _id: Types.ObjectId
+    firstName: string
+    lastName: string
+    ticketNumber: string
+  }
+  borrowDate: Date
+  dueDate: Date
+  returnDate?: Date
+  isReturned: boolean
+}
+
 export class BorrowingService {
   async getAll(): Promise<IBorrowingPopulated[]> {
     await connectMongoose()
+
     const results = await Borrowing.find()
       .populate("bookId")
       .populate("subscriberId")
       .sort({ createdAt: -1 })
       .lean()
 
-    return JSON.parse(JSON.stringify(results)) as IBorrowingPopulated[]
+    const leanResults = results as unknown as LeanResult[]
+
+    return leanResults.map((result) => {
+      const { _id, bookId, subscriberId, ...rest } = result
+
+      return {
+        ...rest,
+        id: _id.toString(),
+        bookId: bookId ? { ...bookId, id: bookId._id.toString() } : undefined,
+        subscriberId: subscriberId
+          ? { ...subscriberId, id: subscriberId._id.toString() }
+          : undefined,
+        borrowDate: rest.borrowDate.toISOString(),
+        dueDate: rest.dueDate.toISOString(),
+        returnDate: rest.returnDate?.toISOString(),
+      }
+    }) as unknown as IBorrowingPopulated[]
   }
 
   async save(data: BorrowingDTO): Promise<void> {
