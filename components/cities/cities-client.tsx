@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button"
 import { CitiesTable } from "./cities-table"
 import { CityFormDialog } from "./city-form-dialog"
 import type { ICity } from "@/types/city-t"
-import { deleteCityAction } from "@/actions/city-actions"
-import { getApi } from "@/utils/server-api"
+import { getApi, deleteApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
@@ -57,15 +56,15 @@ export function CitiesClient(props: IProps) {
   const handleDelete = async (id?: string) => {
     if (!id) return
 
-    const res = await deleteCityAction(id)
-    if (res.success) {
-      if (res.message) {
-        toast.success(res.message)
-        setMessage(res.message)
-      }
+    const ok = await deleteApi("/api/cities", id)
+
+    if (ok) {
+      const msg = "Miestas sėkmingai pašalintas"
+      toast.success(msg)
+      setMessage(msg)
       getCitiesFromApi()
     } else {
-      toast.error(res.error || "Klaida")
+      toast.error("Nepavyko pašalinti miesto")
     }
   }
 

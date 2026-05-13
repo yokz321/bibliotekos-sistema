@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button"
 import { PublishersTable } from "./publishers-table"
 import { PublisherFormDialog } from "./publisher-form-dialog"
 import type { IPublisher } from "@/types/publisher-t"
-import { deletePublisherAction } from "@/actions/publisher-actions"
-import { getApi } from "@/utils/server-api"
+import { getApi, deleteApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
@@ -39,6 +38,7 @@ export function PublishersClient(props: IProps) {
     })
   }
 
+  // #27: Tik vienas handleris evente
   const handleAdd = () => {
     setEditingPublisher(undefined)
     setIsDialogOpen(true)
@@ -59,15 +59,15 @@ export function PublishersClient(props: IProps) {
   const handleDelete = async (id?: string) => {
     if (!id) return
 
-    const res = await deletePublisherAction(id)
-    if (res.success) {
-      if (res.message) {
-        toast.success(res.message)
-        setMessage(res.message)
-      }
+    const ok = await deleteApi("/api/publishers", id)
+
+    if (ok) {
+      const msg = "Leidykla sėkmingai pašalinta"
+      toast.success(msg)
+      setMessage(msg)
       getPublishersFromApi()
     } else {
-      toast.error(res.error || "Klaida")
+      toast.error("Nepavyko pašalinti leidyklos")
     }
   }
 

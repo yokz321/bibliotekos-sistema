@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2, UserCircle2 } from "lucide-react"
-import { deleteAuthorAction } from "@/actions/author-actions"
+import { deleteApi } from "@/utils/server-api"
 import type { IAuthor } from "@/types/author-t"
 
 import {
@@ -42,13 +42,16 @@ export function AuthorList(props: IProps) {
     if (!id) return
 
     setDeletingId(id)
-    const res = await deleteAuthorAction(id)
-    if (res.success) {
-      toast.success(res.message || "Autorius pašalintas")
+
+    const success = await deleteApi("/api/authors", id)
+
+    if (success) {
+      toast.success("Autorius pašalintas")
       onSuccess()
     } else {
-      toast.error(res.error || "Klaida šalinant")
+      toast.error("Nepavyko pašalinti autoriaus")
     }
+
     setDeletingId(undefined)
   }
 

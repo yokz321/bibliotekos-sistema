@@ -5,14 +5,10 @@ import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ReservationsTable } from "./reservations-table"
 import { ReservationFormDialog } from "./reservation-form-dialog"
-import { getApi } from "@/utils/server-api"
+import { getApi, putApi, deleteApi } from "@/utils/server-api" // SUTVARKYTA #30
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { IBorrowingPopulated } from "@/types/borrowing-t"
-import {
-  returnBookAction,
-  deleteBorrowingAction,
-} from "@/actions/borrowing-actions"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
@@ -24,6 +20,7 @@ type IProps = {
 
 export function ReservationsClient(props: IProps) {
   const { initialBorrowings, books, subscribers } = props
+
   const [borrowings, setBorrowings] =
     useState<IBorrowingPopulated[]>(initialBorrowings)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -45,22 +42,29 @@ export function ReservationsClient(props: IProps) {
   }
 
   const handleReturn = async (id: string) => {
-    const res = await returnBookAction(id)
-    if (res.success) {
+    const res = await putApi<{ message?: string; error?: string }>(
+      `/api/borrowings/${id}`,
+      {}
+    )
+
+    if (res && !res.error) {
       if (res.message) setMessage(res.message)
       getBorrowingsFromApi()
     } else {
-      if (res.error) setMessage("Klaida: " + res.error)
+      setMessage(
+        "Klaida: " + (res?.error || "Nepavyko užregistruoti grąžinimo")
+      )
     }
   }
 
   const handleDelete = async (id: string) => {
-    const res = await deleteBorrowingAction(id)
-    if (res.success) {
-      if (res.message) setMessage(res.message)
+    const ok = await deleteApi("/api/borrowings", id)
+
+    if (ok) {
+      setMessage("Rezervacija sėkmingai ištrinta")
       getBorrowingsFromApi()
     } else {
-      if (res.error) setMessage("Klaida: " + res.error)
+      setMessage("Klaida: Nepavyko ištrinti įrašo")
     }
   }
 

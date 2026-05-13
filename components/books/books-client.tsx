@@ -5,12 +5,11 @@ import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BooksTable } from "./books-table"
 import { BookFormDialog } from "./book-form-dialog"
-import { deleteBookAction } from "@/actions/book-actions"
 import type { IPublisher } from "@/types/publisher-t"
 import type { IAuthor } from "@/types/author-t"
 import type { IBook } from "@/types/book-t"
 import type { ICategory, ILanguage } from "@/types/metadata-t"
-import { getApi } from "@/utils/server-api"
+import { getApi, deleteApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
@@ -61,12 +60,13 @@ export function BooksClient(props: IProps) {
   const handleDelete = async (id?: string) => {
     if (!id) return
 
-    const res = await deleteBookAction(id)
-    if (res.success) {
-      if (res.message) setMessage(res.message)
+    const ok = await deleteApi("/api/books", id)
+
+    if (ok) {
+      setMessage("Knyga sėkmingai pašalinta")
       getBooksFromApi()
     } else {
-      if (res.error) setMessage("Klaida: " + res.error)
+      setMessage("Klaida: Nepavyko pašalinti knygos")
     }
   }
 

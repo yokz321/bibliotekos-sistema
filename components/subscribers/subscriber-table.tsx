@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Pencil, Trash2, Loader2, UserCircle } from "lucide-react"
-import { deleteSubscriberAction } from "@/actions/subscriber-actions"
+import { deleteApi } from "@/utils/server-api"
 import type { ISubscriber } from "@/types/subscriber-t"
 import {
   AlertDialog,
@@ -39,13 +39,14 @@ export function SubscriberTable(props: IProps) {
 
   const executeDelete = async (id: string) => {
     setDeletingId(id)
-    const res = await deleteSubscriberAction(id)
 
-    if (res.success) {
-      toast.success(res.message || "Abonentas pašalintas")
+    const ok = await deleteApi("/api/subscribers", id)
+
+    if (ok) {
+      toast.success("Abonentas pašalintas")
       onRefresh()
     } else {
-      toast.error(res.error || "Klaida šalinant")
+      toast.error("Klaida šalinant")
     }
     setDeletingId(undefined)
   }
@@ -138,7 +139,7 @@ export function SubscriberTable(props: IProps) {
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                           Abonentas <strong>{fullName}</strong> bus ištrintas iš
-                          sistemos.
+                          sistemos. Šio veiksmo atšaukti negalėsite.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
