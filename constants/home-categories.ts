@@ -24,6 +24,12 @@ export const HOME_CATEGORIES: HomeCategory[] = [
     description: "Klasifikatorius: Autorių sąrašas ir valdymas",
   },
   {
+    title: "Bibliotekos analitika",
+    href: "/reports/analytics",
+    icon: BarChart3,
+    description: "Populiariausios knygos, skolininkų statistika ir fondo vertė",
+  },
+  {
     title: "Leidyklos",
     href: "/publishers",
     icon: Building2,

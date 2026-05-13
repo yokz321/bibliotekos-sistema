@@ -10,11 +10,14 @@ export async function GET(request: NextRequest) {
   const service = new BookService()
 
   try {
-    const data = await service.getInventoryReport({
-      authorId,
-      publisherId,
-    })
-    return Response.json(data)
+    const books = await service.getInventoryReport({ authorId, publisherId })
+
+    let count = undefined
+    if (authorId) {
+      count = await service.getBookCountByAuthor(authorId)
+    }
+
+    return Response.json({ books, count })
   } catch {
     return Response.json({ error: "Serverio klaida" }, { status: 500 })
   }

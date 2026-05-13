@@ -24,6 +24,7 @@ export default async function InventoryReportPage(props: IPageProps) {
   ])
 
   let reportData: IBook[] | IBorrowingPopulated[] = []
+  let authorCount: number | undefined = undefined
 
   if (bookId) {
     reportData =
@@ -34,8 +35,13 @@ export default async function InventoryReportPage(props: IPageProps) {
     const query = `authorId=${params.authorId || ""}&publisherId=${
       params.publisherId || ""
     }`
-    reportData =
-      (await getApi<IBook[]>(`/api/reports/inventory?${query}`)) ?? []
+
+    const res = await getApi<{ books: IBook[]; count?: number }>(
+      `/api/reports/inventory?${query}`
+    )
+
+    reportData = res?.books ?? []
+    authorCount = res?.count
   }
 
   return (
@@ -45,6 +51,7 @@ export default async function InventoryReportPage(props: IPageProps) {
       allBooks={allBooks ?? []}
       reportData={reportData}
       isHistoryView={!!bookId}
+      authorCount={authorCount}
     />
   )
 }

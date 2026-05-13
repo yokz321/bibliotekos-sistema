@@ -8,6 +8,10 @@ import type { BookDTO } from "@/dto/book-dto"
 import type { IAuthor } from "@/types/author-t"
 import type { IPublisher } from "@/types/publisher-t"
 
+type ITotalValueResult = {
+  total: number
+}
+
 export class BookService {
   private mapDtoToDb(dto: BookDTO) {
     return {
@@ -94,6 +98,32 @@ export class BookService {
       .lean()) as unknown as ILeanPopulatedBook[]
 
     return books.map((book) => this.mapBook(book))
+  }
+
+  async getBookCountByAuthor(authorId: string): Promise<number> {
+    await connectMongoose()
+    return await Book.countDocuments({
+      author: new Types.ObjectId(authorId),
+    })
+  }
+
+  async getTotalLibraryValue(): Promise<number> {
+    await connectMongoose()
+    const result = (await Book.aggregate([
+      {
+        $group: {
+          _id: undefined,
+          total: { $sum: "$price" },
+        },
+      },
+    ])) as ITotalValueResult[]
+
+    const firstResult = result[0]
+    if (firstResult) {
+      return firstResult.total
+    }
+
+    return 0
   }
 
   async save(dto: BookDTO): Promise<void> {

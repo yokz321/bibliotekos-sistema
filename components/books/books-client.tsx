@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { BooksTable } from "./books-table"
 import { BookFormDialog } from "./book-form-dialog"
 import { deleteBookAction } from "@/actions/book-actions"
@@ -34,6 +36,11 @@ export function BooksClient(props: IProps) {
     getApi<IBook[]>("/api/books").then((data) => {
       setBooks(data ?? [])
     })
+  }
+
+  const handleAdd = () => {
+    setEditingBook(undefined)
+    setIsDialogOpen(true)
   }
 
   const handleFormSuccess = (msg?: string) => {
@@ -74,6 +81,13 @@ export function BooksClient(props: IProps) {
             Bibliotekos fondo valdymas
           </p>
         </div>
+
+        <Button
+          className="bg-orange-600 hover:bg-orange-700"
+          onClick={handleAdd}
+        >
+          <Plus className="mr-2 h-4 w-4" /> Nauja knyga
+        </Button>
 
         <BookFormDialog
           isOpen={isDialogOpen}

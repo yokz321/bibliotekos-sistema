@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   saveSubscriberAction,
   getNextTicketNumberAction,
@@ -35,6 +36,7 @@ import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
 import { TextField } from "@/components/parts/text-field"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
+import { SUBSCRIBER_TYPES } from "@/constants/metadata"
 
 type IProps = {
   isOpen: boolean
@@ -62,6 +64,8 @@ export function SubscriberDialog(props: IProps) {
           houseNumber: editingItem.houseNumber,
           apartmentNumber: editingItem.apartmentNumber ?? "",
           phone: editingItem.phone,
+          subscriberType: editingItem.subscriberType,
+          isActive: editingItem.isActive,
         }
       : {
           firstName: "",
@@ -72,6 +76,8 @@ export function SubscriberDialog(props: IProps) {
           houseNumber: "",
           apartmentNumber: "",
           phone: "",
+          subscriberType: "Kita",
+          isActive: true,
         },
   })
 
@@ -141,6 +147,58 @@ export function SubscriberDialog(props: IProps) {
                 name="lastName"
                 label="Pavardė"
                 disabled={isSubmitting}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="subscriberType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Abonento tipas</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={isSubmitting}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pasirinkite tipą" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {SUBSCRIBER_TYPES.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-end space-x-3 space-y-0 rounded-md border p-4 bg-slate-50/50">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="cursor-pointer">
+                        Aktyvus abonentas
+                      </FormLabel>
+                    </div>
+                  </FormItem>
+                )}
               />
             </div>
 

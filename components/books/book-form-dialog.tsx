@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-import { Plus } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { TextField } from "@/components/parts/text-field"
@@ -28,7 +27,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 
 import { saveBookAction } from "@/actions/book-actions"
@@ -36,6 +34,7 @@ import { bookSchema, type BookDTO } from "@/dto/book-dto"
 import type { IBook } from "@/types/book-t"
 import type { IAuthor } from "@/types/author-t"
 import type { IPublisher } from "@/types/publisher-t"
+import { BOOK_CATEGORIES, BOOK_LANGUAGES } from "@/constants/metadata"
 
 type IProps = {
   isOpen: boolean
@@ -63,6 +62,9 @@ export function BookFormDialog(props: IProps) {
           price: editingBook.price || 0,
           year: editingBook.year || new Date().getFullYear(),
           annotation: editingBook.annotation || "",
+          category: editingBook.category || "Grožinė literatūra",
+          language: editingBook.language || "Lietuvių",
+          pageCount: editingBook.pageCount || 0,
         }
       : {
           title: "",
@@ -73,6 +75,9 @@ export function BookFormDialog(props: IProps) {
           price: 0,
           year: new Date().getFullYear(),
           annotation: "",
+          category: "Grožinė literatūra",
+          language: "Lietuvių",
+          pageCount: 0,
         },
   })
 
@@ -94,12 +99,7 @@ export function BookFormDialog(props: IProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button className="bg-orange-600 hover:bg-orange-700">
-          <Plus className="mr-2 h-4 w-4" /> Nauja knyga
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription className="hidden">
@@ -118,6 +118,7 @@ export function BookFormDialog(props: IProps) {
               name="title"
               label="Pavadinimas"
               placeholder="Knygos pavadinimas"
+              disabled={isSubmitting}
             />
 
             <div className="grid grid-cols-2 gap-4">
@@ -181,11 +182,92 @@ export function BookFormDialog(props: IProps) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kategorija / Žanras</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={isSubmitting}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pasirinkite kategoriją" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {BOOK_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="language"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kalba</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={isSubmitting}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pasirinkite kalbą" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {BOOK_LANGUAGES.map((lang) => (
+                          <SelectItem key={lang} value={lang}>
+                            {lang}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
               <TextField
                 control={form.control}
                 name="inventoryNumber"
                 label="Inv. Nr."
-                placeholder="Inventorinis numeris"
+                disabled={isSubmitting}
+              />
+
+              <FormField
+                control={form.control}
+                name="pageCount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Puslapiai</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value, 10) || 0)
+                        }
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <FormField
@@ -217,7 +299,7 @@ export function BookFormDialog(props: IProps) {
                 name="year"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Metai</FormLabel>
+                    <FormLabel>Leidimo metai</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -236,7 +318,7 @@ export function BookFormDialog(props: IProps) {
                 control={form.control}
                 name="isbn"
                 label="ISBN"
-                placeholder="ISBN numeris"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -244,7 +326,8 @@ export function BookFormDialog(props: IProps) {
               control={form.control}
               name="annotation"
               label="Anotacija"
-              placeholder="Trumpas aprašymas"
+              placeholder="Trumpas knygos aprašymas"
+              disabled={isSubmitting}
             />
 
             {rootError && (
