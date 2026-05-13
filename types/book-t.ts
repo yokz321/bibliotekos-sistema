@@ -12,6 +12,9 @@ export type IBook = {
   year: number
   price: number
   annotation?: string
+  category: string
+  language: string
+  pageCount: number
 }
 
 export type ILeanPopulatedBook = Omit<IBook, "author" | "publisher"> & {

@@ -2,6 +2,7 @@ import { Schema, model, models, type Types, type Model } from "mongoose"
 import type { WithStringId } from "./model-t"
 import type { IAuthor } from "@/types/author-t"
 import type { IPublisher } from "@/types/publisher-t"
+
 export type IBook = {
   id?: string
   title: string
@@ -12,6 +13,9 @@ export type IBook = {
   inventoryNumber: string
   price: number
   annotation?: string
+  category: string
+  language: string
+  pageCount: number
 }
 
 type IReturnType = WithStringId<IBook>
@@ -30,6 +34,9 @@ const BookSchema = new Schema<IBook>(
     inventoryNumber: { type: String, required: true },
     price: { type: Number, required: true, default: 0 },
     annotation: { type: String },
+    category: { type: String, required: true, default: "Kita" },
+    language: { type: String, required: true, default: "Lietuvių" },
+    pageCount: { type: Number, required: true, default: 0 },
   },
   {
     timestamps: true,

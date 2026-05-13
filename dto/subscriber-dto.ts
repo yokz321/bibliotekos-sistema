@@ -9,6 +9,8 @@ export const subscriberSchema = z.object({
   houseNumber: z.string().trim().min(1, "Namo numeris privalomas"),
   apartmentNumber: z.string().trim().optional().or(z.literal("")),
   phone: z.string().trim().min(4, "Telefonas privalomas"),
+  subscriberType: z.string().min(1, "Pasirinkite tipą"),
+  isActive: z.boolean(),
 })
 
 export type SubscriberDTO = z.infer<typeof subscriberSchema>

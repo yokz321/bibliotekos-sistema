@@ -10,6 +10,8 @@ export type ISubscriber = {
   houseNumber: string
   apartmentNumber?: string
   phone: string
+  subscriberType: string
+  isActive: boolean
 }
 
 export type ILeanSubscriber = ISubscriber & { _id: Types.ObjectId }

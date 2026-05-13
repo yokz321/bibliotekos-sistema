@@ -7,11 +7,11 @@ export const bookSchema = z.object({
   inventoryNumber: z.string().min(1, "Inventorinis numeris privalomas"),
   isbn: z.string(),
   price: z.number().min(0, "Kaina turi būti teigiamas skaičius"),
-  year: z
-    .number()
-    .min(1000, "Metai per maži")
-    .max(new Date().getFullYear(), "Metai negali būti ateityje"),
+  year: z.number().min(1000).max(new Date().getFullYear()),
   annotation: z.string(),
+  category: z.string().min(1, "Pasirinkite kategoriją"),
+  language: z.string().min(1, "Pasirinkite kalbą"),
+  pageCount: z.number().min(1, "Puslapių skaičius turi būti bent 1"),
 })
 
 export type BookDTO = z.infer<typeof bookSchema>

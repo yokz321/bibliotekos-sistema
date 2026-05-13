@@ -14,6 +14,8 @@ const SubscriberSchema = new Schema<ISubscriber>(
     houseNumber: { type: String, required: true },
     apartmentNumber: { type: String },
     phone: { type: String, required: true },
+    subscriberType: { type: String, required: true, default: "Kita" },
+    isActive: { type: Boolean, required: true, default: true },
   },
   {
     timestamps: true,

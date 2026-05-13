@@ -31,10 +31,13 @@ export class SubscriberService {
       .sort({ lastName: 1 })
       .lean()) as unknown as ILeanSubscriber[]
 
-    return subscribers.map((sub) => ({
-      ...sub,
-      id: sub._id.toString(),
-    }))
+    return subscribers.map((sub) => {
+      const { _id, ...rest } = sub
+      return {
+        ...rest,
+        id: _id.toString(),
+      }
+    })
   }
 
   async save(dto: Omit<ISubscriber, "id">): Promise<void> {
@@ -60,7 +63,9 @@ export class SubscriberService {
   async getNextTicketNumber(): Promise<string> {
     await connectMongoose()
     const lastSub = await Subscriber.findOne().sort({ ticketNumber: -1 }).lean()
-    if (!lastSub || !lastSub.ticketNumber) return "1001"
+
+    if (!lastSub) return "1001"
+
     const nextNumber = parseInt(lastSub.ticketNumber, 10) + 1
     return isNaN(nextNumber) ? "1001" : nextNumber.toString()
   }

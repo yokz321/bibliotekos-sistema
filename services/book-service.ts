@@ -19,6 +19,9 @@ export class BookService {
       price: dto.price,
       year: dto.year,
       annotation: dto.annotation,
+      category: dto.category,
+      language: dto.language,
+      pageCount: dto.pageCount,
     }
   }
 
