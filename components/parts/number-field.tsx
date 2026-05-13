@@ -1,14 +1,18 @@
 "use client"
 
 import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form"
+import { Input } from "@/components/ui/input"
+import {
   FormControl,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import type { Control, FieldValues, Path } from "react-hook-form"
 
 type IProps<T extends FieldValues> = {
   control: Control<T>
@@ -22,12 +26,14 @@ export function NumberField<T extends FieldValues>(props: IProps<T>) {
   const { control, name, label, isFloat = false, disabled } = props
 
   return (
-    <FormField
+    <Controller
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className={fieldState.error ? "text-destructive" : ""}>
+            {label}
+          </FormLabel>
           <FormControl>
             <Input
               type="number"

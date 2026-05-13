@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { citySchema, type CityDTO } from "@/dto/city-dto"
-import { saveCityAction } from "@/actions/city-actions"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -18,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import type { ICity } from "@/types/city-t"
+import { postApi, putApi } from "@/utils/server-api"
 
 type IProps = {
   isOpen: boolean
@@ -40,14 +40,27 @@ export function CityFormDialog(props: IProps) {
 
   const onSubmit = async (values: CityDTO) => {
     setIsSubmitting(true)
-    const res = await saveCityAction(values, editingCity?.id)
 
-    if (res.success) {
+    const res = editingCity
+      ? await putApi<{ message?: string; error?: string }>(
+          `/api/cities/${editingCity.id}`,
+          values
+        )
+      : await postApi<{ message?: string; error?: string }>(
+          "/api/cities",
+          values
+        )
+
+    if (res && !res.error) {
       toast.success(res.message || "Operacija sėkminga")
       onSuccess(res.message)
     } else {
-      form.setError("root", { type: "server", message: res.error })
+      form.setError("root", {
+        type: "server",
+        message: res?.error || "Įvyko klaida saugant duomenis",
+      })
     }
+
     setIsSubmitting(false)
   }
 

@@ -1,20 +1,19 @@
 "use client"
 
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { authorSchema, type AuthorDTO } from "@/dto/author-dto"
-import { Form } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
-import { saveAuthorAction } from "@/actions/author-actions"
-import { TextField } from "@/components/parts/text-field"
 import {
+  Form,
   FormControl,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
+import { TextField } from "@/components/parts/text-field"
 import { Textarea } from "@/components/ui/textarea"
+import { postApi, putApi } from "@/utils/server-api"
 
 type IProps = {
   defaultValues?: AuthorDTO
@@ -36,11 +35,23 @@ export function AuthorForm(props: IProps) {
   })
 
   async function onSubmit(values: AuthorDTO) {
-    const res = await saveAuthorAction(values, id)
-    if (res.success) {
+    const res = id
+      ? await putApi<{ message?: string; error?: string }>(
+          `/api/authors/${id}`,
+          values
+        )
+      : await postApi<{ message?: string; error?: string }>(
+          "/api/authors",
+          values
+        )
+
+    if (res && !res.error) {
       onComplete(res.message)
     } else {
-      form.setError("root", { type: "manual", message: res.error })
+      form.setError("root", {
+        type: "manual",
+        message: res?.error || "Įvyko klaida saugant duomenis",
+      })
     }
   }
 
@@ -60,21 +71,25 @@ export function AuthorForm(props: IProps) {
             name="firstName"
             label="Vardas"
             placeholder="Vardas"
+            disabled={isSubmitting}
           />
           <TextField
             control={form.control}
             name="lastName"
             label="Pavardė"
             placeholder="Pavardė"
+            disabled={isSubmitting}
           />
         </div>
 
-        <FormField
+        <Controller
           control={form.control}
           name="biography"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Biografija</FormLabel>
+              <FormLabel className={fieldState.error ? "text-destructive" : ""}>
+                Biografija
+              </FormLabel>
               <FormControl>
                 <Textarea
                   {...field}

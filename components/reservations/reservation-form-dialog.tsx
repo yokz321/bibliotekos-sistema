@@ -3,10 +3,9 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -28,8 +27,8 @@ import {
 } from "@/components/ui/dialog"
 
 import { borrowingSchema, type BorrowingDTO } from "@/dto/borrowing-dto"
-import { saveBorrowingAction } from "@/actions/borrowing-actions"
 import { TextField } from "@/components/parts/text-field"
+import { postApi } from "@/utils/server-api"
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
 
@@ -57,20 +56,24 @@ export function ReservationFormDialog(props: IProps) {
   })
 
   const onSubmit = async (values: BorrowingDTO) => {
-    const res = await saveBorrowingAction(values)
+    const res = await postApi<{ message?: string; error?: string }>(
+      "/api/borrowings",
+      values
+    )
 
-    if (res.success) {
-      toast.success(res.message || "Rezervacija sėkmingai sukurta!")
+    if (res && !res.error) {
+      toast.success(res.message || "Rezervacija sukurta")
       form.reset()
       onSuccess(res.message)
     } else {
-      form.setError("root", { type: "server", message: res.error })
+      form.setError("root", {
+        type: "server",
+        message: res?.error || "Klaida saugant",
+      })
     }
   }
 
   const isSubmitting = form.formState.isSubmitting
-  const rootError = form.formState.errors.root
-
   const currentYear = new Date().getFullYear()
   const minDate = `${currentYear}-01-01`
   const maxDate = `${currentYear + 10}-12-31`
@@ -79,7 +82,7 @@ export function ReservationFormDialog(props: IProps) {
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Knygos išdavimo registracija</DialogTitle>
+          <DialogTitle>Knygos išdavimas</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -94,47 +97,20 @@ export function ReservationFormDialog(props: IProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Abonentas</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={isSubmitting}
+                  >
                     <FormControl>
-                      <SelectTrigger disabled={isSubmitting}>
-                        <SelectValue placeholder="Pasirinkite abonentą" />
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pasirinkite..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {subscribers.map((s) => (
-                        <SelectItem
-                          key={s.id ?? "unknown-sub"}
-                          value={s.id ?? ""}
-                        >
-                          {s.firstName} {s.lastName} ({s.ticketNumber})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="bookId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Knyga</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger disabled={isSubmitting}>
-                        <SelectValue placeholder="Pasirinkite knygą" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {books.map((b) => (
-                        <SelectItem
-                          key={b.id ?? "unknown-book"}
-                          value={b.id ?? ""}
-                        >
-                          {b.title}
+                        <SelectItem key={s.id} value={s.id}>
+                          {s.firstName} {s.lastName}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -164,12 +140,6 @@ export function ReservationFormDialog(props: IProps) {
                 disabled={isSubmitting}
               />
             </div>
-
-            {rootError && (
-              <div className="p-2 text-sm font-medium text-red-500 bg-red-50 border border-red-200 rounded-md">
-                {rootError.message}
-              </div>
-            )}
 
             <Button
               type="submit"

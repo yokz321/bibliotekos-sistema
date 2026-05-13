@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { publisherSchema, type PublisherDTO } from "@/dto/publisher-dto"
-import { savePublisherAction } from "@/actions/publisher-actions"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/dialog"
 import { TextField } from "@/components/parts/text-field"
 import type { IPublisher } from "@/types/publisher-t"
+import { postApi, putApi } from "@/utils/server-api"
 
 type IProps = {
   isOpen: boolean
@@ -41,14 +41,27 @@ export function PublisherFormDialog(props: IProps) {
 
   const onSubmit = async (values: PublisherDTO) => {
     setIsSubmitting(true)
-    const res = await savePublisherAction(values, editingPublisher?.id)
 
-    if (res.success) {
+    const res = editingPublisher
+      ? await putApi<{ message?: string; error?: string }>(
+          `/api/publishers/${editingPublisher.id}`,
+          values
+        )
+      : await postApi<{ message?: string; error?: string }>(
+          "/api/publishers",
+          values
+        )
+
+    if (res && !res.error) {
       toast.success(res.message || "Leidykla išsaugota!")
       onSuccess(res.message)
     } else {
-      form.setError("root", { type: "manual", message: res.error })
+      form.setError("root", {
+        type: "manual",
+        message: res?.error || "Įvyko klaida saugant duomenis",
+      })
     }
+
     setIsSubmitting(false)
   }
 

@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/dialog"
 import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import { saveSubscriberAction } from "@/actions/subscriber-actions"
 import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
 import { SubscriberFormFields } from "./subscriber-form-fields"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
 import type { ISubscriberType } from "@/types/metadata-t"
+import { postApi, putApi } from "@/utils/server-api"
 
 type IProps = {
   isOpen: boolean
@@ -71,13 +71,24 @@ export function SubscriberDialog(props: IProps) {
   })
 
   async function onSubmit(values: SubscriberDTO) {
-    const res = await saveSubscriberAction(values, editingItem?.id)
+    const res = editingItem
+      ? await putApi<{ message?: string; error?: string }>(
+          `/api/subscribers/${editingItem.id}`,
+          values
+        )
+      : await postApi<{ message?: string; error?: string }>(
+          "/api/subscribers",
+          values
+        )
 
-    if (res.success) {
+    if (res && !res.error) {
       toast.success(res.message || "Abonentas išsaugotas")
       onSuccess(res.message)
     } else {
-      form.setError("root", { type: "server", message: res.error })
+      form.setError("root", {
+        type: "server",
+        message: res?.error || "Įvyko klaida saugant duomenis",
+      })
     }
   }
 

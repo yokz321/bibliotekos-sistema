@@ -1,8 +1,13 @@
 "use client"
 
 import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form"
+import {
   FormControl,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
@@ -14,12 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { Control, FieldValues, Path } from "react-hook-form"
 
-type IOption = {
-  value: string
-  label: string
-}
+type IOption = { value: string; label: string }
 
 type IProps<T extends FieldValues> = {
   control: Control<T>
@@ -34,12 +35,14 @@ export function SelectField<T extends FieldValues>(props: IProps<T>) {
   const { control, name, label, placeholder, options, disabled } = props
 
   return (
-    <FormField
+    <Controller
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className={fieldState.error ? "text-destructive" : ""}>
+            {label}
+          </FormLabel>
           <Select
             onValueChange={field.onChange}
             value={field.value}

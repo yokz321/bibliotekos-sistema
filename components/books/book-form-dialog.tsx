@@ -13,13 +13,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-import { saveBookAction } from "@/actions/book-actions"
 import { bookSchema, type BookDTO } from "@/dto/book-dto"
 import { BookFormFields } from "./book-form-fields"
 import type { IBook } from "@/types/book-t"
 import type { IAuthor } from "@/types/author-t"
 import type { IPublisher } from "@/types/publisher-t"
 import type { ICategory, ILanguage } from "@/types/metadata-t"
+import { postApi, putApi } from "@/utils/server-api"
 
 type IProps = {
   isOpen: boolean
@@ -77,13 +77,24 @@ export function BookFormDialog(props: IProps) {
   })
 
   async function onSubmit(values: BookDTO) {
-    const res = await saveBookAction(values, editingBook?.id)
+    const res = editingBook
+      ? await putApi<{ message?: string; error?: string }>(
+          `/api/books/${editingBook.id}`,
+          values
+        )
+      : await postApi<{ message?: string; error?: string }>(
+          "/api/books",
+          values
+        )
 
-    if (res.success) {
+    if (res && !res.error) {
       toast.success(res.message || "Operacija sėkminga")
       onSuccess(res.message)
     } else {
-      form.setError("root", { type: "server", message: res.error })
+      form.setError("root", {
+        type: "manual",
+        message: res?.error || "Įvyko klaida saugant duomenis",
+      })
     }
   }
 
