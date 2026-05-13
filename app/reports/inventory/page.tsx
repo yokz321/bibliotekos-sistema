@@ -23,7 +23,8 @@ export default async function InventoryReportPage(props: IPageProps) {
     getApi<IBook[]>("/api/books"),
   ])
 
-  let reportData: any[] = []
+  let reportData: IBook[] | IBorrowingPopulated[] = []
+
   if (bookId) {
     reportData =
       (await getApi<IBorrowingPopulated[]>(

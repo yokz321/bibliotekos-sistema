@@ -2,9 +2,11 @@
 
 import { BooksTable } from "@/components/books/books-table"
 import { ReservationsTable } from "@/components/reservations/reservations-table"
+import type { IBook } from "@/types/book-t"
+import type { IBorrowingPopulated } from "@/types/borrowing-t"
 
 type IProps = {
-  data: any[]
+  data: IBook[] | IBorrowingPopulated[]
   isHistoryView: boolean
 }
 
@@ -19,7 +21,7 @@ export function InventoryList(props: IProps) {
             Knygos judėjimo istorija
           </h2>
           <ReservationsTable
-            items={data}
+            items={data as IBorrowingPopulated[]}
             onReturn={() => {}}
             onDelete={() => {}}
           />
@@ -27,7 +29,11 @@ export function InventoryList(props: IProps) {
       ) : (
         <>
           <h2 className="text-lg font-semibold mb-4">Inventorinis sąrašas</h2>
-          <BooksTable books={data} onEdit={() => {}} onDelete={() => {}} />
+          <BooksTable
+            books={data as IBook[]}
+            onEdit={() => {}}
+            onDelete={() => {}}
+          />
         </>
       )}
     </div>

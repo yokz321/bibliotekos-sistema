@@ -1,16 +1,17 @@
 "use client"
 
-import { InventoryReportFilter } from "./inventory-report-filter"
-import { InventoryList } from "./inventory-list"
 import type { IAuthor } from "@/types/author-t"
 import type { IPublisher } from "@/types/publisher-t"
 import type { IBook } from "@/types/book-t"
+import type { IBorrowingPopulated } from "@/types/borrowing-t"
+import { InventoryReportFilter } from "./inventory-report-filter"
+import { InventoryList } from "./inventory-list"
 
 type IProps = {
   authors: IAuthor[]
   publishers: IPublisher[]
   allBooks: IBook[]
-  reportData: any[]
+  reportData: IBook[] | IBorrowingPopulated[]
   isHistoryView: boolean
 }
 

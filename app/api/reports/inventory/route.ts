@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       publisherId,
     })
     return Response.json(data)
-  } catch (error: unknown) {
+  } catch {
     return Response.json({ error: "Serverio klaida" }, { status: 500 })
   }
 }
