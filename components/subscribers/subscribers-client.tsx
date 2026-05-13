@@ -10,6 +10,7 @@ import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
 import type { ISubscriberType } from "@/types/metadata-t"
 import { getApi } from "@/utils/server-api"
+import { getNextTicketNumberAction } from "@/actions/subscriber-actions" // Importuojame action
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
 
@@ -21,12 +22,12 @@ type IProps = {
 }
 
 export function SubscribersClient(props: IProps) {
-  const { initialData, cities, className, subscriberTypes } = props
-  void className
+  const { initialData, cities, subscriberTypes } = props
 
   const [data, setData] = useState<ISubscriber[]>(initialData)
   const [isOpen, setIsOpen] = useState(false)
   const [editing, setEditing] = useState<ISubscriber | undefined>(undefined)
+  const [nextNumber, setNextNumber] = useState("")
 
   const { setMessage } = useBoundStore(
     useShallow((state) => ({
@@ -40,13 +41,16 @@ export function SubscribersClient(props: IProps) {
     })
   }
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     setEditing(undefined)
+    const num = await getNextTicketNumberAction()
+    setNextNumber(num)
     setIsOpen(true)
   }
 
   const handleEdit = (item: ISubscriber) => {
     setEditing(item)
+    setNextNumber("")
     setIsOpen(true)
   }
 
@@ -61,7 +65,6 @@ export function SubscribersClient(props: IProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Abonentai</h1>
-
         <Button
           className="bg-orange-600 hover:bg-orange-700"
           onClick={handleAdd}
@@ -85,6 +88,7 @@ export function SubscribersClient(props: IProps) {
         onSuccess={handleSuccess}
         cities={cities}
         subscriberTypes={subscriberTypes}
+        nextTicketNumber={nextNumber}
       />
     </div>
   )

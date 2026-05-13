@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
@@ -28,10 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  saveSubscriberAction,
-  getNextTicketNumberAction,
-} from "@/actions/subscriber-actions"
+import { saveSubscriberAction } from "@/actions/subscriber-actions"
 import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
 import { TextField } from "@/components/parts/text-field"
 import type { ISubscriber } from "@/types/subscriber-t"
@@ -45,6 +41,7 @@ type IProps = {
   onSuccess: (msg?: string) => void
   cities: ICity[]
   subscriberTypes: ISubscriberType[]
+  nextTicketNumber: string
 }
 
 export function SubscriberDialog(props: IProps) {
@@ -55,10 +52,8 @@ export function SubscriberDialog(props: IProps) {
     onSuccess,
     cities,
     subscriberTypes,
+    nextTicketNumber,
   } = props
-
-  const [isLoadingNumber, setIsLoadingNumber] = useState(false)
-  const [generatedNumber, setGeneratedNumber] = useState("")
 
   const form = useForm<SubscriberDTO>({
     resolver: zodResolver(subscriberSchema),
@@ -79,7 +74,7 @@ export function SubscriberDialog(props: IProps) {
       : {
           firstName: "",
           lastName: "",
-          ticketNumber: generatedNumber,
+          ticketNumber: nextTicketNumber,
           city: "",
           street: "",
           houseNumber: "",
@@ -90,21 +85,6 @@ export function SubscriberDialog(props: IProps) {
         },
   })
 
-  useEffect(() => {
-    if (isOpen && !editingItem) {
-      const fetchNextNumber = async () => {
-        setIsLoadingNumber(true)
-        try {
-          const nextNumber = await getNextTicketNumberAction()
-          setGeneratedNumber(nextNumber)
-        } finally {
-          setIsLoadingNumber(false)
-        }
-      }
-      fetchNextNumber()
-    }
-  }, [isOpen, editingItem])
-
   const onSubmit = async (values: SubscriberDTO) => {
     const res = await saveSubscriberAction(values, editingItem?.id)
 
@@ -112,16 +92,8 @@ export function SubscriberDialog(props: IProps) {
       toast.success(res.message || "Abonentas išsaugotas")
       onSuccess(res.message)
     } else {
-      form.setError("root", {
-        type: "server",
-        message: res.error,
-      })
+      form.setError("root", { type: "server", message: res.error })
     }
-  }
-
-  const handleOpenChange = (open: boolean) => {
-    if (!open) setGeneratedNumber("")
-    onOpenChange(open)
   }
 
   const dialogTitle = editingItem ? "Redaguoti abonentą" : "Naujas abonentas"
@@ -129,7 +101,7 @@ export function SubscriberDialog(props: IProps) {
   const rootError = form.formState.errors.root
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
@@ -188,7 +160,6 @@ export function SubscriberDialog(props: IProps) {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="isActive"
@@ -276,7 +247,7 @@ export function SubscriberDialog(props: IProps) {
               control={form.control}
               name="ticketNumber"
               label="Abonento Nr."
-              disabled={isLoadingNumber || isSubmitting}
+              disabled={isSubmitting}
             />
 
             {rootError && (
