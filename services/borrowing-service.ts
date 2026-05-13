@@ -2,9 +2,13 @@ import { Borrowing } from "@/models/borrowing-model"
 import { connectMongoose } from "@/utils/mongoose-client"
 import { Types } from "mongoose"
 import type { BorrowingDTO } from "@/dto/borrowing-dto"
-import type { IBorrowingPopulated } from "@/types/borrowing-t"
 import type { IBook } from "@/types/book-t"
 import type { ISubscriber } from "@/types/subscriber-t"
+import type {
+  IBorrowingPopulated,
+  IPopularBook,
+  ILateSubscriber,
+} from "@/types/borrowing-t"
 
 type LeanResult = {
   _id: Types.ObjectId
@@ -19,20 +23,6 @@ type LeanResult = {
   dueDate: Date
   returnDate?: Date
   isReturned: boolean
-}
-
-export type IPopularBook = {
-  id: string
-  title: string
-  borrowCount: number
-}
-
-export type ILateSubscriber = {
-  id: string
-  firstName: string
-  lastName: string
-  ticketNumber: string
-  lateCount: number
 }
 
 export class BorrowingService {
@@ -84,12 +74,14 @@ export class BorrowingService {
     await connectMongoose()
     const query: Record<string, unknown> = {}
 
-    if (filters.subscriberId) {
+    if (filters.subscriberId && filters.subscriberId.length === 24) {
       query.subscriberId = new Types.ObjectId(filters.subscriberId)
     }
-    if (filters.bookId) {
+
+    if (filters.bookId && filters.bookId.length === 24) {
       query.bookId = new Types.ObjectId(filters.bookId)
     }
+
     if (filters.onlyOverdue) {
       query.isReturned = false
       query.dueDate = { $lt: new Date() }

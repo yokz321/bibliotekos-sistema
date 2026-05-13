@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Pencil, Trash2 } from "lucide-react"
+import { BookOpen, Pencil, Trash2, Languages, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
 import type { IBook } from "@/types/book-t"
 
 import {
@@ -40,9 +41,10 @@ export function BooksTable(props: IProps) {
       <Table>
         <TableHeader className="bg-muted/50">
           <TableRow>
-            <TableHead className="w-[300px]">Pavadinimas</TableHead>
+            <TableHead className="w-[250px]">Pavadinimas</TableHead>
             <TableHead>Autorius</TableHead>
-            <TableHead>Leidykla</TableHead>
+            <TableHead>Kategorija</TableHead>
+            <TableHead>Kalba</TableHead>
             <TableHead className="text-center">Metai</TableHead>
             {!isReadOnly && (
               <TableHead className="text-right">Veiksmai</TableHead>
@@ -53,7 +55,7 @@ export function BooksTable(props: IProps) {
           {books.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={isReadOnly ? 4 : 5}
+                colSpan={isReadOnly ? 5 : 6}
                 className="text-center py-10 text-muted-foreground text-sm italic"
               >
                 Knygų fondo sąrašas tuščias
@@ -64,20 +66,34 @@ export function BooksTable(props: IProps) {
               const authorName = book.author
                 ? `${book.author.firstName} ${book.author.lastName}`
                 : "Nežinomas"
-              const publisherName = book.publisher?.name || "Nenurodyta"
 
               return (
                 <TableRow
                   key={book.id}
                   className="hover:bg-muted/50 transition-colors"
                 >
-                  <TableCell className="font-semibold flex items-center gap-2">
-                    <BookOpen className="h-4 w-4 text-orange-600" />
-                    {book.title}
+                  <TableCell className="font-semibold">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4 text-orange-600 shrink-0" />
+                      <span className="line-clamp-1">{book.title}</span>
+                    </div>
                   </TableCell>
-                  <TableCell>{authorName}</TableCell>
-                  <TableCell>{publisherName}</TableCell>
-                  <TableCell className="text-center">{book.year}</TableCell>
+                  <TableCell className="text-sm">{authorName}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Tag className="h-3 w-3" />
+                      {book.category}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Languages className="h-3 w-3" />
+                      {book.language}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center text-sm">
+                    {book.year}
+                  </TableCell>
 
                   {!isReadOnly && (
                     <TableCell className="text-right">

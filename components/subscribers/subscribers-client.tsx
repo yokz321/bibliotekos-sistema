@@ -8,6 +8,7 @@ import { SubscriberTable } from "./subscriber-table"
 import { SubscriberDialog } from "./subscriber-dialog"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
+import type { ISubscriberType } from "@/types/metadata-t"
 import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
@@ -15,11 +16,12 @@ import { useShallow } from "zustand/react/shallow"
 type IProps = {
   initialData: ISubscriber[]
   cities: ICity[]
+  subscriberTypes: ISubscriberType[]
   className?: string
 }
 
 export function SubscribersClient(props: IProps) {
-  const { initialData, cities, className } = props
+  const { initialData, cities, className, subscriberTypes } = props
   void className
 
   const [data, setData] = useState<ISubscriber[]>(initialData)
@@ -82,6 +84,7 @@ export function SubscribersClient(props: IProps) {
         editingItem={editing}
         onSuccess={handleSuccess}
         cities={cities}
+        subscriberTypes={subscriberTypes}
       />
     </div>
   )

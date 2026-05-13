@@ -10,3 +10,17 @@ export type IBorrowingPopulated = {
   returnDate?: string
   isReturned: boolean
 }
+
+export type IPopularBook = {
+  id: string
+  title: string
+  borrowCount: number
+}
+
+export type ILateSubscriber = {
+  id: string
+  firstName: string
+  lastName: string
+  ticketNumber: string
+  lateCount: number
+}

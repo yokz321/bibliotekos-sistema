@@ -4,9 +4,12 @@ import { type NextRequest } from "next/server"
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
 
-  const subscriberId = searchParams.get("subscriberId") || undefined
-  const bookId = searchParams.get("bookId") || undefined
-  const onlyOverdue = searchParams.get("overdue") === "true"
+  const subParam = searchParams.get("subscriberId")?.trim()
+  const bookParam = searchParams.get("bookId")?.trim()
+
+  const subscriberId = subParam && subParam !== "" ? subParam : undefined
+  const bookId = bookParam && bookParam !== "" ? bookParam : undefined
+  const overdue = searchParams.get("overdue") === "true"
 
   const service = new BorrowingService()
 
@@ -14,12 +17,10 @@ export async function GET(request: NextRequest) {
     const data = await service.getReportData({
       subscriberId,
       bookId,
-      onlyOverdue,
+      onlyOverdue: overdue,
     })
     return Response.json(data)
-  } catch (error: unknown) {
-    let message = "Klaida generuojant ataskaitą"
-    if (error instanceof Error) message = error.message
-    return Response.json({ error: message }, { status: 500 })
+  } catch {
+    return Response.json({ error: "Serverio klaida" }, { status: 500 })
   }
 }

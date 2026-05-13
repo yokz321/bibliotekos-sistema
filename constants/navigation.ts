@@ -9,6 +9,7 @@ import {
   FileText,
   ClipboardList,
   Library,
+  ChartBar,
 } from "lucide-react"
 import type { NavItem } from "@/types/nav-t"
 
@@ -35,15 +36,11 @@ export const NAVIGATION_MENU: NavItem[] = [
         icon: ClipboardList,
       },
       {
-        title: "Analitika",
-        href: "/reports/analytics",
-        icon: BarChart3,
-      },
-      {
         title: "Fondo inventorizacija",
         href: "/reports/inventory",
         icon: Library,
       },
+      { title: "Analitika", href: "/reports/analytics", icon: ChartBar }, // Naudojama nauja ikona
     ],
   },
 ]

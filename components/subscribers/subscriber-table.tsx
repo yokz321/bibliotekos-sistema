@@ -11,7 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Pencil, Trash2, Loader2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Pencil, Trash2, Loader2, UserCircle } from "lucide-react"
 import { deleteSubscriberAction } from "@/actions/subscriber-actions"
 import type { ISubscriber } from "@/types/subscriber-t"
 import {
@@ -55,7 +56,8 @@ export function SubscriberTable(props: IProps) {
         <TableRow>
           <TableHead>Bilieto Nr.</TableHead>
           <TableHead>Vardas Pavardė</TableHead>
-          <TableHead>Miestas</TableHead>
+          <TableHead>Tipas</TableHead>
+          <TableHead className="text-center">Būsena</TableHead>
           <TableHead>Telefonas</TableHead>
           <TableHead className="text-right">Veiksmai</TableHead>
         </TableRow>
@@ -64,7 +66,7 @@ export function SubscriberTable(props: IProps) {
         {items.length === 0 ? (
           <TableRow>
             <TableCell
-              colSpan={5}
+              colSpan={6}
               className="text-center py-10 text-muted-foreground"
             >
               Sąrašas tuščias
@@ -75,13 +77,37 @@ export function SubscriberTable(props: IProps) {
             const fullName = `${sub.firstName} ${sub.lastName}`
 
             return (
-              <TableRow key={sub.id}>
+              <TableRow
+                key={sub.id}
+                className={!sub.isActive ? "opacity-60 bg-slate-50/50" : ""}
+              >
                 <TableCell className="font-medium">
                   {sub.ticketNumber}
                 </TableCell>
-                <TableCell>{fullName}</TableCell>
-                <TableCell>{sub.city}</TableCell>
-                <TableCell>{sub.phone}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <UserCircle className="h-4 w-4 text-slate-400" />
+                    {fullName}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm text-muted-foreground">
+                    {sub.subscriberType}
+                  </span>
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge
+                    variant={sub.isActive ? "outline" : "secondary"}
+                    className={
+                      sub.isActive
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : "bg-slate-100 text-slate-500"
+                    }
+                  >
+                    {sub.isActive ? "Aktyvus" : "Pasyvus"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm">{sub.phone}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <Button
                     variant="ghost"
@@ -112,7 +138,7 @@ export function SubscriberTable(props: IProps) {
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                           Abonentas <strong>{fullName}</strong> bus ištrintas iš
-                          sistemos. Šio veiksmo atšaukti negalėsite.
+                          sistemos.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

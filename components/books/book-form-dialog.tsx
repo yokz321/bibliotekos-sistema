@@ -34,7 +34,7 @@ import { bookSchema, type BookDTO } from "@/dto/book-dto"
 import type { IBook } from "@/types/book-t"
 import type { IAuthor } from "@/types/author-t"
 import type { IPublisher } from "@/types/publisher-t"
-import { BOOK_CATEGORIES, BOOK_LANGUAGES } from "@/constants/metadata"
+import type { ICategory, ILanguage } from "@/types/metadata-t"
 
 type IProps = {
   isOpen: boolean
@@ -42,12 +42,22 @@ type IProps = {
   editingBook: IBook | undefined
   authors: IAuthor[]
   publishers: IPublisher[]
+  categories: ICategory[]
+  languages: ILanguage[]
   onSuccess: (msg?: string) => void
 }
 
 export function BookFormDialog(props: IProps) {
-  const { isOpen, onOpenChange, editingBook, authors, publishers, onSuccess } =
-    props
+  const {
+    isOpen,
+    onOpenChange,
+    editingBook,
+    authors,
+    publishers,
+    categories,
+    languages,
+    onSuccess,
+  } = props
 
   const form = useForm<BookDTO>({
     resolver: zodResolver(bookSchema),
@@ -62,8 +72,8 @@ export function BookFormDialog(props: IProps) {
           price: editingBook.price || 0,
           year: editingBook.year || new Date().getFullYear(),
           annotation: editingBook.annotation || "",
-          category: editingBook.category || "Grožinė literatūra",
-          language: editingBook.language || "Lietuvių",
+          category: editingBook.category || "",
+          language: editingBook.language || "",
           pageCount: editingBook.pageCount || 0,
         }
       : {
@@ -75,8 +85,8 @@ export function BookFormDialog(props: IProps) {
           price: 0,
           year: new Date().getFullYear(),
           annotation: "",
-          category: "Grožinė literatūra",
-          language: "Lietuvių",
+          category: "",
+          language: "",
           pageCount: 0,
         },
   })
@@ -135,7 +145,7 @@ export function BookFormDialog(props: IProps) {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Pasirinkite..." />
+                          <SelectValue placeholder="Pasirinkite autorių" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -164,7 +174,7 @@ export function BookFormDialog(props: IProps) {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Pasirinkite..." />
+                          <SelectValue placeholder="Pasirinkite leidyklą" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -199,9 +209,9 @@ export function BookFormDialog(props: IProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {BOOK_CATEGORIES.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
+                        {categories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.name}>
+                            {cat.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -228,9 +238,9 @@ export function BookFormDialog(props: IProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {BOOK_LANGUAGES.map((lang) => (
-                          <SelectItem key={lang} value={lang}>
-                            {lang}
+                        {languages.map((lang) => (
+                          <SelectItem key={lang.id} value={lang.name}>
+                            {lang.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

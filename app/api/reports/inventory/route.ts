@@ -3,9 +3,11 @@ import { type NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
+  const authParam = searchParams.get("authorId")?.trim()
+  const pubParam = searchParams.get("publisherId")?.trim()
 
-  const authorId = searchParams.get("authorId") || undefined
-  const publisherId = searchParams.get("publisherId") || undefined
+  const authorId = authParam && authParam !== "" ? authParam : undefined
+  const publisherId = pubParam && pubParam !== "" ? pubParam : undefined
 
   const service = new BookService()
 
@@ -13,7 +15,7 @@ export async function GET(request: NextRequest) {
     const books = await service.getInventoryReport({ authorId, publisherId })
 
     let count = undefined
-    if (authorId) {
+    if (authorId && authorId.length === 24) {
       count = await service.getBookCountByAuthor(authorId)
     }
 

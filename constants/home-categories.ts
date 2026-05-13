@@ -6,6 +6,7 @@ import {
   MapPin,
   ClipboardList,
   Library,
+  ChartBar,
   type LucideIcon,
 } from "lucide-react"
 
@@ -22,12 +23,6 @@ export const HOME_CATEGORIES: HomeCategory[] = [
     href: "/authors",
     icon: Users,
     description: "Klasifikatorius: Autorių sąrašas ir valdymas",
-  },
-  {
-    title: "Bibliotekos analitika",
-    href: "/reports/analytics",
-    icon: BarChart3,
-    description: "Populiariausios knygos, skolininkų statistika ir fondo vertė",
   },
   {
     title: "Leidyklos",
@@ -70,5 +65,11 @@ export const HOME_CATEGORIES: HomeCategory[] = [
     href: "/reports/inventory",
     icon: Library,
     description: "Inventorinis sąrašas ir knygų judėjimas",
+  },
+  {
+    title: "Bibliotekos analitika",
+    href: "/reports/analytics",
+    icon: ChartBar,
+    description: "Populiariausios knygos, skolininkų statistika ir fondo vertė",
   },
 ]

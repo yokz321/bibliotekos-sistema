@@ -6,7 +6,6 @@ import type { IBook } from "@/types/book-t"
 import type { IBorrowingPopulated } from "@/types/borrowing-t"
 import { InventoryReportFilter } from "./inventory-report-filter"
 import { InventoryList } from "./inventory-list"
-import { Badge } from "@/components/ui/badge"
 import { BookCopy } from "lucide-react"
 
 type IProps = {

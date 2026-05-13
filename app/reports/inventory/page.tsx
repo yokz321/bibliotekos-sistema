@@ -35,7 +35,6 @@ export default async function InventoryReportPage(props: IPageProps) {
     const query = `authorId=${params.authorId || ""}&publisherId=${
       params.publisherId || ""
     }`
-
     const res = await getApi<{ books: IBook[]; count?: number }>(
       `/api/reports/inventory?${query}`
     )

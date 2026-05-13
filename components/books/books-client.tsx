@@ -9,6 +9,7 @@ import { deleteBookAction } from "@/actions/book-actions"
 import type { IPublisher } from "@/types/publisher-t"
 import type { IAuthor } from "@/types/author-t"
 import type { IBook } from "@/types/book-t"
+import type { ICategory, ILanguage } from "@/types/metadata-t"
 import { getApi } from "@/utils/server-api"
 import { useBoundStore } from "@/store/app-store"
 import { useShallow } from "zustand/react/shallow"
@@ -17,10 +18,12 @@ type IProps = {
   initialBooks: IBook[]
   authors: IAuthor[]
   publishers: IPublisher[]
+  categories: ICategory[]
+  languages: ILanguage[]
 }
 
 export function BooksClient(props: IProps) {
-  const { initialBooks, authors, publishers } = props
+  const { initialBooks, authors, publishers, categories, languages } = props
 
   const [books, setBooks] = useState<IBook[]>(initialBooks)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -95,6 +98,8 @@ export function BooksClient(props: IProps) {
           editingBook={editingBook}
           authors={authors}
           publishers={publishers}
+          categories={categories}
+          languages={languages}
           onSuccess={handleFormSuccess}
         />
       </div>

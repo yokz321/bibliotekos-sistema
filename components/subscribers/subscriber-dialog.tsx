@@ -36,7 +36,7 @@ import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
 import { TextField } from "@/components/parts/text-field"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
-import { SUBSCRIBER_TYPES } from "@/constants/metadata"
+import type { ISubscriberType } from "@/types/metadata-t"
 
 type IProps = {
   isOpen: boolean
@@ -44,10 +44,19 @@ type IProps = {
   editingItem: ISubscriber | undefined
   onSuccess: (msg?: string) => void
   cities: ICity[]
+  subscriberTypes: ISubscriberType[]
 }
 
 export function SubscriberDialog(props: IProps) {
-  const { isOpen, onOpenChange, editingItem, onSuccess, cities } = props
+  const {
+    isOpen,
+    onOpenChange,
+    editingItem,
+    onSuccess,
+    cities,
+    subscriberTypes,
+  } = props
+
   const [isLoadingNumber, setIsLoadingNumber] = useState(false)
   const [generatedNumber, setGeneratedNumber] = useState("")
 
@@ -76,7 +85,7 @@ export function SubscriberDialog(props: IProps) {
           houseNumber: "",
           apartmentNumber: "",
           phone: "",
-          subscriberType: "Kita",
+          subscriberType: "",
           isActive: true,
         },
   })
@@ -168,9 +177,9 @@ export function SubscriberDialog(props: IProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {SUBSCRIBER_TYPES.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
+                        {(subscriberTypes ?? []).map((type) => (
+                          <SelectItem key={type.id} value={type.name}>
+                            {type.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
