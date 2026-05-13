@@ -12,24 +12,9 @@ import {
 } from "@/components/ui/dialog"
 import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 import { saveSubscriberAction } from "@/actions/subscriber-actions"
 import { subscriberSchema, type SubscriberDTO } from "@/dto/subscriber-dto"
-import { TextField } from "@/components/parts/text-field"
+import { SubscriberFormFields } from "./subscriber-form-fields"
 import type { ISubscriber } from "@/types/subscriber-t"
 import type { ICity } from "@/types/city-t"
 import type { ISubscriberType } from "@/types/metadata-t"
@@ -85,7 +70,7 @@ export function SubscriberDialog(props: IProps) {
         },
   })
 
-  const onSubmit = async (values: SubscriberDTO) => {
+  async function onSubmit(values: SubscriberDTO) {
     const res = await saveSubscriberAction(values, editingItem?.id)
 
     if (res.success) {
@@ -96,7 +81,6 @@ export function SubscriberDialog(props: IProps) {
     }
   }
 
-  const dialogTitle = editingItem ? "Redaguoti abonentą" : "Naujas abonentas"
   const isSubmitting = form.formState.isSubmitting
   const rootError = form.formState.errors.root
 
@@ -104,161 +88,32 @@ export function SubscriberDialog(props: IProps) {
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogTitle>
+            {editingItem ? "Redaguoti abonentą" : "Naujas abonentas"}
+          </DialogTitle>
           <DialogDescription className="hidden">
             Abonento formos pildymas
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 pt-2"
-            noValidate
-          >
-            <div className="grid grid-cols-2 gap-4">
-              <TextField
-                control={form.control}
-                name="firstName"
-                label="Vardas"
-                disabled={isSubmitting}
-              />
-              <TextField
-                control={form.control}
-                name="lastName"
-                label="Pavardė"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="subscriberType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Abonento tipas</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      disabled={isSubmitting}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Pasirinkite tipą" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {(subscriberTypes ?? []).map((type) => (
-                          <SelectItem key={type.id} value={type.name}>
-                            {type.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="isActive"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-end space-x-3 space-y-0 rounded-md border p-4 bg-slate-50/50">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="cursor-pointer">
-                        Aktyvus abonentas
-                      </FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Miestas</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      disabled={isSubmitting}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Pasirinkite miestą" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {cities.map((city) => (
-                          <SelectItem
-                            key={city.id ?? city.name}
-                            value={city.name}
-                          >
-                            {city.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <TextField
-                control={form.control}
-                name="street"
-                label="Gatvė"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <TextField
-                control={form.control}
-                name="houseNumber"
-                label="Namo nr."
-                disabled={isSubmitting}
-              />
-              <TextField
-                control={form.control}
-                name="apartmentNumber"
-                label="Buto nr."
-                disabled={isSubmitting}
-              />
-              <TextField
-                control={form.control}
-                name="phone"
-                label="Telefonas"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            <TextField
-              control={form.control}
-              name="ticketNumber"
-              label="Abonento Nr."
-              disabled={isSubmitting}
+          <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+            <SubscriberFormFields
+              form={form}
+              cities={cities}
+              subscriberTypes={subscriberTypes}
+              isSubmitting={isSubmitting}
             />
 
             {rootError && (
-              <div className="p-2 text-sm text-red-600 bg-red-100 rounded-md">
+              <div className="p-2 mt-4 text-sm text-red-600 bg-red-100 rounded-md">
                 {rootError.message}
               </div>
             )}
 
             <Button
               type="submit"
-              className="w-full bg-orange-600 hover:bg-orange-700"
+              className="w-full mt-6 bg-orange-600 hover:bg-orange-700"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Saugoma..." : "Išsaugoti"}
