@@ -8,6 +8,8 @@ type IProps = {
 }
 
 export function BorrowingsList(props: IProps) {
+  const { data } = props
+
   return (
     <div className="pt-4">
       <h2 className="text-lg font-semibold mb-4 text-slate-700">
@@ -15,12 +17,13 @@ export function BorrowingsList(props: IProps) {
       </h2>
 
       <ReservationsTable
-        items={props.data}
+        items={data}
         onReturn={() => {}}
         onDelete={() => {}}
+        isReadOnly={true}
       />
 
-      {props.data.length === 0 && (
+      {data.length === 0 && (
         <p className="text-sm text-muted-foreground italic mt-2">
           Pagal pasirinktus filtrus įrašų nerasta.
         </p>

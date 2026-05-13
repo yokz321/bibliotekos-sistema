@@ -19,10 +19,11 @@ type IProps = {
   items: IBorrowingPopulated[]
   onReturn: (id: string) => void
   onDelete: (id: string) => void
+  isReadOnly?: boolean
 }
 
 export function ReservationsTable(props: IProps) {
-  const { items, onReturn, onDelete } = props
+  const { items, onReturn, onDelete, isReadOnly = false } = props
 
   return (
     <Card className="overflow-hidden border shadow-sm">
@@ -33,14 +34,16 @@ export function ReservationsTable(props: IProps) {
             <TableHead>Knyga</TableHead>
             <TableHead>Terminas</TableHead>
             <TableHead className="text-center">Statusas</TableHead>
-            <TableHead className="text-right">Veiksmai</TableHead>
+            {!isReadOnly && (
+              <TableHead className="text-right">Veiksmai</TableHead>
+            )}
           </TableRow>
         </TableHeader>
         <TableBody>
           {items.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={5}
+                colSpan={isReadOnly ? 4 : 5}
                 className="text-center py-10 text-muted-foreground italic"
               >
                 Rezervacijų sąrašas tuščias
@@ -60,6 +63,10 @@ export function ReservationsTable(props: IProps) {
               const dueDateFormatted = new Date(
                 item.dueDate
               ).toLocaleDateString("lt-LT")
+
+              const returnDateFormatted = item.returnDate
+                ? new Date(item.returnDate).toLocaleDateString("lt-LT")
+                : null
 
               const isOverdue =
                 !item.isReturned && new Date(item.dueDate) < new Date()
@@ -102,9 +109,14 @@ export function ReservationsTable(props: IProps) {
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="text-sm font-semibold">{bookTitle}</span>
-                      <span className="text-xs text-muted-foreground">
-                        Išduota: {borrowDateFormatted}
-                      </span>
+                      <div className="flex flex-col text-xs text-muted-foreground">
+                        <span>Išduota: {borrowDateFormatted}</span>
+                        {item.isReturned && returnDateFormatted && (
+                          <span className="text-green-600 font-medium">
+                            Grąžinta: {returnDateFormatted}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell
@@ -116,29 +128,32 @@ export function ReservationsTable(props: IProps) {
                     {dueDateFormatted}
                   </TableCell>
                   <TableCell className="text-center">{statusBadge}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      {!item.isReturned && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 text-green-600 hover:bg-green-50"
-                          onClick={() => onReturn(item.id)}
-                        >
-                          <RotateCcw className="h-4 w-4 mr-1" /> Grąžinti
-                        </Button>
-                      )}
 
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive"
-                        onClick={() => onDelete(item.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+                  {!isReadOnly && (
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        {!item.isReturned && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-green-600 hover:bg-green-50"
+                            onClick={() => onReturn(item.id)}
+                          >
+                            <RotateCcw className="h-4 w-4 mr-1" /> Grąžinti
+                          </Button>
+                        )}
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive"
+                          onClick={() => onDelete(item.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
                 </TableRow>
               )
             })
