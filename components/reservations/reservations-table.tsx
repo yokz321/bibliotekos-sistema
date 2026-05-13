@@ -66,7 +66,7 @@ export function ReservationsTable(props: IProps) {
 
               const returnDateFormatted = item.returnDate
                 ? new Date(item.returnDate).toLocaleDateString("lt-LT")
-                : null
+                : undefined
 
               const isOverdue =
                 !item.isReturned && new Date(item.dueDate) < new Date()
